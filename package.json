@@ -1,0 +1,28 @@
+{
+  "name": "forootan-kia-study-planner",
+  "version": "1.0.0",
+  "description": "سامانه هوشمند طراحی و صدور دفترچه برنامه‌ریزی تحصیلی ویژه آکادمی دکتر فروتن کیا",
+  "type": "module",
+  "scripts": {
+    "build": "node copy-dist.cjs",
+    "start": "npx serve . -l 3000",
+    "dev": "npx serve . -l 3000",
+    "serve": "npx serve .",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
+  },
+  "keywords": [
+    "study-planner",
+    "persian",
+    "rtl",
+    "pdf-export",
+    "counseling",
+    "education"
+  ],
+  "author": "Mohammad Shakiba",
+  "license": "MIT",
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.5"
+  }
+}

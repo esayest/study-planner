@@ -1,0 +1,51 @@
+{
+  "$schema": "https://raw.githubusercontent.com/tauri-apps/tauri/dev/crates/tauri-config-schema/schema.json",
+  "productName": "Study Planner",
+  "version": "1.0.0",
+  "identifier": "com.forootankia.studyplanner",
+  "build": {
+    "beforeBuildCommand": "npm run build",
+    "beforeDevCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [
+      {
+        "title": "سامانه هوشمند برنامه‌ریزی تحصیلی آکادمی دکتر فروتن کیا",
+        "width": 1400,
+        "height": 900,
+        "minWidth": 1100,
+        "minHeight": 720,
+        "resizable": true,
+        "fullscreen": false,
+        "maximized": true,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "publisher": "Mohammad Shakiba",
+    "copyright": "Copyright © 2026 Mohammad Shakiba. All rights reserved.",
+    "category": "Education",
+    "shortDescription": "سامانه هوشمند برنامه‌ریزی تحصیلی آکادمی دکتر فروتن کیا",
+    "longDescription": "سامانه هوشمند طراحی و صدور دفترچه برنامه‌ریزی تحصیلی ویژه آکادمی دکتر فروتن کیا",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "windows": {
+      "certificateThumbprint": null,
+      "digestAlgorithm": "sha256",
+      "timestampUrl": ""
+    }
+  }
+}
