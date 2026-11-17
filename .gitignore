@@ -11,6 +11,8 @@ src-tauri/gen/
 
 # Auto-Generated Web Distribution
 dist/
+apk/
+*.apk
 
 # Operating System Files
 Thumbs.db
