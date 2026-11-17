@@ -95,6 +95,7 @@ jobs:
       - name: Build Android APK
         run: |
           npx tauri android init --ci
+          sed -i '/<manifest/a \    <uses-permission android:name="android.permission.INTERNET" />\n    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />' src-tauri/gen/android/app/src/main/AndroidManifest.xml || true
           npx tauri android build --apk --ci
 
       - name: Stage Android Artifact

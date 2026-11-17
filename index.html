@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="author" content="Mohammad Shakiba">
   <title>سامانه هوشمند برنامه‌ریزی تحصیلی | آکادمی دکتر فروتن کیا</title>
   
@@ -12,7 +12,7 @@
   <!-- تایپوگرافی اختصاصی: فونت‌های دانا (Dana) و پیدا (Peyda) -->
 
   <!-- فریم‌ورک Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="js/tailwindcss.js"></script>
   <script>
     if (window.tailwind) {
       tailwind.config = {
@@ -171,6 +171,12 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html, body {
+  -webkit-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
