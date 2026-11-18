@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/web-manifest-combined.json",
-  "name": "سامانه هوشمند برنامه‌ریزی تحصیلی | آکادمی دکتر فروتن کیا",
-  "short_name": "Study Planner",
+  "name": "برنامه‌ریزی تحصیلی",
+  "short_name": "برنامه‌ریزی",
   "description": "سامانه تخصصی طراحی، پایش و صدور دفترچه‌های ۴ صفحه‌ای برنامه‌ریزی تحصیلی کنکور سراسری، آزمون دانشگاه فرهنگیان و امتحانات نهایی",
   "start_url": "./index.html",
   "scope": "./",
@@ -49,12 +49,6 @@
       "src": "assets/icons/favicon-32.png",
       "sizes": "32x32",
       "type": "image/png"
-    },
-    {
-      "src": "assets/Study Planner App Icon.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
     }
   ]
 }
