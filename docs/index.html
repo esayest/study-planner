@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="وب‌سایت رسمی سامانه هوشمند برنامه‌ریزی تحصیلی آکادمی دکتر فروتن کیا. طراحی، تنظیم و صدور دفترچه‌های اختصاصی کنکور در ابعاد استاندارد A4 چاپی. دریافت نسخه‌های ویندوز، اندروید و وب.">
+  <meta name="author" content="Mohammad Shakiba">
+  <title>سامانه هوشمند برنامه‌ریزی تحصیلی | آکادمی دکتر فروتن کیا</title>
+
+  <!-- فاوآیکون -->
+  <link rel="icon" type="image/png" href="assets/academy-logo-transparent.png">
+
+  <!-- استایل‌های اختصاصی وب‌سایت -->
+  <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+
+  <!-- جلوه‌های نوری پس‌زمینه (Ambient Glows) -->
+  <div class="bg-glow-container">
+    <div class="glow-orb glow-blue"></div>
+    <div class="glow-orb glow-emerald"></div>
+    <div class="glow-orb glow-gold"></div>
+  </div>
+
+  <!-- نوار ناوبری (Header & Navigation) -->
+  <header class="navbar">
+    <div class="container navbar-inner">
+      <a href="#" class="nav-brand">
+        <img src="assets/Study Planner App Icon.png" alt="Study Planner Icon" class="nav-logo">
+        <div class="brand-text">
+          <h1>Study Planner</h1>
+          <span>سامانه برنامه‌ریزی تحصیلی</span>
+        </div>
+      </a>
+
+      <!-- لینک‌های منو -->
+      <nav>
+        <ul class="nav-links">
+          <li><a href="#features" class="nav-link">ویژگی‌های کلیدی</a></li>
+          <li><a href="#showcase" class="nav-link">پیش‌نمایش دفترچه</a></li>
+          <li><a href="#downloads" class="nav-link">دانلود نرم‌افزار</a></li>
+          <li><a href="#comparison" class="nav-link">چرا این سامانه؟</a></li>
+          <li><a href="#faq" class="nav-link">سوالات متداول</a></li>
+        </ul>
+      </nav>
+
+      <!-- دکمه‌های اکشن -->
+      <div class="nav-actions">
+        <a href="app/index.html" class="btn btn-outline" target="_blank" title="اجرای مستقیم در مرورگر">
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+          </svg>
+          نسخه وب
+        </a>
+        <a href="#downloads" class="btn btn-primary">
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+          </svg>
+          دریافت برنامه
+        </a>
+        <button class="menu-toggle" aria-label="منوی موبایل">
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- بخش هیرو (Hero Section) -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <span class="hero-badge-dot"></span>
+        <span>نسخه جدید 1.0.1 منتشر شد • پایدار، سریع و ۱۰۰٪ آفلاین</span>
+      </div>
+
+      <h2 class="hero-title">
+        سامانه هوشمند طراحی و صدور<br>
+        <span class="hero-title-highlight">دفترچه برنامه‌ریزی تحصیلی کنکور</span>
+      </h2>
+
+      <p class="hero-subtitle">
+        پلتفرمی مدرن، لوکس و آفلاین برای مشاوران نخبه و دانش‌آموزان هدفمند آکادمی دکتر فروتن کیا؛ طراحی و تنظیم جداول هفتگی مطالعه در قالب دقیق چاپی A4، همراه با روتین شبانه، شناسنامه دانش‌آموز و سیستم ویژه پذیرش دانشگاه فرهنگیان.
+      </p>
+
+      <div class="hero-cta-group">
+        <a href="https://github.com/esayest/study-planner/releases/latest" id="hero-download-win" class="btn btn-primary btn-lg" target="_blank">
+          <!-- Windows SVG -->
+          <svg class="btn-icon" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
+          </svg>
+          دانلود نسخه ویندوز (Windows)
+        </a>
+
+        <a href="https://github.com/esayest/study-planner/releases/latest" id="hero-download-android" class="btn btn-outline btn-lg" target="_blank">
+          <!-- Android SVG -->
+          <svg class="btn-icon" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.4116 13.8533 8.082 12 8.082s-3.5902.3296-5.1367.8677L4.841 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396"/>
+          </svg>
+          دانلود نسخه اندروید (APK)
+        </a>
+
+        <a href="app/index.html" class="btn btn-emerald btn-lg" target="_blank">
+          <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          اجرای نسخه تحت وب
+        </a>
+      </div>
+
+      <!-- نشان‌های اعتماد و مشخصات -->
+      <div class="hero-trust-row">
+        <div class="trust-item">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          <span>۱۰۰٪ آفلاین و بدون نیاز به اینترنت</span>
+        </div>
+        <div class="trust-item">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          <span>خروجی دقیق چاپی در ابعاد استاندارد A4</span>
+        </div>
+        <div class="trust-item">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          <span>حفظ حریم خصوصی با ذخیره امن لوکال</span>
+        </div>
+        <div class="trust-item">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          <span>رایگان و متن‌باز تحت لایسنس MIT</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- بخش پیش‌نمایش تعاملی ۴ صفحه‌ای (Showcase) -->
+  <section id="showcase" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">پیش‌نمایش زنده دفترچه</span>
+        <h3 class="section-title">دفترچه ۴ صفحه‌ای جامع کنکور</h3>
+        <p class="section-desc">هر دفترچه شامل ۴ صفحه استاندارد سازمانی است که نیازهای صفر تا صد برنامه‌ریزی یک هفته مطالعاتی را پوشش می‌دهد.</p>
+      </div>
+
+      <!-- تب‌های تعویض صفحه -->
+      <div class="tabs-nav">
+        <button class="tab-btn active" data-tab="tab-cover">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"></path></svg>
+          صفحه ۱: طرح جلد لوکس
+        </button>
+        <button class="tab-btn" data-tab="tab-schedule">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+          صفحه ۲: جدول هفتگی ترنسپوز
+        </button>
+        <button class="tab-btn" data-tab="tab-profile">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+          صفحه ۳: شناسنامه و توصیه‌های مشاور
+        </button>
+        <button class="tab-btn" data-tab="tab-resources">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+          صفحه ۴: منابع مطالعاتی و فرهنگیان
+        </button>
+      </div>
+
+      <!-- محتوای تب ۱ (طرح جلد) -->
+      <div id="tab-cover" class="tab-content active">
+        <div class="mockup-card">
+          <div class="mockup-grid">
+            <div class="mockup-info">
+              <h3>طرح جلد باشکوه و هویت بصری سازمانی</h3>
+              <p>طراحی چشم‌نواز مطابق با استانداردهای رسمی آکادمی دکتر فروتن کیا جهت ایجاد حس انگیزه و نظم تحصیلی در داوطلب.</p>
+              <ul class="mockup-points">
+                <li class="mockup-point">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>نشان رسمی آکادمی با تکنولوژی وکتور بدون افت کیفیت</span>
+                </li>
+                <li class="mockup-point">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>کارت مشخصات داوطلب، پایه تحصیلی، رشته و تاریخ هفته</span>
+                </li>
+                <li class="mockup-point">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>جملات انگیزشی و هدف‌گذاری هفتگی مشاور</span>
+                </li>
+              </ul>
+              <a href="app/index.html" class="btn btn-outline" target="_blank">مشاهده در محیط نرم‌افزار ←</a>
+            </div>
+            <div class="mockup-visual">
+              <div class="sheet-mini">
+                <div class="sheet-mini-header">
+                  <div class="sheet-mini-title">آکادمی مشاوره تحصیلی دکتر فروتن کیا</div>
+                  <span class="sheet-mini-badge">صفحه ۱ - جلد رسمی</span>
+                </div>
+                <div style="background: #0f172a; color: #fff; padding: 1.5rem; border-radius: 6px; text-align: center; margin-bottom: 1rem;">
+                  <h4 style="font-size: 1.1rem; color: #fcd34d; margin-bottom: 0.25rem;">دفترچه اختصاصی برنامه‌ریزی تحصیلی</h4>
+                  <p style="font-size: 0.75rem; color: #94a3b8;">کنکور سراسری و امتحانات نهایی</p>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 0.72rem; color: #334155;">
+                  <div style="background: #f1f5f9; padding: 6px; border-radius: 4px;"><strong>دانش‌آموز:</strong> محمد شکیبا</div>
+                  <div style="background: #f1f5f9; padding: 6px; border-radius: 4px;"><strong>مشاور:</strong> دکتر شهروز فروتن کیا</div>
+                  <div style="background: #f1f5f9; padding: 6px; border-radius: 4px;"><strong>رشته:</strong> تجربی / دوازدهم</div>
+                  <div style="background: #f1f5f9; padding: 6px; border-radius: 4px;"><strong>بازه:</strong> هفته سوم آبان ماه</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- محتوای تب ۲ (جدول ترنسپوز) -->
+      <div id="tab-schedule" class="tab-content">
+        <div class="mockup-card">
+          <div class="mockup-grid">
+            <div class="mockup-info">
+              <h3>جدول هفتگی ترنسپوز در عرض کامل ۲۹۷mm</h3>
+              <p>طراحی علمی در راستای ارگونومی چشم انسان؛ روزهای هفته در سطرها و پارت‌های مطالعاتی در ستون‌ها قرار گرفته‌اند تا خوانایی و پیوستگی مطالعه به حداکثر برسد.</p>
+              <ul class="mockup-points">
+                <li class="mockup-point">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>تفکیک دقیق هر پارت به دو سطر مجزای «مبحث» و «تست»</span>
+                </li>
+                <li class="mockup-point">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>ستون اختصاصی روتین شبانه (قرابت، لغت، ریدینگ، فرمول‌ها)</span>
+                </li>
+                <li class="mockup-point">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>ابزارهای هوشمند کپی/پیست و جابه‌جایی سریع روزها</span>
+                </li>
+              </ul>
+              <a href="app/index.html" class="btn btn-outline" target="_blank">تست جدول زنده در وب ←</a>
+            </div>
+            <div class="mockup-visual">
+              <div class="sheet-mini">
+                <div class="sheet-mini-header">
+                  <div class="sheet-mini-title">جدول پارت‌های مطالعاتی هفتگی</div>
+                  <span class="sheet-mini-badge">صفحه ۲ - ابعاد A4</span>
+                </div>
+                <table class="sheet-mini-table">
+                  <thead>
+                    <tr>
+                      <th>روز</th>
+                      <th>پارت ۱</th>
+                      <th>پارت ۲</th>
+                      <th>پارت ۳</th>
+                      <th>روتین شب</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="font-weight: bold; background: #f8fafc;">شنبه</td>
+                      <td class="study-subject">زیست ۳ (گفتار ۱)<br><span style="color:#059669">۳۰ تست</span></td>
+                      <td class="study-subject">فیزیک (حرکت)<br><span style="color:#059669">۲۵ تست</span></td>
+                      <td class="study-subject">شیمی (سینتیک)<br><span style="color:#059669">۲۰ تست</span></td>
+                      <td class="routine-cell">قرابت معنایی (۱۰ تست)</td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: bold; background: #f8fafc;">یکشنبه</td>
+                      <td class="study-subject">ریاضی (مثلثات)<br><span style="color:#059669">۲۵ تست</span></td>
+                      <td class="study-subject">زیست ۳ (مرور)<br><span style="color:#059669">۳۵ تست</span></td>
+                      <td class="study-subject">عربی (ترجمه)<br><span style="color:#059669">۲۰ تست</span></td>
+                      <td class="routine-cell">کلوز تست زبان</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- محتوای تب ۳ (شناسنامه) -->
+      <div id="tab-profile" class="tab-content">
+        <div class="mockup-card">
+          <div class="mockup-grid">
+            <div class="mockup-info">
+              <h3>شناسنامه تحصیلی و توصیه‌های راهبردی مشاور</h3>
+              <p>این صفحه به عنوان نقشه راه و پل ارتباطی مستقیم میان مشاور و دانش‌آموز عمل می‌کند؛ ثبت سوابق تراز، اهداف آزمون و توصیه‌های کلیدی مطالعه.</p>
+              <ul class="mockup-points">
+                <li class="mockup-point">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>کادر عریض توصیه‌ها و استراتژی‌های اختصاصی مشاور</span>
+                </li>
+                <li class="mockup-point">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>جدول ثبت تراز آزمون‌های قلم‌چی، ماز و سنجش</span>
+                </li>
+                <li class="mockup-point">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>فرمول‌های ارزیابی KPI و نرخ بازدهی مطالعه</span>
+                </li>
+              </ul>
+              <a href="app/index.html" class="btn btn-outline" target="_blank">مشاهده قالب در سامانه ←</a>
+            </div>
+            <div class="mockup-visual">
+              <div class="sheet-mini">
+                <div class="sheet-mini-header">
+                  <div class="sheet-mini-title">شناسنامه تحصیلی و نکات طلایی</div>
+                  <span class="sheet-mini-badge">صفحه ۳ - تحلیل عملکرد</span>
+                </div>
+                <div style="border: 1px solid #e2e8f0; border-radius: 4px; padding: 8px; margin-bottom: 8px; background: #fafafa;">
+                  <div style="font-weight: bold; color: #1e3a8a; font-size: 0.75rem; margin-bottom: 4px;">توصیه‌های طلایی مشاور:</div>
+                  <p style="font-size: 0.68rem; color: #475569; line-height: 1.5;">«در پارت‌های محاسباتی تست‌های زمان‌دار حل کنید و حتماً نکات تحلیلی زیست را در حاشیه کتاب بنویسید.»</p>
+                </div>
+                <div style="display: flex; gap: 6px;">
+                  <div style="flex: 1; background: #e0f2fe; padding: 6px; border-radius: 4px; text-align: center;">
+                    <div style="font-size: 0.65rem; color: #0284c7;">هدف ساعت هفته</div>
+                    <div style="font-weight: bold; font-size: 0.85rem; color: #0369a1;">۵۵ ساعت</div>
+                  </div>
+                  <div style="flex: 1; background: #dcfce7; padding: 6px; border-radius: 4px; text-align: center;">
+                    <div style="font-size: 0.65rem; color: #16a34a;">هدف تعداد تست</div>
+                    <div style="font-weight: bold; font-size: 0.85rem; color: #15803d;">۸۵۰ تست</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- محتوای تب ۴ (فرهنگیان و منابع) -->
+      <div id="tab-resources" class="tab-content">
+        <div class="mockup-card">
+          <div class="mockup-grid">
+            <div class="mockup-info">
+              <h3>تحلیل منابع و بخش ویژه داوطلبان فرهنگیان</h3>
+              <p>دسته‌بندی هوشمند کتب و مباحث مطالعاتی به همراه بخش اختصاصی برای داوطلبان آزمون تربیت معلم و رشته علوم انسانی.</p>
+              <ul class="mockup-points">
+                <li class="mockup-point">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>جدول مباحث اختصاصی کنکور تربیت معلم و آزمون فرهنگیان</span>
+                </li>
+                <li class="mockup-point">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>صفحه‌بندی خودکار منابع بدون شکستن خطوط در چاپ (Pagination)</span>
+                </li>
+                <li class="mockup-point">
+                  <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                  <span>تفکیک پایه‌های دهم، یازدهم و دوازدهم</span>
+                </li>
+              </ul>
+              <a href="app/index.html" class="btn btn-outline" target="_blank">بررسی بخش فرهنگیان در اپ ←</a>
+            </div>
+            <div class="mockup-visual">
+              <div class="sheet-mini">
+                <div class="sheet-mini-header">
+                  <div class="sheet-mini-title">منابع کنکور و دانشگاه فرهنگیان</div>
+                  <span class="sheet-mini-badge">صفحه ۴ - تفکیک دروس</span>
+                </div>
+                <table class="sheet-mini-table">
+                  <thead>
+                    <tr>
+                      <th>درس / منبع</th>
+                      <th>پایه</th>
+                      <th>وضعیت تسلط</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>مهارت معلمی استاد قرائتی</td>
+                      <td>فرهنگیان</td>
+                      <td style="color: #16a34a; font-weight: bold;">عالی (۸۵٪)</td>
+                    </tr>
+                    <tr>
+                      <td>هوش و استعداد معلمی</td>
+                      <td>عمومی</td>
+                      <td style="color: #2563eb; font-weight: bold;">نیاز به تست</td>
+                    </tr>
+                    <tr>
+                      <td>تعلیم و تربیت اسلامی</td>
+                      <td>تخصصی</td>
+                      <td style="color: #d97706; font-weight: bold;">دور اول مطالعه</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- بخش ویژگی‌های کلیدی (Features Grid) -->
+  <section id="features" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">امکانات منحصر‌به‌فرد</span>
+        <h3 class="section-title">چرا Study Planner انتخابی حرفه‌ای است؟</h3>
+        <p class="section-desc">طراحی شده با تلفیق هنر مهندسی نرم‌افزار، روانشناسی مطالعه و اصول تایپوگرافی اصیل فارسی.</p>
+      </div>
+
+      <div class="features-grid">
+        <!-- کارت ۱ -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-box icon-blue">
+            <svg width="26" height="26" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+          </div>
+          <h4>موتور چاپ A4 با دقت میلی‌متری</h4>
+          <p>خروجی استاندارد چاپی بدون افت کیفیت فونت یا جابه‌جایی المان‌ها با تفکیک دقیق هر صفحه بر اساس قوانین `@media print`.</p>
+        </div>
+
+        <!-- کارت ۲ -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-box icon-emerald">
+            <svg width="26" height="26" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+          </div>
+          <h4>عملکرد ۱۰۰٪ مستقل و آفلاین</h4>
+          <p>کاملاً مستقل از اتصال اینترنت یا سرورهای خارجی. کلیه اطلاعات به صورت امن روی دستگاه شما ذخیره و حفظ می‌شود.</p>
+        </div>
+
+        <!-- کارت ۳ -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-box icon-gold">
+            <svg width="26" height="26" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path></svg>
+          </div>
+          <h4>جدول هفتگی ترنسپوز هوشمند</h4>
+          <p>چیدمان افقی و مدرن، قابلیت کپی سریع سلول‌ها، جابه‌جایی روزها، توزیع متوازن بار مطالعاتی و پاک‌سازی هوشمند.</p>
+        </div>
+
+        <!-- کارت ۴ -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-box icon-purple">
+            <svg width="26" height="26" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+          </div>
+          <h4>بخش اختصاصی آزمون فرهنگیان</h4>
+          <p>پشتیبانی کامل از سرفصل‌های مهارت معلمی، تعلیم و تربیت اسلامی، استعداد تحلیلی و دروس رشته علوم انسانی.</p>
+        </div>
+
+        <!-- کارت ۵ -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-box icon-cyan">
+            <svg width="26" height="26" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          </div>
+          <h4>توسعه‌یافته با Tauri v2 و Rust</h4>
+          <p>نرم‌افزار دسکتاپ و موبایل با سرعت فوق‌العاده بالا، مصرف ناچیز رم (کمتر از ۴۰ مگابایت) و حجم دانلود سبک (زیر ۴ مگابایت).</p>
+        </div>
+
+        <!-- کارت ۶ -->
+        <div class="glass-card feature-card">
+          <div class="feature-icon-box icon-rose">
+            <svg width="26" height="26" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
+          </div>
+          <h4>تایپوگرافی اصیل: دانا و پیدا</h4>
+          <p>ترکیب هارمونیک قلم هندسی «پیدا» برای تیترها و نشان‌ها و قلم دقیق «دانا» برای جداول مطالعاتی با رعایت نسبت طلایی.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- بخش دانلود نسخه‌ها (Downloads Portal) -->
+  <section id="downloads" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">مرکز دریافت و دانلود</span>
+        <h3 class="section-title">برنامه را روی دستگاه خود نصب کنید</h3>
+        <p class="section-desc">پشتیبانی همزمان از دسکتاپ، تبلت، تلفن همراه و مرورگرهای وب با بالاترین کیفیت اجرایی.</p>
+      </div>
+
+      <div class="downloads-grid">
+        <!-- کارت ویندوز -->
+        <div class="glass-card download-card featured">
+          <div class="card-ribbon">پیشنهاد دسکتاپ</div>
+          <div class="platform-icon" style="color: #60a5fa;">
+            <svg width="34" height="34" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
+            </svg>
+          </div>
+          <h4 class="platform-name">ویندوز (Windows)</h4>
+          <span class="platform-format">نسخه 1.0.1 • فایل نصبی .exe</span>
+          <p class="platform-desc">نرم‌افزار نیتیو ویندوز همراه با ایجاد میانبر در دسکتاپ، اجرای تک‌نمونه‌ای (Single-Instance) و مصرف بهینه سخت‌افزار.</p>
+          <a href="https://github.com/esayest/study-planner/releases/latest" class="btn btn-primary" target="_blank">
+            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            دانلود نصاب ویندوز (.exe)
+          </a>
+          <span class="download-meta">سازگار با ویندوز 10 و 11 (64 بیتی) • حجم: ~4MB</span>
+        </div>
+
+        <!-- کارت اندروید -->
+        <div class="glass-card download-card">
+          <div class="platform-icon" style="color: #34d399;">
+            <svg width="34" height="34" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M17.523 15.3414c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.551 0 .9993.4482.9993.9993.0001.5511-.4483.9997-.9993.9997m-11.046 0c-.5511 0-.9993-.4486-.9993-.9997s.4482-.9993.9993-.9993c.5511 0 .9993.4482.9993.9993 0 .5511-.4482.9997-.9993.9997m11.4045-6.02l1.9973-3.4592a.416.416 0 00-.1521-.5676.416.416 0 00-.5676.1521l-2.0223 3.503C15.5902 8.4116 13.8533 8.082 12 8.082s-3.5902.3296-5.1367.8677L4.841 5.4467a.4161.4161 0 00-.5677-.1521.4157.4157 0 00-.1521.5676l1.9973 3.4592C2.6889 11.1867.3432 14.6589 0 18.761h24c-.3432-4.1021-2.6889-7.5743-6.1185-9.4396"/>
+            </svg>
+          </div>
+          <h4 class="platform-name">اندروید (Android)</h4>
+          <span class="platform-format">نسخه 1.0.1 • فایل پکیج .apk</span>
+          <p class="platform-desc">اپلیکیشن سریع و روان برای گوشی‌ها و تبلت‌های اندرویدی با امضای استاندارد، پشتیبانی آفلاین و تنظیم خودکار ابعاد صفحه.</p>
+          <a href="https://github.com/esayest/study-planner/releases/latest" class="btn btn-outline" target="_blank">
+            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+            دانلود پکیج اندروید (.apk)
+          </a>
+          <span class="download-meta">پشتیبانی از اندروید 7.0 به بالا • امضا شده و آماده نصب</span>
+        </div>
+
+        <!-- کارت وب -->
+        <div class="glass-card download-card">
+          <div class="platform-icon" style="color: #22d3ee;">
+            <svg width="34" height="34" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+            </svg>
+          </div>
+          <h4 class="platform-name">تحت وب (Web App)</h4>
+          <span class="platform-format">اجرای ابری • بدون نیاز به نصب</span>
+          <p class="platform-desc">دسترسی لحظه‌ای از هر مرورگری؛ کافی است دکمه را بزنید تا برنامه بدون نیاز به دانلود مستقیماً در مرورگر شما باز شود.</p>
+          <a href="app/index.html" class="btn btn-emerald" target="_blank">
+            <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+            ورود به نسخه آنلاین
+          </a>
+          <span class="download-meta">سازگار با Chrome, Firefox, Edge, Safari</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- بخش جدول مقایسه (Comparison Table) -->
+  <section id="comparison" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">مقایسه و تمایز</span>
+        <h3 class="section-title">چرا روش‌های سنتی پاسخگوی نیاز مشاوران نیست؟</h3>
+        <p class="section-desc">تفاوت Study Planner با دفترچه‌های کاغذی یا فایل‌های خام اکسل</p>
+      </div>
+
+      <div class="comparison-table-wrap">
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>ویژگی / قابلیت</th>
+              <th class="highlight-col">سامانه هوشمند Study Planner</th>
+              <th>دفترچه کاغذی آماده</th>
+              <th>فایل‌های اکسل خام</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>طراحی استاندارد A4 و خروجی چاپی دقیق</td>
+              <td class="highlight-col"><span class="check-icon">✓</span> ۱۰۰٪ دقیق و وکتور</td>
+              <td><span class="check-icon">✓</span> فقط چاپی دستی</td>
+              <td><span class="cross-icon">✗</span> به‌هم‌ریختگی جدول در پرینت</td>
+            </tr>
+            <tr>
+              <td>جدول ترنسپوز با تفکیک سطر مبحث و تست</td>
+              <td class="highlight-col"><span class="check-icon">✓</span> اختصاصی و بهینه‌سازی شده</td>
+              <td><span class="cross-icon">✗</span> فضای بسیار کم برای نوشتن</td>
+              <td><span class="cross-icon">✗</span> نیاز به فرمول‌نویسی پیچیده</td>
+            </tr>
+            <tr>
+              <td>ستون روتین شبانه و تحلیل آزمون</td>
+              <td class="highlight-col"><span class="check-icon">✓</span> دارد</td>
+              <td><span class="cross-icon">✗</span> ندارد</td>
+              <td><span class="cross-icon">✗</span> ندارد</td>
+            </tr>
+            <tr>
+              <td>بخش ویژه پذیرش دانشگاه فرهنگیان</td>
+              <td class="highlight-col"><span class="check-icon">✓</span> دسته‌بندی منابع کنکور اختصاصی</td>
+              <td><span class="cross-icon">✗</span> ندارد</td>
+              <td><span class="cross-icon">✗</span> ندارد</td>
+            </tr>
+            <tr>
+              <td>عملکرد آفلاین و امنیت کامل اطلاعات</td>
+              <td class="highlight-col"><span class="check-icon">✓</span> ذخیره‌سازی محلی روی دستگاه</td>
+              <td><span class="check-icon">✓</span> فیزیکی</td>
+              <td><span class="check-icon">✓</span> وابسته به نرم‌افزار آفیس</td>
+            </tr>
+            <tr>
+              <td>حالت تیره و روشن (Dark & Light Mode)</td>
+              <td class="highlight-col"><span class="check-icon">✓</span> سازگار با ارگونومی چشم</td>
+              <td><span class="cross-icon">✗</span> ندارد</td>
+              <td><span class="cross-icon">✗</span> خیر</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- بخش پرسش‌های متداول (FAQ) -->
+  <section id="faq" class="section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">راهنما و پاسخ‌ها</span>
+        <h3 class="section-title">پرسش‌های متداول کاربران</h3>
+        <p class="section-desc">پاسخ سریع به متداول‌ترین سوالات درباره نصب، استفاده و خروجی چاپی برنامه.</p>
+      </div>
+
+      <div class="faq-grid">
+        <div class="faq-item open">
+          <button class="faq-question">
+            <span>آیا استفاده از برنامه نیاز به اتصال دائمی اینترنت دارد؟</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div class="faq-answer">
+            خیر؛ این سامانه بر پایه معماری Offline-First طراحی شده است. تمام فایل‌ها، فونت‌ها و کدهای برنامه در بسته نصبی ویندوز و اندروید وجود دارد و حتی در حالت قطعی کامل اینترنت نیز برنامه با سرعت بالا و دسترسی کامل به تمامی بخش‌ها کار می‌کند.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>چگونه می‌توانم دفترچه را به صورت PDF یا نسخه چاپی ذخیره کنم؟</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div class="faq-answer">
+            در نوار بالای برنامه دکمه «چاپ / خروجی PDF» قرار دارد. با کلیک بر روی آن پنجره چاپگر سیستم باز می‌شود. کافی است مقصد چاپ (Destination) را روی «Save as PDF» قرار دهید تا فایلی ۴ صفحه‌ای با ابعاد دقیق A4 و تفکیک خودکار صفحات ذخیره شود.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>آیا اطلاعات دانش‌آموزان در سرور ذخیره می‌شود یا حریم خصوصی رعایت شده است؟</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div class="faq-answer">
+            تمام داده‌ها به صورت محلی در حافظه دستگاه شما ذخیره می‌شوند و هیچ اطلاعاتی به سرورهای خارجی ارسال نمی‌گردد. این موضوع امنیت و محرمانگی برنامه‌های تحصیلی دانش‌آموزان و مشاوران را به طور کامل تضمین می‌کند.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            <span>آیا برنامه برای دانش‌آموزان رشته‌های تجربی، ریاضی و انسانی مناسب است؟</span>
+            <svg class="faq-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </button>
+          <div class="faq-answer">
+            بله، ساختار منعطف پارت‌ها و جداول به گونه‌ای است که کلیه داوطلبان رشته‌های علوم تجربی، ریاضی و فیزیک، علوم انسانی و همچنین متقاضیان دانشگاه فرهنگیان و آزمون‌های نهایی می‌توانند از آن بهره‌مند شوند.
+          </div>
+        </div>
+      </div>
+
+      <!-- بنر سپاسگزاری و معرفی توسعه‌دهنده -->
+      <div class="author-banner">
+        <div class="author-info">
+          <h3>توسعه‌یافته برای آکادمی دکتر فروتن کیا</h3>
+          <p>این سامانه حاصل همکاری هنرمندانه میان متدهای مشاوره تحصیلی دکتر شهروز فروتن کیا و طراحی نرم‌افزاری محمد شکیبا (Mohammad Shakiba) است تا استانداردی نوین در برنامه‌ریزی کنکور خلق شود.</p>
+        </div>
+        <div>
+          <a href="https://github.com/esayest/study-planner" class="btn btn-outline" target="_blank">
+            <svg class="btn-icon" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+            مشاهده در گیت‌هاب (@esayest)
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- فوتر (Footer) -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <img src="assets/Study Planner App Icon.png" alt="App Icon" style="width: 38px; height: 38px; border-radius: 8px;">
+            <h4 style="font-size: 1.2rem; font-weight: 800; color: #fff;">Study Planner</h4>
+          </div>
+          <p>
+            سامانه هوشمند طراحی و صدور دفترچه‌های اختصاصی برنامه‌ریزی تحصیلی برای مشاوران نخبه و دانش‌آموزان کوشای آکادمی دکتر فروتن کیا.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h5>دسترسی سریع</h5>
+          <ul class="footer-links">
+            <li><a href="#features" class="footer-link">امکانات سامانه</a></li>
+            <li><a href="#showcase" class="footer-link">پیش‌نمایش دفترچه</a></li>
+            <li><a href="#downloads" class="footer-link">مرکز دانلود</a></li>
+            <li><a href="app/index.html" class="footer-link" target="_blank">نسخه آنلاین (وب)</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>دریافت نرم‌افزار</h5>
+          <ul class="footer-links">
+            <li><a href="https://github.com/esayest/study-planner/releases/latest" class="footer-link" target="_blank">نسخه ویندوز (.exe)</a></li>
+            <li><a href="https://github.com/esayest/study-planner/releases/latest" class="footer-link" target="_blank">نسخه اندروید (.apk)</a></li>
+            <li><a href="https://github.com/esayest/study-planner/releases" class="footer-link" target="_blank">تمام انتشارات (Releases)</a></li>
+            <li><a href="https://github.com/esayest/study-planner" class="footer-link" target="_blank">کدهای منبع (Source Code)</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h5>پشتیبانی و توسعه</h5>
+          <ul class="footer-links">
+            <li><a href="https://github.com/esayest" class="footer-link" target="_blank">گیت‌هاب محمد شکیبا</a></li>
+            <li><a href="https://github.com/esayest/study-planner/issues" class="footer-link" target="_blank">گزارش مشکل یا پیشنهاد</a></li>
+            <li><a href="https://github.com/esayest/study-planner/blob/main/LICENSE" class="footer-link" target="_blank">مجوز متن‌باز (MIT)</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div>
+          © <span id="current-year">2026</span> سامانه هوشمند برنامه‌ریزی تحصیلی • طراحی و توسعه توسط <strong>محمد شکیبا (Mohammad Shakiba)</strong>
+        </div>
+        <div>
+          آکادمی مشاوره کنکور دکتر فروتن کیا • تمامی حقوق محفوظ است
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- اسکریپت وب‌سایت -->
+  <script src="js/landing.js"></script>
+</body>
+</html>

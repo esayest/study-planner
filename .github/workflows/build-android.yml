@@ -9,6 +9,7 @@ on:
       - 'README.md'
       - 'AUTHOR.md'
       - 'LICENSE'
+      - 'docs/**'
 
 jobs:
   build-apk:

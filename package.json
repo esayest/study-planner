@@ -4,13 +4,15 @@
   "description": "سامانه هوشمند طراحی و صدور دفترچه برنامه‌ریزی تحصیلی ویژه آکادمی دکتر فروتن کیا",
   "type": "module",
   "scripts": {
-    "build": "node copy-dist.cjs",
+    "build": "node copy-dist.cjs && node build-website.cjs",
     "start": "npx serve . -l 3000",
     "dev": "npx serve . -l 3000",
     "serve": "npx serve .",
     "tauri": "tauri",
     "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "tauri:build": "tauri build",
+    "build:website": "node build-website.cjs",
+    "website": "npx serve docs -l 4000"
   },
   "keywords": [
     "study-planner",

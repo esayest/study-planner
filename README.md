@@ -1,7 +1,9 @@
 # سامانه هوشمند برنامه‌ریزی تحصیلی آکادمی دکتر فروتن کیا
-### Study Planner — نسخه 1.0.0
+### Study Planner — نسخه 1.0.1
 
 [![Release](https://img.shields.io/github/v/release/esayest/study-planner?color=blue&label=Release)](https://github.com/esayest/study-planner/releases)
+[![Website](https://img.shields.io/badge/Website-Official%20Portal-2563eb)](https://esayest.github.io/study-planner/)
+[![Live App](https://img.shields.io/badge/Web%20App-Online%20Demo-10b981)](https://esayest.github.io/study-planner/app/)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Android%20%7C%20Web-brightgreen)](https://github.com/esayest/study-planner/releases)
 [![Tauri](https://img.shields.io/badge/Powered%20by-Tauri%20v2-orange)](https://tauri.app/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -19,7 +21,8 @@
 | **Windows** | `.exe` (NSIS Installer) | فایل نصبی استاندارد ویندوز با قابلیت ایجاد میانبر در دسکتاپ و منوی استارت |
 | **Windows** | `.msi` (MSI Package) | پکیج استاندارد Windows Installer مناسب برای شبکه‌ها و سیستم‌های اداری |
 | **Android** | `.apk` (Universal) | فایل نصبی سازگار با تمام گوشی‌ها و تبلت‌های اندرویدی (ARM64, ARMv7, x86) |
-| **Web Browser** | مرورگر وب | باز کردن مستقیم فایل `index.html` در مرورگرهای مدرن بدون نیاز به نصب |
+| **Web Browser** | مرورگر وب | [اجرای آنلاین](https://esayest.github.io/study-planner/app/) در مرورگرهای مدرن یا باز کردن `index.html` |
+| **Official Website** | وب‌سایت رسمی | [مشاهده وب‌سایت و پرتال معرفی](https://esayest.github.io/study-planner/) |
 
 ---
 
@@ -70,12 +73,15 @@
 - **Node.js** (نسخه 18 یا بالاتر)
 - **Rust** (در صورت کامپایل محلی کلاینت نیتیو)
 
-### اجرای نسخه وب:
+### اجرای وب‌سایت و پرتال معرفی:
 ```bash
-# نصب وابستگی‌ها
-npm install
+# اجرای وب‌سایت معرفی نرم‌افزار روی پورت ۴۰۰۰
+npm run website
+```
 
-# اجرای سرور محلی
+### اجرای نسخه تحت وب سامانه:
+```bash
+# اجرای سرور محلی نرم‌افزار روی پورت ۳۰۰۰
 npm start
 ```
 
