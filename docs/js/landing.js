@@ -5,21 +5,21 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // --- 1. تعویض تب‌های پیش‌نمایش دفترچه ---
-  const tabButtons = document.querySelectorAll('.tab-btn');
-  const tabContents = document.querySelectorAll('.tab-content');
+  // --- 1. تعویض تب‌های بازرسی برگه نمونه A4 ---
+  const specimenTabs = document.querySelectorAll('.specimen-tab, .tab-btn');
+  const specimenPanes = document.querySelectorAll('.pane-item, .tab-content');
 
-  tabButtons.forEach(btn => {
+  specimenTabs.forEach(btn => {
     btn.addEventListener('click', () => {
-      const targetTab = btn.getAttribute('data-tab');
+      const targetId = btn.getAttribute('data-pane') || btn.getAttribute('data-tab');
 
-      tabButtons.forEach(b => b.classList.remove('active'));
-      tabContents.forEach(c => c.classList.remove('active'));
+      specimenTabs.forEach(b => b.classList.remove('active'));
+      specimenPanes.forEach(p => p.classList.remove('active'));
 
       btn.classList.add('active');
-      const targetContent = document.getElementById(targetTab);
-      if (targetContent) {
-        targetContent.classList.add('active');
+      const targetPane = document.getElementById(targetId);
+      if (targetPane) {
+        targetPane.classList.add('active');
       }
     });
   });
@@ -29,10 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   faqItems.forEach(item => {
     const questionBtn = item.querySelector('.faq-question');
+    if (!questionBtn) return;
     questionBtn.addEventListener('click', () => {
       const isOpen = item.classList.contains('open');
 
-      // بستن سایر سوالات برای نظم بیشتر
+      // بستن سایر سوالات برای انضباط بصری
       faqItems.forEach(otherItem => {
         if (otherItem !== item) {
           otherItem.classList.remove('open');
@@ -56,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
       navLinks.classList.toggle('mobile-open');
     });
 
-    // بستن منو با کلیک روی هر لینک
     navLinks.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         navLinks.classList.remove('mobile-open');
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 4. اسکرول نرم برای لینک‌های داخلی ---
+  // --- 4. اسکرول نرم برای پیوندهای داخلی ---
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       const href = this.getAttribute('href');
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // --- 5. به‌روزرسانی سال در فوتر ---
+  // --- 5. درج سال معتبر در فوتر ---
   const yearEl = document.getElementById('current-year');
   if (yearEl) {
     yearEl.textContent = new Date().getFullYear();
