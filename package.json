@@ -4,10 +4,9 @@
   "description": "سامانه هوشمند طراحی و صدور دفترچه برنامه‌ریزی تحصیلی ویژه آکادمی دکتر فروتن کیا",
   "type": "module",
   "scripts": {
-    "start": "npx serve docs -l 3000",
-    "dev": "npx serve docs -l 3000",
-    "serve": "npx serve docs",
-    "build": "node build-website.cjs"
+    "start": "npx serve . -l 3000",
+    "dev": "npx serve . -l 3000",
+    "serve": "npx serve ."
   },
   "keywords": [
     "study-planner",
