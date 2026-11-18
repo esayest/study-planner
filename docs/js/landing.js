@@ -1,6 +1,6 @@
 /**
  * سامانه هوشمند برنامه‌ریزی تحصیلی آکادمی دکتر فروتن کیا
- * اسکریپت تعاملی صفحه وب‌سایت و پرتال دانلود
+ * اسکریپت تعاملی وب‌سایت رسمی
  * پدیدآورنده: محمد شکیبا (Mohammad Shakiba)
  */
 
@@ -64,21 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 4. تشخیص خودکار سیستم‌عامل کاربر (OS Detection) ---
-  const userAgent = navigator.userAgent.toLowerCase();
-  const winBtn = document.getElementById('hero-download-win');
-  const androidBtn = document.getElementById('hero-download-android');
-
-  if (/android/.test(userAgent)) {
-    if (androidBtn && winBtn) {
-      androidBtn.classList.remove('btn-outline');
-      androidBtn.classList.add('btn-emerald');
-      winBtn.classList.remove('btn-primary');
-      winBtn.classList.add('btn-outline');
-    }
-  }
-
-  // --- 5. اسکرول نرم برای لینک‌های داخلی ---
+  // --- 4. اسکرول نرم برای لینک‌های داخلی ---
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       const href = this.getAttribute('href');
@@ -95,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // --- 6. به‌روزرسانی سال در فوتر ---
+  // --- 5. به‌روزرسانی سال در فوتر ---
   const yearEl = document.getElementById('current-year');
   if (yearEl) {
     yearEl.textContent = new Date().getFullYear();

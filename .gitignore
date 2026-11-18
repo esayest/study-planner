@@ -5,14 +5,13 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json.bak
 
-# Tauri & Rust Build Artifacts
-src-tauri/target/
-src-tauri/gen/
-
-# Auto-Generated Web Distribution
+# Legacy / Unused artifacts
+src-tauri/
 dist/
 apk/
 *.apk
+*.msi
+*.exe
 
 # Operating System Files
 Thumbs.db
