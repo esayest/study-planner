@@ -2086,12 +2086,321 @@ body.is-printing #pdf-pages-wrapper {
     return block;
   }
 
-  // ==========================================
+    // ==========================================
   // مدیریت نسخه‌های ساختار داده (Schema Versioning & Migration)
   // ==========================================
   const isPlainObject = (v) => Boolean(v && typeof v === 'object' && !Array.isArray(v));
   const hasProgressData = (entry) =>
     isPlainObject(entry) && ['status', 'r1', 'r2', 'r3'].some(k => String(entry[k] ?? '').trim() !== '');
+
+  // نرمال‌سازی حروف فارسی و عربی (تبدیل ي و ك و حذف فواصل نامرئی)
+  function normalizePersianText(str) {
+    if (typeof str !== 'string') return '';
+    return str
+      .replace(/\u064A/g, '\u06CC') // ي -> ی
+      .replace(/\u0643/g, '\u06A9') // ك -> ک
+      .replace(/[\u200C\u200B\uFEFF]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  // استخراج خودکار و جامع فیلدهای مشخصات دانش‌آموز از نسخه‌های قدیمی و مترادف‌های فارسی و انگلیسی
+  function normalizeLegacyStudent(src) {
+    if (!src || typeof src !== 'object') return {};
+    const s = { ...src };
+
+    // ۱. نام و نام خانوادگی
+    const rawFullName = s.fullName || s.full_name || s.name || s.studentName || s.student_name ||
+      s['نام_کامل'] || s['نام کامل'] || s['نام_و_نام_خانوادگی'] || s['نام و نام خانوادگی'] ||
+      s['نام_دانش_آموز'] || s['نام دانش آموز'] || s['دانش‌آموز'] || s['دانش آموز'] || '';
+
+    const rawFirstName = s.firstName || s.first_name || s.fname || s['نام_کوچک'] || s['نام کوچک'] || s['نام'] || '';
+    const rawLastName = s.lastName || s.last_name || s.family || s.familyName || s.family_name || s.lname ||
+      s['نام_خانوادگی'] || s['نام خانوادگی'] || s['فامیلی'] || '';
+
+    let fullName = String(rawFullName || '').trim();
+    let firstName = String(rawFirstName || '').trim();
+    let lastName = String(rawLastName || '').trim();
+
+    if (!fullName && (firstName || lastName)) {
+      fullName = `${firstName} ${lastName}`.trim();
+    } else if (fullName && (!firstName && !lastName)) {
+      const parts = fullName.split(/\s+/);
+      firstName = parts[0] || '';
+      lastName = parts.slice(1).join(' ') || '';
+    }
+
+    // ۲. نام مدرسه
+    const schoolName = String(
+      s.schoolName || s.school_name || s.school || s.schoolTitle || s.school_title ||
+      s['مدرسه'] || s['نام_مدرسه'] || s['نام مدرسه'] || s['دبیرستان'] || ''
+    ).trim();
+
+    // ۳. رشته تحصیلی
+    let fieldOfStudy = String(
+      s.fieldOfStudy || s.field_of_study || s.field || s.major || s.studyField || s.study_field || s.branch || s.reshteh ||
+      s['رشته'] || s['رشته_تحصیلی'] || s['رشته تحصیلی'] || ''
+    ).trim();
+
+    if (fieldOfStudy) {
+      if (/تجربی/i.test(fieldOfStudy) && !/علوم/i.test(fieldOfStudy)) fieldOfStudy = 'علوم تجربی';
+      else if (/ریاضی/i.test(fieldOfStudy) && !/علوم/i.test(fieldOfStudy)) fieldOfStudy = 'علوم ریاضی و فنی';
+      else if (/انسانی/i.test(fieldOfStudy) && !/ادبیات/i.test(fieldOfStudy)) fieldOfStudy = 'ادبیات و علوم انسانی';
+      else if (/فرهنگیان|تربیت\s*معلم/i.test(fieldOfStudy) && !/دانشگاه/i.test(fieldOfStudy)) fieldOfStudy = 'دانشگاه فرهنگیان (تربیت معلم)';
+    } else {
+      fieldOfStudy = 'علوم تجربی';
+    }
+
+    // ۴. مشاور و مشاور ناظر (با مقادیر پیش‌فرض سازمانی در صورت عدم وجود)
+    const counselorName = String(
+      s.counselorName || s.counselor_name || s.counselor || s.advisor || s.consultant || s.moshaver ||
+      s['مشاور'] || s['نام_مشاور'] || s['نام مشاور'] || s['مشاور_تحصیلی'] || 'دکتر فروتن کیا'
+    ).trim() || 'دکتر فروتن کیا';
+
+    const supervisorCounselor = String(
+      s.supervisorCounselor || s.supervisor_counselor || s.supervisor || s.mentor || s.nazer ||
+      s['مشاور_ناظر'] || s['مشاور ناظر'] || s['ناظر'] || s['سرپرست'] || 'دکتر شهروز فروتن کیا'
+    ).trim() || 'دکتر شهروز فروتن کیا';
+
+    // ۵. تلفن همراه
+    const phone = String(
+      s.phone || s.phone_number || s.phoneNumber || s.mobile || s.mobileNumber || s.mobile_number ||
+      s.tel || s.cell || s.contact || s['تلفن'] || s['شماره_تماس'] || s['شماره تماس'] || s['موبایل'] ||
+      s['شماره_موبایل'] || s['شماره همراه'] || ''
+    ).trim();
+
+    // ۶. آزمون آزمایشی
+    const exams = String(
+      s.exams || s.exam || s.targetExam || s.target_exam || s.tests || s.azmoon ||
+      s['آزمون'] || s['نام_آزمون'] || s['آزمون_هدف'] || s['آزمون آزمایشی'] || 'قلم‌چی و ماز'
+    ).trim() || 'قلم‌چی و ماز';
+
+    // ۷. هفته مطالعاتی
+    let weeksPassed = String(
+      s.weeksPassed || s.weeks_passed || s.week || s.weekNumber || s.week_number || s.currentWeek || s.current_week ||
+      s['هفته'] || s['هفته_مطالعاتی'] || s['هفته مطالعاتی'] || s['شماره_هفته'] || '1'
+    ).trim() || '1';
+
+    // ۸. بازه زمانی برنامه
+    const timeframe = String(
+      s.timeframe || s.time_frame || s.dateRange || s.date_range || s.period || s.dates || s.date || s.baze ||
+      s['بازه'] || s['بازه_زمانی'] || s['بازه زمانی'] || s['تاریخ'] || s['تاریخ_برنامه'] || ''
+    ).trim();
+
+    // ۹. یادداشت‌ها و استراتژی مشاور
+    const extraNotes = String(
+      s.extraNotes || s.extra_notes || s.notes || s.description || s.strategy || s.advice ||
+      s.counselorNotes || s.counselor_notes || s.comments || s['توضیحات'] || s['یادداشت'] ||
+      s['استراتژی'] || s['نکات_مشاور'] || s['نکات مهم'] || ''
+    ).trim();
+
+    return {
+      fullName,
+      firstName,
+      lastName,
+      schoolName,
+      fieldOfStudy,
+      counselorName,
+      supervisorCounselor,
+      phone,
+      exams,
+      weeksPassed,
+      timeframe,
+      extraNotes,
+    };
+  }
+
+  // سازگاری کامل جدول برنامه‌ریزی هفتگی با فرمت‌های قدیمی
+  function normalizeLegacyPlanner(rawPlanner, defaults) {
+    if (!rawPlanner || typeof rawPlanner !== 'object') {
+      return defaults.planner;
+    }
+    const p = { ...rawPlanner };
+
+    let rawBlocks = p.blocks || p.schedule || p.rows || p.table || p.plan || [];
+
+    // اگر جدول به صورت ستونی ذخیره شده باشد (مثلا { sat: [...], sun: [...] })
+    if (!Array.isArray(rawBlocks) && typeof rawBlocks === 'object' && rawBlocks !== null) {
+      const dayKeys = ALL_PLANNER_DAY_KEYS;
+      const maxLen = Math.max(...dayKeys.map(k => Array.isArray(rawBlocks[k]) ? rawBlocks[k].length : 0), 0);
+      if (maxLen > 0) {
+        const transposed = [];
+        for (let r = 0; r < maxLen; r++) {
+          const row = {};
+          dayKeys.forEach(k => {
+            row[k] = (Array.isArray(rawBlocks[k]) && rawBlocks[k][r]) ? rawBlocks[k][r] : { topic: '', tests: '' };
+          });
+          transposed.push(row);
+        }
+        rawBlocks = transposed;
+      }
+    }
+
+    if ((!Array.isArray(rawBlocks) || rawBlocks.length === 0) && isPlainObject(p.days)) {
+      const dayKeys = ALL_PLANNER_DAY_KEYS;
+      const maxLen = Math.max(...dayKeys.map(k => Array.isArray(p.days[k]) ? p.days[k].length : 0), 0);
+      if (maxLen > 0) {
+        const transposed = [];
+        for (let r = 0; r < maxLen; r++) {
+          const row = {};
+          dayKeys.forEach(k => {
+            row[k] = (Array.isArray(p.days[k]) && p.days[k][r]) ? p.days[k][r] : { topic: '', tests: '' };
+          });
+          transposed.push(row);
+        }
+        rawBlocks = transposed;
+      }
+    }
+
+    const cleanBlocks = (Array.isArray(rawBlocks) && rawBlocks.length > 0 ? rawBlocks : defaults.planner.blocks).map(b => {
+      const row = {};
+      ALL_PLANNER_DAY_KEYS.forEach(day => {
+        const val = b ? b[day] : null;
+        if (typeof val === 'string') {
+          const str = val.trim();
+          const testMatch = str.match(/([0-9۰-۹\u06F0-\u06F9\u0660-\u0669]+\s*تست|تست\s*[0-9۰-۹\u06F0-\u06F9\u0660-\u0669]+)/);
+          if (testMatch) {
+            row[day] = {
+              topic: str.replace(testMatch[0], '').replace(/[-–—,،]/g, '').trim(),
+              tests: testMatch[0].trim()
+            };
+          } else {
+            row[day] = { topic: str, tests: '' };
+          }
+        } else if (val && typeof val === 'object') {
+          const topic = val.topic ?? val.lesson ?? val.subject ?? val.title ?? val.name ?? val.dars ?? val.mabhas ?? '';
+          const tests = val.tests ?? val.count ?? val.test ?? val.testCount ?? val.test_count ?? val.tedad ?? '';
+          row[day] = {
+            topic: String(topic ?? '').slice(0, 500),
+            tests: String(tests ?? '').slice(0, 200),
+          };
+        } else {
+          row[day] = { topic: '', tests: '' };
+        }
+      });
+      return row;
+    });
+
+    let startDay = String(p.startDay || p.start_day || p.firstDay || 'sat').toLowerCase().trim();
+    const dayMap = {
+      'شنبه': 'sat', 'saturday': 'sat', '0': 'sat',
+      'یکشنبه': 'sun', 'sunday': 'sun', '1': 'sun',
+      'دوشنبه': 'mon', 'monday': 'mon', '2': 'mon',
+      'سه‌شنبه': 'tue', 'سه شنبه': 'tue', 'tuesday': 'tue', '3': 'tue',
+      'چهارشنبه': 'wed', 'wednesday': 'wed', '4': 'wed',
+      'پنج‌شنبه': 'thu', 'پنج شنبه': 'thu', 'thursday': 'thu', '5': 'thu',
+      'جمعه': 'fri', 'friday': 'fri', '6': 'fri',
+    };
+    if (dayMap[startDay]) startDay = dayMap[startDay];
+    if (!ALL_PLANNER_DAY_KEYS.includes(startDay)) startDay = 'sat';
+
+    const dayCount = Math.max(2, Math.min(14, parseInt(p.dayCount || p.day_count || p.daysCount || p.totalDays, 10) || 7));
+    const rowCount = Math.max(3, Math.min(9, parseInt(p.rowCount || p.row_count || p.partCount || cleanBlocks.length, 10) || 6));
+    const hasNightRoutine = Boolean(p.hasNightRoutine ?? p.nightRoutine ?? p.routine ?? false);
+
+    while (cleanBlocks.length < rowCount) {
+      cleanBlocks.push(createEmptyBlock());
+    }
+    while (cleanBlocks.length > rowCount) {
+      cleanBlocks.pop();
+    }
+
+    return {
+      startDay,
+      dayCount,
+      rowCount,
+      hasNightRoutine,
+      blocks: cleanBlocks,
+    };
+  }
+
+  // سازگاری کامل بخش منابع و کتب گزارش
+  function normalizeLegacyReport(rawReport, defaults) {
+    const r = (rawReport && typeof rawReport === 'object') ? { ...rawReport } : {};
+    let books = r.books || r.resources || r.sources || r.readingList || defaults.report.books;
+
+    if (Array.isArray(books)) {
+      books = books.map((b, idx) => {
+        if (typeof b === 'string') {
+          return {
+            id: `book_${idx + 1}`,
+            name: b.trim(),
+            topicsCovered: '',
+            notes: ''
+          };
+        }
+        if (b && typeof b === 'object') {
+          return {
+            id: String(b.id || `book_${idx + 1}`).trim(),
+            name: String(b.name ?? b.title ?? b.bookName ?? b.subject ?? b.ketab ?? '').slice(0, 200),
+            topicsCovered: String(b.topicsCovered ?? b.topics ?? b.chapters ?? b.mabahes ?? '').slice(0, 1000),
+            notes: String(b.notes ?? b.description ?? b.desc ?? b.tozihat ?? '').slice(0, 500),
+          };
+        }
+        return { id: `book_${idx + 1}`, name: '', topicsCovered: '', notes: '' };
+      });
+    } else {
+      books = defaults.report.books;
+    }
+
+    delete r.bannerText;
+    delete r.counselorOverallAnalysis;
+    delete r.prioritiesForNextCycle;
+
+    return {
+      books,
+      humanitiesProgress: isPlainObject(r.humanitiesProgress) ? r.humanitiesProgress : defaults.report.humanitiesProgress,
+    };
+  }
+
+  // استخراج ساختار داده از انواع فایل‌های ورودی (آرایه، ریشه تک‌نفره، کپسوله‌شده)
+  function extractImportPayload(data) {
+    if (!data) return {};
+    if (Array.isArray(data)) {
+      data = data.find(item => isPlainObject(item)) || {};
+    }
+    if (!isPlainObject(data)) return {};
+
+    const wrapper = data.studentInfo || data.student_info || data.profile || data.data || data.studentData;
+    if (isPlainObject(wrapper) && !data.student) {
+      data = { ...data, student: wrapper };
+    }
+
+    const hasRootStudentFields = Boolean(
+      data.fullName || data.full_name || data.name || data.studentName || data.student_name ||
+      data.firstName || data.first_name || data.lastName || data.last_name ||
+      data.schoolName || data.school || data.fieldOfStudy || data.field || data.major ||
+      data.phone || data.counselorName || data.counselor || data.supervisorCounselor || data.supervisor ||
+      data['نام'] || data['نام خانوادگی'] || data['نام و نام خانوادگی'] || data['رشته'] || data['مدرسه']
+    );
+
+    if (hasRootStudentFields && !data.student) {
+      data = {
+        ...data,
+        student: { ...data }
+      };
+    }
+
+    if ((data.books || data.resources || data.sources) && (!data.report || !data.report.books)) {
+      data.report = {
+        ...(isPlainObject(data.report) ? data.report : {}),
+        books: data.books || data.resources || data.sources
+      };
+    }
+
+    if ((data.blocks || data.schedule || data.rows || data.table) && (!data.planner || !data.planner.blocks)) {
+      data.planner = {
+        ...(isPlainObject(data.planner) ? data.planner : {}),
+        blocks: data.blocks || data.schedule || data.rows || data.table,
+        startDay: data.startDay || data.start_day,
+        dayCount: data.dayCount || data.day_count,
+        rowCount: data.rowCount || data.row_count,
+        hasNightRoutine: data.hasNightRoutine ?? data.nightRoutine,
+      };
+    }
+
+    return data;
+  }
 
   const CURRENT_SCHEMA_VERSION = 1;
 
@@ -2926,108 +3235,49 @@ body.is-printing #pdf-pages-wrapper {
 
   function normalizeState(raw) {
     const defaults = getInitialState();
-    if (!isPlainObject(raw)) {
+    if (!raw || typeof raw !== 'object') {
       return defaults;
     }
 
-    const migrated = migrateState(raw);
+    const payload = extractImportPayload(raw);
+    const migrated = migrateState(payload);
 
-    const normalized = {
-      meta: {
-        ...defaults.meta,
-        ...(isPlainObject(migrated.meta) ? migrated.meta : {}),
-        schemaVersion: CURRENT_SCHEMA_VERSION,
-      },
-      student: {
-        ...defaults.student,
-        ...(isPlainObject(migrated.student) ? migrated.student : {}),
-      },
-      planner: {
-        ...defaults.planner,
-        ...(isPlainObject(migrated.planner) ? migrated.planner : {}),
-      },
-      report: {
-        ...defaults.report,
-        ...(isPlainObject(migrated.report) ? migrated.report : {}),
-      },
+    // ۱. مشخصات دانش‌آموز (با نگاشت جامع و استخراج نام‌ها و مترادف‌های قدیمی)
+    const rawStudent = isPlainObject(migrated.student)
+      ? migrated.student
+      : (isPlainObject(payload.student) ? payload.student : {});
+    const legacyStudent = normalizeLegacyStudent(rawStudent);
+    const student = {
+      ...defaults.student,
+      ...legacyStudent,
     };
 
-    if (isPlainObject(normalized.report)) {
-      delete normalized.report.bannerText;
-      delete normalized.report.counselorOverallAnalysis;
-      delete normalized.report.prioritiesForNextCycle;
+    if (isPlainObject(student)) {
+      student.fullName = String(student.fullName ?? '').slice(0, 100);
+      student.firstName = String(student.firstName ?? '').slice(0, 50);
+      student.lastName = String(student.lastName ?? '').slice(0, 50);
+      student.schoolName = String(student.schoolName ?? '').slice(0, 100);
+      student.counselorName = String(student.counselorName ?? '').slice(0, 100);
+      student.supervisorCounselor = String(student.supervisorCounselor ?? '').slice(0, 100);
+      student.fieldOfStudy = String(student.fieldOfStudy ?? '').slice(0, 100);
+      student.phone = String(student.phone ?? '').slice(0, 30);
+      student.timeframe = String(student.timeframe ?? '').slice(0, 100);
+      student.exams = String(student.exams ?? '').slice(0, 100);
+      student.weeksPassed = String(student.weeksPassed ?? '').slice(0, 50);
+      student.extraNotes = String(student.extraNotes ?? '').slice(0, 15000);
     }
 
-    normalized.meta.theme = (isPlainObject(migrated.meta) && migrated.meta.theme === 'pink') ? 'pink' : 'navy';
-    normalized.meta.schemaVersion = CURRENT_SCHEMA_VERSION;
+    // ۲. جدول برنامه‌ریزی هفتگی (با پشتیبانی از نگاشت جدول، روزها و متون قدیمی)
+    const rawPlanner = isPlainObject(migrated.planner)
+      ? migrated.planner
+      : (isPlainObject(payload.planner) ? payload.planner : {});
+    const planner = normalizeLegacyPlanner(rawPlanner, defaults);
 
-    if (!normalized.student.fullName) {
-      normalized.student.fullName = getStudentFullName(normalized.student);
-    }
-    if (normalized.student.fullName && (!normalized.student.firstName && !normalized.student.lastName)) {
-      const parts = normalized.student.fullName.trim().split(/\s+/);
-      normalized.student.firstName = parts[0] || '';
-      normalized.student.lastName = parts.slice(1).join(' ') || '';
-    }
-
-    if (isPlainObject(normalized.student)) {
-      const s = normalized.student;
-      s.fullName = String(s.fullName ?? '').slice(0, 100);
-      s.firstName = String(s.firstName ?? '').slice(0, 50);
-      s.lastName = String(s.lastName ?? '').slice(0, 50);
-      s.schoolName = String(s.schoolName ?? '').slice(0, 100);
-      s.counselorName = String(s.counselorName ?? '').slice(0, 100);
-      s.supervisorCounselor = String(s.supervisorCounselor ?? '').slice(0, 100);
-      s.fieldOfStudy = String(s.fieldOfStudy ?? '').slice(0, 100);
-      s.phone = String(s.phone ?? '').slice(0, 30);
-      s.timeframe = String(s.timeframe ?? '').slice(0, 100);
-      s.exams = String(s.exams ?? '').slice(0, 100);
-      s.weeksPassed = String(s.weeksPassed ?? '').slice(0, 50);
-      s.extraNotes = String(s.extraNotes ?? '').slice(0, 15000);
-    }
-
-    if (!normalized.planner.startDay) {
-      normalized.planner.startDay = 'sat';
-    }
-    if (normalized.planner.dayCount === undefined || !normalized.planner.dayCount) {
-      normalized.planner.dayCount = 7;
-    } else {
-      normalized.planner.dayCount = Math.max(2, Math.min(14, parseInt(normalized.planner.dayCount, 10) || 7));
-    }
-    if (normalized.planner.hasNightRoutine === undefined) {
-      normalized.planner.hasNightRoutine = false;
-    }
-
-    if (!Array.isArray(normalized.planner.blocks) || normalized.planner.blocks.length === 0) {
-      normalized.planner.blocks = defaults.planner.blocks;
-    } else {
-      normalized.planner.blocks = normalized.planner.blocks.map(block => {
-        const cleanBlock = {};
-        ALL_PLANNER_DAY_KEYS.forEach(day => {
-          cleanBlock[day] = {
-            topic: (block && block[day] && block[day].topic !== undefined && block[day].topic !== null) ? String(block[day].topic).slice(0, 500) : '',
-            tests: (block && block[day] && block[day].tests !== undefined && block[day].tests !== null) ? String(block[day].tests).slice(0, 200) : '',
-          };
-        });
-        return cleanBlock;
-      });
-    }
-
-    const targetRowCount = Math.max(
-      3,
-      Math.min(
-        9,
-        parseInt(raw.planner && raw.planner.rowCount, 10) || normalized.planner.blocks.length || 6
-      )
-    );
-    normalized.planner.rowCount = targetRowCount;
-
-    while (normalized.planner.blocks.length < targetRowCount) {
-      normalized.planner.blocks.push(createEmptyBlock());
-    }
-    while (normalized.planner.blocks.length > targetRowCount) {
-      normalized.planner.blocks.pop();
-    }
+    // ۳. گزارش منابع و مباحث (با پشتیبانی از فیلدهای قدیمی کتاب‌ها)
+    const rawReport = isPlainObject(migrated.report)
+      ? migrated.report
+      : (isPlainObject(payload.report) ? payload.report : {});
+    const report = normalizeLegacyReport(rawReport, defaults);
 
     const seenBookIds = new Set();
     const normalizeBook = (b) => {
@@ -3046,63 +3296,54 @@ body.is-printing #pdf-pages-wrapper {
       };
     };
 
-    if (!Array.isArray(normalized.report.books) || normalized.report.books.length === 0) {
-      normalized.report.books = defaults.report.books.map(normalizeBook);
+    if (!Array.isArray(report.books) || report.books.length === 0) {
+      report.books = defaults.report.books.map(normalizeBook);
     } else {
-      normalized.report.books = normalized.report.books.slice(0, MAX_REPORT_BOOKS).map(normalizeBook);
+      report.books = report.books.slice(0, MAX_REPORT_BOOKS).map(normalizeBook);
     }
 
     const defaultHum = getInitialHumanitiesProgress();
-    if (!isPlainObject(normalized.report.humanitiesProgress)) {
-      normalized.report.humanitiesProgress = defaultHum;
+    if (!isPlainObject(report.humanitiesProgress)) {
+      report.humanitiesProgress = defaultHum;
     } else {
       ['grade10', 'grade11', 'grade12', 'farhangian'].forEach(gradeKey => {
-        const gradeObj = normalized.report.humanitiesProgress[gradeKey];
+        const gradeObj = report.humanitiesProgress[gradeKey];
         if (!isPlainObject(gradeObj)) {
-          normalized.report.humanitiesProgress[gradeKey] = defaultHum[gradeKey] || {};
+          report.humanitiesProgress[gradeKey] = defaultHum[gradeKey] || {};
         } else {
-          const cleanGrade = {};
           const subjects = HUMANITIES_SUBJECTS[gradeKey] || [];
           subjects.forEach(subj => {
-            const baseName = subj.name.replace(/\s*(?:۱۰|۱۱|۱۲|دهم|یازدهم|دوازدهم)\s*$/, '');
-            const trimmedKeys = Object.keys(gradeObj);
-
-            const candidateKeys = [
-              subj.id,
-              subj.name,
-              subj.name + ' ',
-              baseName,
-              baseName ? baseName + ' ' : null,
-            ];
-            trimmedKeys.forEach(k => {
-              if (k.trim() === subj.name || k.trim() === subj.id || (baseName && k.trim() === baseName)) {
-                if (!candidateKeys.includes(k)) {
-                  candidateKeys.push(k);
-                }
-              }
-            });
-
-            const candidates = candidateKeys
-              .filter(Boolean)
-              .map(k => gradeObj[k])
-              .filter(isPlainObject);
-
-            const chosen = candidates.find(c => hasProgressData(c)) || candidates[0] || {};
-
-            cleanGrade[subj.id] = {
-              status: (chosen.status !== undefined && chosen.status !== null) ? String(chosen.status).slice(0, 200) : '',
-              r1: (chosen.r1 !== undefined && chosen.r1 !== null) ? String(chosen.r1).slice(0, 200) : '',
-              r2: (chosen.r2 !== undefined && chosen.r2 !== null) ? String(chosen.r2).slice(0, 200) : '',
-              r3: (chosen.r3 !== undefined && chosen.r3 !== null) ? String(chosen.r3).slice(0, 200) : '',
-            };
+            const entry = gradeObj[subj.id];
+            if (!isPlainObject(entry)) {
+              gradeObj[subj.id] = { status: '', r1: '', r2: '', r3: '' };
+            } else {
+              entry.status = (entry.status !== undefined && entry.status !== null) ? String(entry.status).slice(0, 50) : '';
+              entry.r1 = (entry.r1 !== undefined && entry.r1 !== null) ? String(entry.r1).slice(0, 50) : '';
+              entry.r2 = (entry.r2 !== undefined && entry.r2 !== null) ? String(entry.r2).slice(0, 50) : '';
+              entry.r3 = (entry.r3 !== undefined && entry.r3 !== null) ? String(entry.r3).slice(0, 50) : '';
+            }
           });
-          normalized.report.humanitiesProgress[gradeKey] = cleanGrade;
         }
       });
     }
 
-    resetStudentBudgets();
-    resetReportBudgets();
+    // ۴. متادیتا
+    const rawMeta = isPlainObject(migrated.meta) ? migrated.meta : (isPlainObject(payload.meta) ? payload.meta : {});
+    const academicYear = rawMeta.academicYear || payload.academicYear || payload['سال_تحصیلی'] || defaults.meta.academicYear;
+    const theme = (rawMeta.theme === 'pink' || payload.theme === 'pink') ? 'pink' : 'navy';
+
+    const normalized = {
+      meta: {
+        ...defaults.meta,
+        ...rawMeta,
+        academicYear: String(academicYear || defaults.meta.academicYear).trim(),
+        theme,
+        schemaVersion: CURRENT_SCHEMA_VERSION,
+      },
+      student,
+      planner,
+      report,
+    };
 
     return normalized;
   }
@@ -7732,15 +7973,37 @@ body.is-printing #pdf-pages-wrapper {
           throw new Error('ساختار فایل JSON معتبر نیست.');
         }
 
-        if (!data || typeof data !== 'object' || Array.isArray(data)) {
+                // پشتیبانی از فایل‌های حاوی آرایه (مانند خروجی لیست دانش‌آموزان)
+        if (Array.isArray(data)) {
+          data = data.find(item => item && typeof item === 'object') || null;
+        }
+
+        if (!data || typeof data !== 'object') {
           throw new Error('محتوای فایل JSON معتبر نیست.');
         }
+
+        // استخراج و کپسوله‌سازی هوشمند اطلاعات فرمت‌های قدیمی
+        data = extractImportPayload(data);
 
         // پالایش عمیق کلیدهای شیء برای تضمین امنیت کامل
         sanitizeObjectKeys(data);
 
-        if (!data.student && !data.planner && !data.report) {
-          throw new Error('فایل انتخاب‌شده حاوی اطلاعات برنامه مطالعاتی نیست.');
+        const hasAnyValidData = Boolean(
+          data.student || data.planner || data.report ||
+          data.fullName || data.firstName || data.lastName || data.name ||
+          data.schoolName || data.school || data.fieldOfStudy || data.field || data.major ||
+          data.phone || data.counselorName || data.counselor || data.supervisorCounselor || data.supervisor ||
+          data['نام'] || data['نام خانوادگی'] || data['نام و نام خانوادگی'] || data['رشته'] || data['مدرسه']
+        );
+
+        if (!hasAnyValidData) {
+          throw new Error('فایل انتخاب‌شده حاوی اطلاعات مشخصات دانش‌آموز یا برنامه مطالعاتی نیست.');
+        }
+
+        // اگر فایل ورودی فقط حاوی مشخصات دانش‌آموز بود و جدول برنامه نداشت،
+        // جدول برنامه فعلی کاربر روی صفحه حفظ شود تا پاک نشود
+        if (!data.planner && isPlainObject(appState.planner) && Array.isArray(appState.planner.blocks) && appState.planner.blocks.length > 0) {
+          data.planner = appState.planner;
         }
 
         cancelPendingSave();
