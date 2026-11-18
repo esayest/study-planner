@@ -3,49 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="پرتال رسمی سامانه هوشمند برنامه‌ریزی تحصیلی آکادمی دکتر فروتن کیا. موتور تخصصی طراحی و صدور دفترچه‌های ۴ صفحه‌ای کنکور در ابعاد استاندارد A4 چاپی.">
+  <meta name="description" content="سامانه هوشمند برنامه‌ریزی تحصیلی آکادمی دکتر شهروز فروتن کیا. موتور تخصصی طراحی، پایش و صدور دفترچه‌های ۴ صفحه‌ای کنکور سراسری با ابعاد استاندارد A4 افقی.">
   <meta name="author" content="Mohammad Shakiba">
-  <title>سامانه برنامه‌ریزی تحصیلی | آکادمی دکتر فروتن کیا</title>
+  <title>سامانه برنامه‌ریزی تحصیلی | آکادمی دکتر شهروز فروتن کیا</title>
 
   <!-- فاوآیکون -->
   <link rel="icon" type="image/png" href="assets/academy-logo-transparent.png">
 
-  <!-- استایل استودیویی -->
+  <!-- استایل مهندسی اختصاصی وب‌سایت -->
   <link rel="stylesheet" href="css/landing.css">
 </head>
 <body>
 
-  <!-- نوار ناوبری استودیویی -->
+  <!-- نوار ناوبری بالا (Sticky Header) -->
   <header class="navbar">
     <div class="container navbar-inner">
       <a href="#" class="nav-brand">
-        <img src="assets/Study Planner App Icon.png" alt="Study Planner Icon" class="nav-logo">
+        <img src="assets/Study Planner App Icon.png" alt="لوگوی سامانه برنامه‌ریزی" class="nav-logo">
         <div class="brand-text">
           <h1>Study Planner</h1>
           <span>آکادمی دکتر شهروز فروتن کیا</span>
         </div>
       </a>
 
-      <!-- ناوبری اصلی -->
+      <!-- پیوندهای ناوبری -->
       <nav>
         <ul class="nav-links">
-          <li><a href="#specimen" class="nav-link">برگه نمونه A4</a></li>
-          <li><a href="#architecture" class="nav-link">معماری سیستم</a></li>
+          <li><a href="#showcase" class="nav-link">پیش‌نمایش دفترچه A4</a></li>
+          <li><a href="#features" class="nav-link">ارکان مهندسی</a></li>
           <li><a href="#faq" class="nav-link">پرسش‌های متداول</a></li>
-          <li><a href="https://github.com/esayest/study-planner" class="nav-link" target="_blank">مخزن گیت‌هاب</a></li>
+          <li><a href="https://github.com/esayest/study-planner" class="nav-link" target="_blank" rel="noopener">مخزن گیت‌هاب</a></li>
         </ul>
       </nav>
 
-      <!-- دکمه ورود مستقیم به سامانه -->
+      <!-- اکشن‌های ناوبری -->
       <div class="nav-actions">
         <a href="app/index.html" class="btn btn-primary" target="_blank">
           <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
           </svg>
-          ورود به سامانه
+          ورود به سامانه آنلاین
         </a>
         <button class="menu-toggle" aria-label="منوی گزینه‌ها">
-          <svg width="22" height="22" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
           </svg>
         </button>
@@ -53,256 +53,386 @@
     </div>
   </header>
 
-  <!-- سربرگ ادیتوریال (Hero Masthead) -->
+  <!-- بخش هیرو اصلی (Hero Section) -->
   <section class="hero">
     <div class="container">
-      <div class="hero-meta-strip">
-        <span class="meta-pill meta-pill-gold">نسخه 1.0.1 • استودیو نشر تحصیلی</span>
-        <span class="meta-pill">ابعاد استاندارد: ۲۹۷mm × ۲۱۰mm چاپی</span>
-        <span class="meta-pill">۱۰۰٪ آفلاین و محلی</span>
+      <div class="hero-pill hero-pill-gold">
+        <span>نسخه رسمی 1.0.1 • استودیو نشر تحصیلی آکادمی</span>
       </div>
 
       <h2 class="hero-title">
-        مهندسی دقیق دفترچه برنامه‌ریزی تحصیلی کنکور
+        طراحی، مدیریت و صدور دفترچه برنامه‌ریزی کنکور با دقت میلی‌متری چاپ A4
       </h2>
 
       <p class="hero-lead">
-        موتور تخصصی طراحی، پایش و صدور دفترچه‌های ۴ صفحه‌ای برنامه‌ریزی هفتگی داوطلبان کنکور سراسری، آزمون دانشگاه فرهنگیان و امتحانات نهایی، بدون نیاز به نصب نرم‌افزار، با دقت میلی‌متری در پرینت و وفاداری به نسبت‌های استاندارد کاغذ A4 افقی.
+        موتور تخصصی تولید و پایش دفترچه‌های ۴ صفحه‌ای اختصاصی کنکور سراسری، آزمون دانشگاه فرهنگیان و امتحانات نهایی؛ اجرا ۱۰۰٪ در مرورگر، بدون نیاز به نصب نرم‌افزار، با چیدمان استاندارد ترنسپوز و وفاداری کامل به ابعاد ۲۹۷ در ۲۱۰ میلی‌متر کاغذ افقی.
       </p>
 
-      <div class="hero-cta-bar">
+      <div class="hero-actions">
         <a href="app/index.html" class="btn btn-primary btn-lg" target="_blank">
           <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
-          اجرای فوری در مرورگر (بدون نیاز به نصب)
+          ورود مستقیم به سامانه (بدون نیاز به ثبت‌نام)
         </a>
-        <a href="#specimen" class="btn btn-outline btn-lg">
-          بررسی ساختار برگه چاپی
+        <a href="#showcase" class="btn btn-outline btn-lg">
+          بررسی نمونه صفحات A4
         </a>
       </div>
 
       <!-- نوار مشخصات فنی -->
-      <div class="hero-spec-strip">
-        <div class="spec-cell">
-          <span class="spec-value">A4 Landscape</span>
-          <span class="spec-label">نسبت ابعادی ۲۹۷ در ۲۱۰ میلی‌متر</span>
+      <div class="hero-metrics">
+        <div class="metric-item">
+          <strong>A4 Landscape</strong>
+          <span>ابعاد دقیق ۲۹۷ × ۲۱۰ میلی‌متر چاپی</span>
         </div>
-        <div class="spec-cell">
-          <span class="spec-value">Transposed</span>
-          <span class="spec-label">جدول افقی با تفکیک سطر مبحث و تست</span>
+        <div class="metric-item">
+          <strong>Transposed Grid</strong>
+          <span>جدول افقی با تفکیک سطر مبحث و تست</span>
         </div>
-        <div class="spec-cell">
-          <span class="spec-value">Offline Vault</span>
-          <span class="spec-label">ذخیره‌سازی لوکال بدون وابستگی سرور</span>
+        <div class="metric-item">
+          <strong>Offline Vault</strong>
+          <span>اجرای ۱۰۰٪ محلی بدون ارسال داده به سرور</span>
         </div>
-        <div class="spec-cell">
-          <span class="spec-value">Dana & Peyda</span>
-          <span class="spec-label">تایپوگرافی اصیل با نسبت طلایی فارسی</span>
+        <div class="metric-item">
+          <strong>Dana & Peyda</strong>
+          <span>تایپوگرافی اصیل با هندسه حروف فارسی</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- بخش برگه نمونه و بازرسی ساختار (A4 Specimen Inspector) -->
-  <section id="specimen" class="section">
+  <!-- بخش ماکاپ زنده دسکتاپ و بازرس صفحات A4 (A4 Showcase) -->
+  <section id="showcase" class="showcase-section">
     <div class="container">
       <div class="section-head">
-        <div>
-          <span class="section-tag">PROPORTIONAL PROOF</span>
-          <h3 class="section-title">برگه نمونه و بازرسی ساختار صفحات</h3>
-        </div>
-        <p style="color: var(--ink-muted); font-size: 0.9rem; max-width: 480px;">
-          ساختار ۴ صفحه‌ای استاندارد دفترچه که دقیقا مطابق همین پیش‌نمایش، بدون حتی ۱ میلی‌متر جابه‌جایی در خطوط چاپگر خروجی گرفته می‌شود.
+        <span class="section-tag">PROPORTIONAL PROOF</span>
+        <h3 class="section-title">پیش‌نمایش زنده دفترچه ۴ صفحه‌ای استاندارد</h3>
+        <p class="section-desc">
+          ساختار ۴ صفحه‌ای مصوب آکادمی که دقیقا مطابق همین پیش‌نمایش، بدون تغییر مقیاس یا به‌هم‌ریختگی ستون‌ها، در پرینتر یا خروجی PDF صادر می‌شود.
         </p>
       </div>
 
-      <div class="specimen-stage">
-        <!-- تب‌های انتخاب صفحه -->
-        <div class="specimen-nav">
-          <button class="specimen-tab active" data-pane="pane-page2">صفحه ۲: جدول هفتگی مطالعه (عرض کامل)</button>
-          <button class="specimen-tab" data-pane="pane-page1">صفحه ۱: طرح جلد سازمانی</button>
-          <button class="specimen-tab" data-pane="pane-page3">صفحه ۳: شناسنامه و توصیه‌های مشاور</button>
-          <button class="specimen-tab" data-pane="pane-page4">صفحه ۴: منابع مطالعاتی و آزمون فرهنگیان</button>
+      <!-- محفظه ماکاپ پنجره نرم‌افزار -->
+      <div class="showcase-window">
+        <!-- نوار عنوان پنجره مرورگر -->
+        <div class="window-chrome">
+          <div class="window-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+
+          <div class="window-address">
+            <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+            </svg>
+            <span>study-planner.forootankia.ir</span>
+          </div>
+
+          <div class="window-status">
+            <span class="status-indicator"></span>
+            <span>آماده صدور و پرینت</span>
+          </div>
         </div>
 
-        <!-- ویوپورت پیش‌نمایش کاغذ A4 -->
-        <div class="specimen-viewport">
-          
-          <!-- برگه صفحه ۲: جدول مطالعه -->
-          <div id="pane-page2" class="pane-item active a4-sheet">
-            <div class="a4-header">
-              <div class="a4-brand">
-                <h5>آکادمی مشاوره تحصیلی دکتر شهروز فروتن کیا</h5>
-                <p>جدول زمان‌بندی و پارت‌های مطالعاتی هفتگی داوطلب کنکور سراسری</p>
+        <!-- تب‌های ۴ صفحه دفترچه -->
+        <div class="window-tabs">
+          <button class="mockup-tab active" data-pane="pane-page2">
+            <span>صفحه ۲: جدول هفتگی مطالعه (ترنسپوز)</span>
+            <span class="tab-badge">A4 افقی</span>
+          </button>
+          <button class="mockup-tab" data-pane="pane-page1">
+            <span>صفحه ۱: طرح جلد سازمانی و اطلاعات داوطلب</span>
+            <span class="tab-badge">جلد</span>
+          </button>
+          <button class="mockup-tab" data-pane="pane-page3">
+            <span>صفحه ۳: شناسنامه تحصیلی و استراتژی مشاور</span>
+            <span class="tab-badge">KPI</span>
+          </button>
+          <button class="mockup-tab" data-pane="pane-page4">
+            <span>صفحه ۴: وضعیت منابع و آزمون فرهنگیان</span>
+            <span class="tab-badge">منابع</span>
+          </button>
+        </div>
+
+        <!-- راهنمای اسکرول برای صفحات کوچک -->
+        <div class="mobile-scroll-hint">
+          <span>← برای پیمایش کامل ستون‌های جدول، صفحه را به چپ یا راست بکشید →</span>
+        </div>
+
+        <!-- محوطه پیش‌نمایش کاغذ A4 -->
+        <div class="window-viewport">
+
+          <!-- برگ صفحه ۲: جدول هفتگی مطالعه (Active Default) -->
+          <div id="pane-page2" class="sheet-pane active">
+            <div class="paper-sheet">
+              <div class="sheet-header">
+                <div class="sheet-header-brand">
+                  <h4>آکادمی مشاوره تحصیلی دکتر شهروز فروتن کیا</h4>
+                  <p>جدول زمان‌بندی و پارت‌های مطالعاتی هفتگی داوطلب کنکور سراسری</p>
+                </div>
+                <span class="sheet-page-indicator">صفحه ۲ از ۴</span>
               </div>
-              <span class="a4-page-num">صفحه ۲ از ۴</span>
-            </div>
 
-            <div class="a4-body">
-              <table class="specimen-table">
-                <thead>
-                  <tr>
-                    <th style="width: 14%;">روز</th>
-                    <th style="width: 22%;">پارت مطالعاتی ۱</th>
-                    <th style="width: 22%;">پارت مطالعاتی ۲</th>
-                    <th style="width: 22%;">پارت مطالعاتی ۳</th>
-                    <th style="width: 20%;">روتین شبانه</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style="font-weight: bold; background: #f1f5f9;">شنبه</td>
-                    <td class="study-cell">زیست‌شناسی ۳ (گفتار ۱)<br><span class="test-count">۳۰ تست آموزشی</span></td>
-                    <td class="study-cell">فیزیک (حرکت‌شناسی)<br><span class="test-count">۲۵ تست سنجشی</span></td>
-                    <td class="study-cell">شیمی ۳ (سینتیک)<br><span class="test-count">۲۰ تست زمان‌دار</span></td>
-                    <td class="routine-cell">قرابت معنایی فارسی (۱۰ تست)</td>
-                  </tr>
-                  <tr>
-                    <td style="font-weight: bold; background: #f1f5f9;">یکشنبه</td>
-                    <td class="study-cell">ریاضی تجربی (مثلثات)<br><span class="test-count">۲۵ تست آموزشی</span></td>
-                    <td class="study-cell">زیست‌شناسی ۳ (مرور و شکل‌ها)<br><span class="test-count">۳۵ تست ترکیبی</span></td>
-                    <td class="study-cell">زبان عربی (قواعد ترجمه)<br><span class="test-count">۲۰ تست سنجشی</span></td>
-                    <td class="routine-cell">کلوزتست و لغات زبان انگلیسی</td>
-                  </tr>
-                  <tr>
-                    <td style="font-weight: bold; background: #f1f5f9;">دوشنبه</td>
-                    <td class="study-cell">شیمی ۲ (محلول‌ها)<br><span class="test-count">۳۰ تست زمان‌دار</span></td>
-                    <td class="study-cell">فیزیک (دینامیک و تکانه)<br><span class="test-count">۲۰ تست آموزشی</span></td>
-                    <td class="study-cell">زمین‌شناسی (فصل ۱ و ۲)<br><span class="test-count">۱۵ تست مروری</span></td>
-                    <td class="routine-cell">آرایه‌های ادبی و تاریخ ادبیات</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+              <div class="sheet-content">
+                <table class="sheet-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 12%;">روز هفته</th>
+                      <th style="width: 18%;">پارت ۱ (صبح)</th>
+                      <th style="width: 18%;">پارت ۲ (ظهر)</th>
+                      <th style="width: 18%;">پارت ۳ (عصر)</th>
+                      <th style="width: 18%;">پارت ۴ (غروب)</th>
+                      <th style="width: 16%;">روتین شبانه</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="col-day">شنبه</td>
+                      <td class="cell-study">زیست ۳ (گفتار ۱)<br><span class="tag-test">۳۰ تست آموزشی</span></td>
+                      <td class="cell-study">فیزیک ۳ (حرکت‌شناسی)<br><span class="tag-test">۲۵ تست سنجشی</span></td>
+                      <td class="cell-study">شیمی ۳ (سینتیک)<br><span class="tag-test">۲۰ تست زمان‌دار</span></td>
+                      <td class="cell-study">ریاضی تجربی (مثلثات)<br><span class="tag-test">۱۵ تست مروری</span></td>
+                      <td><span class="tag-routine">قرابت معنایی ادبیات (۱۰ تست)</span></td>
+                    </tr>
+                    <tr>
+                      <td class="col-day">یکشنبه</td>
+                      <td class="cell-study">ریاضی تجربی (تابع و حد)<br><span class="tag-test">۲۵ تست آموزشی</span></td>
+                      <td class="cell-study">زیست ۳ (شکل‌ها و نکات)<br><span class="tag-test">۳۵ تست ترکیبی</span></td>
+                      <td class="cell-study">زبان عربی (قواعد ترجمه)<br><span class="tag-test">۲۰ تست سنجشی</span></td>
+                      <td class="cell-study">شیمی (اسیدها و بازها)<br><span class="tag-test">۲۵ تست تسلط</span></td>
+                      <td><span class="tag-routine">واژگان و کلوزتست زبان انگلیسی</span></td>
+                    </tr>
+                    <tr>
+                      <td class="col-day">دوشنبه</td>
+                      <td class="cell-study">فیزیک (دینامیک و قوانین)<br><span class="tag-test">۳۰ تست زمان‌دار</span></td>
+                      <td class="cell-study">شیمی ۲ (استوکیومتری)<br><span class="tag-test">۲۰ تست آزمونی</span></td>
+                      <td class="cell-study">زیست ۲ (دستگاه عصبی)<br><span class="tag-test">۳۰ تست آموزشی</span></td>
+                      <td class="cell-study">زمین‌شناسی (فصل ۱ و ۲)<br><span class="tag-test">۱۵ تست مروری</span></td>
+                      <td><span class="tag-routine">آرایه‌های ادبی و تاریخ ادبیات</span></td>
+                    </tr>
+                    <tr>
+                      <td class="col-day">سه‌شنبه</td>
+                      <td class="cell-study">زیست ۳ (ژنتیک یاخته)<br><span class="tag-test">۳۵ تست تحلیلی</span></td>
+                      <td class="cell-study">ریاضی (مشتق و کاربرد)<br><span class="tag-test">۲۵ تست سنجشی</span></td>
+                      <td class="cell-study">فیزیک ۳ (نوسان و امواج)<br><span class="tag-test">۲۰ تست آموزشی</span></td>
+                      <td class="cell-study">عربی (درک مطلب کنکور)<br><span class="tag-test">۱۵ تست آزمونی</span></td>
+                      <td><span class="tag-routine">درک مطلب و ریدینگ زبان</span></td>
+                    </tr>
+                    <tr>
+                      <td class="col-day">چهارشنبه</td>
+                      <td class="cell-study">شیمی ۳ (الکتروشیمی)<br><span class="tag-test">۳۰ تست تسلط</span></td>
+                      <td class="cell-study">فیزیک ۲ (الکتریسیته ساکن)<br><span class="tag-test">۲۵ تست زمان‌دار</span></td>
+                      <td class="cell-study">زیست ۳ (مرور جامع فصول)<br><span class="tag-test">۳۰ تست ترکیبی</span></td>
+                      <td class="cell-study">انگلیسی (گرامر پایه دوازدهم)<br><span class="tag-test">۲۰ تست آموزشی</span></td>
+                      <td><span class="tag-routine">حفظیات شیمی و لغات کنکور</span></td>
+                    </tr>
+                    <tr>
+                      <td class="col-day">پنج‌شنبه</td>
+                      <td class="cell-study" colspan="2">جمع‌بندی مباحث و مرور تست‌های نشان‌دار هفته</td>
+                      <td class="cell-study" colspan="2">آزمون شبیه‌ساز زمان‌دار کانون و سنجش (۱۲۰ دقیقه)</td>
+                      <td><span class="tag-routine">فرمول‌نامه فیزیک و ریاضی</span></td>
+                    </tr>
+                    <tr>
+                      <td class="col-day" style="background: #fef2f2; color: #991b1b;">جمعه</td>
+                      <td class="cell-study" colspan="2">شرکت در آزمون آزمایشی کشوری (۸ الی ۱۲)</td>
+                      <td class="cell-study" colspan="2">تحلیل دقیق آزمون، ثبت در کارنامه و رفع اشکال</td>
+                      <td><span class="tag-routine">تنظیم راهبرد هفته آینده</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
-            <div class="a4-footer">
-              <span>طراحی و تنظیم: سامانه هوشمند Study Planner • نسخه رسمی آکادمی</span>
-              <span>کد سند: FK-PLAN-2026</span>
+              <div class="sheet-footer">
+                <span>طراحی و تنظیم: سامانه Study Planner • نسخه رسمی آکادمی دکتر فروتن کیا</span>
+                <span>کد سند: FK-PLAN-2026</span>
+              </div>
             </div>
           </div>
 
-          <!-- برگه صفحه ۱: طرح جلد -->
-          <div id="pane-page1" class="pane-item a4-sheet">
-            <div class="a4-header">
-              <div class="a4-brand">
-                <h5>آکادمی مشاوره تحصیلی دکتر شهروز فروتن کیا</h5>
-                <p>دفترچه اختصاصی برنامه‌ریزی راهبردی و پایش عملکرد تحصیلی</p>
+          <!-- برگ صفحه ۱: طرح جلد سازمانی -->
+          <div id="pane-page1" class="sheet-pane">
+            <div class="paper-sheet">
+              <div class="sheet-header">
+                <div class="sheet-header-brand">
+                  <h4>آکادمی مشاوره تحصیلی دکتر شهروز فروتن کیا</h4>
+                  <p>دفترچه اختصاصی برنامه‌ریزی راهبردی و پایش عملکرد کنکور</p>
+                </div>
+                <span class="sheet-page-indicator">صفحه ۱ از ۴</span>
               </div>
-              <span class="a4-page-num">صفحه ۱ از ۴</span>
-            </div>
 
-            <div class="a4-body" style="text-align: center; gap: 1rem;">
-              <div style="border: 2px solid #0f172a; padding: 1.5rem; border-radius: 6px; background: #fafafa;">
-                <h4 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-bottom: 0.25rem;">دفترچه رسمی برنامه‌ریزی تحصیلی کنکور</h4>
-                <p style="color: #64748b; font-size: 0.8rem;">ویژه داوطلبان تجربی، ریاضی، علوم انسانی و کنکور تربیت معلم</p>
-              </div>
-              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; text-align: right; font-size: 0.75rem;">
-                <div style="background: #f1f5f9; padding: 8px; border-radius: 4px;"><strong>نام داوطلب:</strong> محمد شکیبا</div>
-                <div style="background: #f1f5f9; padding: 8px; border-radius: 4px;"><strong>مشاور ارشد:</strong> دکتر شهروز فروتن کیا</div>
-                <div style="background: #f1f5f9; padding: 8px; border-radius: 4px;"><strong>رشته و پایه:</strong> دوازدهم تجربی</div>
-                <div style="background: #f1f5f9; padding: 8px; border-radius: 4px;"><strong>بازه هفته:</strong> هفته سوم آبان ماه</div>
-              </div>
-            </div>
+              <div class="sheet-content">
+                <div class="cover-sheet-body">
+                  <h3 class="cover-sheet-title">دفترچه رسمی برنامه‌ریزی تحصیلی کنکور سراسری</h3>
+                  <p class="cover-sheet-desc">ویژه داوطلبان رشته‌های تجربی، ریاضی، علوم انسانی و متقاضیان دانشگاه فرهنگیان</p>
 
-            <div class="a4-footer">
-              <span>شناسه مدرک: DOC-COVER-A4</span>
-              <span>اصول مهندسی تایپوگرافی فارسی</span>
+                  <div class="cover-student-grid">
+                    <div class="cover-info-card">
+                      <strong>نام و نام خانوادگی داوطلب:</strong>
+                      <span>محمد شکیبا</span>
+                    </div>
+                    <div class="cover-info-card">
+                      <strong>مشاور ارشد و برنامه‌ریز:</strong>
+                      <span>دکتر شهروز فروتن کیا</span>
+                    </div>
+                    <div class="cover-info-card">
+                      <strong>رشته و پایه تحصیلی:</strong>
+                      <span>دوازدهم تجربی (هدف پزشکی)</span>
+                    </div>
+                    <div class="cover-info-card">
+                      <strong>بازه زمانی اجرا:</strong>
+                      <span>هفته سوم آبان ماه ۱۴۰۵</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 4px; padding: 1rem; font-size: 0.76rem; color: #475569; line-height: 1.7; text-align: justify;">
+                  <strong>تعهدنامه اخلاقی داوطلب:</strong> «اینجانب متعهد می‌شوم ساعات ثبت‌شده در این دفترچه را با نهایت صداقت، تمرکز کامل و بدون اتلاف وقت اجرا کرده و تحلیل آزمون‌های آزمایشی را در همان روز جمعه به انجام برسانم.»
+                </div>
+              </div>
+
+              <div class="sheet-footer">
+                <span>شناسه مدرک: DOC-COVER-A4</span>
+                <span>اصول مهندسی تایپوگرافی فارسی</span>
+              </div>
             </div>
           </div>
 
-          <!-- برگه صفحه ۳: شناسنامه -->
-          <div id="pane-page3" class="pane-item a4-sheet">
-            <div class="a4-header">
-              <div class="a4-brand">
-                <h5>شناسنامه تحصیلی و استراتژی مشاور</h5>
-                <p>تحلیل کارنامه آزمون‌های آزمایشی، اهداف کمی و توصیه‌های راهبردی</p>
+          <!-- برگ صفحه ۳: شناسنامه تحصیلی و KPI -->
+          <div id="pane-page3" class="sheet-pane">
+            <div class="paper-sheet">
+              <div class="sheet-header">
+                <div class="sheet-header-brand">
+                  <h4>شناسنامه تحصیلی داوطلب و تحلیل استراتژیک مشاور</h4>
+                  <p>اهداف کمی هفتگی، پایش تراز آزمون و توصیه‌های کلیدی مشاور</p>
+                </div>
+                <span class="sheet-page-indicator">صفحه ۳ از ۴</span>
               </div>
-              <span class="a4-page-num">صفحه ۳ از ۴</span>
-            </div>
 
-            <div class="a4-body">
-              <div style="border: 1px solid #cbd5e1; border-radius: 4px; padding: 1rem; margin-bottom: 1rem; background: #f8fafc;">
-                <strong style="color: #1e3a8a; font-size: 0.82rem; display: block; margin-bottom: 0.25rem;">توصیه‌های کلیدی و استراتژی هفته:</strong>
-                <p style="color: #334155; font-size: 0.75rem; line-height: 1.6;">
-                  «در دروس محاسباتی اولویت با تست‌های زمان‌دار است. مباحث حفظی زیست‌شناسی را در ساعات ابتدایی صبح و بعد از استراحت کوتاه بخوانید. حتما نکات تست‌های آزمون جمعه را در دفترچه تحلیل آزمون یادداشت نمایید.»
-                </p>
-              </div>
-              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; text-align: center;">
-                <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 10px; border-radius: 4px;">
-                  <span style="font-size: 0.7rem; color: #1d4ed8;">ساعت مطالعه هدف</span>
-                  <div style="font-weight: 800; font-size: 1.1rem; color: #1e3a8a;">۵۶ ساعت</div>
+              <div class="sheet-content">
+                <div class="counselor-strategy-box">
+                  <strong>توصیه‌های کلیدی و استراتژی هفته مشاور:</strong>
+                  <p>
+                    «در دروس محاسباتی اولویت قطعی با تست‌های زمان‌دار و یادگیری تکنیک‌های سرعتی است. مباحث حفظی زیست‌شناسی را در پارت اول صبح با انرژی کامل مطالعه کنید. حتماً نکات اشتباهات آزمون گذشته را در دفترچه تحلیل ثبت نمایید.»
+                  </p>
                 </div>
-                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 10px; border-radius: 4px;">
-                  <span style="font-size: 0.7rem; color: #15803d;">تعداد تست هدف</span>
-                  <div style="font-weight: 800; font-size: 1.1rem; color: #166534;">۸۸۰ تست</div>
-                </div>
-                <div style="background: #fefce8; border: 1px solid #fef08a; padding: 10px; border-radius: 4px;">
-                  <span style="font-size: 0.7rem; color: #a16207;">تراز هدف آزمون</span>
-                  <div style="font-weight: 800; font-size: 1.1rem; color: #854d0e;">۶۸۵۰</div>
-                </div>
-              </div>
-            </div>
 
-            <div class="a4-footer">
-              <span>پایش مستمر شاخص‌های کلیدی عملکرد (KPI)</span>
-              <span>صفحه ۳</span>
+                <div class="kpi-row">
+                  <div class="kpi-tile kpi-tile-blue">
+                    <span class="kpi-label">ساعت مطالعه هدف</span>
+                    <span class="kpi-num">۵۶ ساعت</span>
+                  </div>
+                  <div class="kpi-tile kpi-tile-green">
+                    <span class="kpi-label">تعداد تست هدف</span>
+                    <span class="kpi-num">۸۸۰ تست</span>
+                  </div>
+                  <div class="kpi-tile kpi-tile-gold">
+                    <span class="kpi-label">تراز هدف آزمون</span>
+                    <span class="kpi-num">۶۸۵۰</span>
+                  </div>
+                </div>
+
+                <table class="sheet-table">
+                  <thead>
+                    <tr>
+                      <th>شاخص عملکردی</th>
+                      <th>وضعیت قبلی</th>
+                      <th>هدف این هفته</th>
+                      <th>ارزیابی مشاور</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="font-weight: bold;">پیوستگی و نظم پارت‌ها</td>
+                      <td>۷۵٪</td>
+                      <td>۹۰٪</td>
+                      <td style="color: #16a34a; font-weight: bold;">رو به رشد</td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: bold;">نسبت تست به مطالعه تشریحی</td>
+                      <td>۱.۲</td>
+                      <td>۱.۸</td>
+                      <td style="color: #2563eb; font-weight: bold;">استاندارد کنکور</td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: bold;">تعهد به روتین شبانه</td>
+                      <td>۵ شب از ۷ شب</td>
+                      <td>۷ شب کامل</td>
+                      <td style="color: #d97706; font-weight: bold;">نیازمند پایش</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="sheet-footer">
+                <span>پایش مستمر شاخص‌های کلیدی عملکرد (KPI)</span>
+                <span>صفحه ۳ از ۴</span>
+              </div>
             </div>
           </div>
 
-          <!-- برگه صفحه ۴: منابع و فرهنگیان -->
-          <div id="pane-page4" class="pane-item a4-sheet">
-            <div class="a4-header">
-              <div class="a4-brand">
-                <h5>گزارش وضعیت منابع مطالعاتی و آزمون فرهنگیان</h5>
-                <p>پایش کتب تست، مباحث پوشش‌داده‌شده و سرفصل‌های اختصاصی تربیت معلم</p>
+          <!-- برگ صفحه ۴: وضعیت منابع و ماژول فرهنگیان -->
+          <div id="pane-page4" class="sheet-pane">
+            <div class="paper-sheet">
+              <div class="sheet-header">
+                <div class="sheet-header-brand">
+                  <h4>پایش وضعیت منابع مطالعاتی و ماژول کنکور دانشگاه فرهنگیان</h4>
+                  <p>پایش کتب تست، سرفصل‌های اختصاصی تربیت معلم و درصد تسلط داوطلب</p>
+                </div>
+                <span class="sheet-page-indicator">صفحه ۴ از ۴</span>
               </div>
-              <span class="a4-page-num">صفحه ۴ از ۴</span>
-            </div>
 
-            <div class="a4-body">
-              <table class="specimen-table">
-                <thead>
-                  <tr>
-                    <th>کتاب / مبحث</th>
-                    <th>پایه تحصیلی</th>
-                    <th>وضعیت پوشش</th>
-                    <th>درصد تسلط برآورد شده</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>مهارت معلمی استاد قرائتی</td>
-                    <td>کنکور فرهنگیان</td>
-                    <td>پوشش کامل ۳ فصل اول</td>
-                    <td style="color: #16a34a; font-weight: bold;">۸۵٪ تسلط</td>
-                  </tr>
-                  <tr>
-                    <td>هوش و استعداد معلمی</td>
-                    <td>عمومی تربیت معلم</td>
-                    <td>تست‌های تجسم فضایی و استدلال</td>
-                    <td style="color: #2563eb; font-weight: bold;">۷۵٪ تسلط</td>
-                  </tr>
-                  <tr>
-                    <td>تعلیم و تربیت اسلامی (شهید مطهری)</td>
-                    <td>تخصصی فرهنگیان</td>
-                    <td>دور اول مطالعه و خلاصه‌نویسی</td>
-                    <td style="color: #d97706; font-weight: bold;">۶۰٪ تسلط</td>
-                  </tr>
-                  <tr>
-                    <td>تاریخ و جغرافیا (جامع کنکور)</td>
-                    <td>علوم انسانی</td>
-                    <td>تست‌های خط‌به‌خط پایه دهم</td>
-                    <td style="color: #16a34a; font-weight: bold;">۹۰٪ تسلط</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+              <div class="sheet-content">
+                <table class="sheet-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 30%;">کتاب / سرفصل آموزشی</th>
+                      <th style="width: 20%;">بخش آزمون</th>
+                      <th style="width: 30%;">وضعیت پوشش و پیشرفت</th>
+                      <th style="width: 20%;">درصد تسلط برآورد شده</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td style="font-weight: 700;">مهارت معلمی استاد قرائتی</td>
+                      <td>کنکور اختصاصی فرهنگیان</td>
+                      <td>پوشش کامل ۳ فصل اول + تست‌های سال قبل</td>
+                      <td style="color: #16a34a; font-weight: 800;">۸۵٪ تسلط (عالی)</td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 700;">هوش و استعداد معلمی</td>
+                      <td>عمومی تربیت معلم</td>
+                      <td>تست‌های تجسم فضایی و استدلال تحلیلی</td>
+                      <td style="color: #2563eb; font-weight: 800;">۷۵٪ تسلط (مطلوب)</td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 700;">تعلیم و تربیت اسلامی (شهید مطهری)</td>
+                      <td>تخصصی فرهنگیان</td>
+                      <td>دور اول مطالعه متنی و یادداشت‌برداری</td>
+                      <td style="color: #d97706; font-weight: 800;">۶۰٪ تسلط (در حال تکمیل)</td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 700;">زیست‌شناسی جامع پینوکیو</td>
+                      <td>اختصاصی تجربی</td>
+                      <td>تست‌های خط‌به‌خط فصل‌های جانوری</td>
+                      <td style="color: #16a34a; font-weight: 800;">۹۰٪ تسلط (عالی)</td>
+                    </tr>
+                    <tr>
+                      <td style="font-weight: 700;">شیمی مبتکران (دوازدهم)</td>
+                      <td>اختصاصی تجربی و ریاضی</td>
+                      <td>مسائل استوکیومتری و سینتیک شیمیایی</td>
+                      <td style="color: #2563eb; font-weight: 800;">۸۰٪ تسلط (مطلوب)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
 
-            <div class="a4-footer">
-              <span>سیستم مدیریت منابع کنکور سراسری</span>
-              <span>صفحه ۴</span>
+              <div class="sheet-footer">
+                <span>ماژول جامع مدیریت منابع کنکور سراسری و فرهنگیان</span>
+                <span>صفحه ۴ از ۴</span>
+              </div>
             </div>
           </div>
 
@@ -311,65 +441,82 @@
     </div>
   </section>
 
-  <!-- معماری و ارکان مهندسی نرم‌افزار (Technical Architecture) -->
-  <section id="architecture" class="section" style="border-top: 1px solid var(--border-subtle);">
+  <!-- بخش ارکان مهندسی و قابلیت‌های کلیدی (Features) -->
+  <section id="features" class="section">
     <div class="container">
       <div class="section-head">
-        <div>
-          <span class="section-tag">ENGINEERING PILLARS</span>
-          <h3 class="section-title">چهار رکن مهندسی در طراحی Study Planner</h3>
-        </div>
+        <span class="section-tag">ENGINEERING PILLARS</span>
+        <h3 class="section-title">چهار رکن مهندسی در معماری Study Planner</h3>
+        <p class="section-desc">
+          تمامی اجزای نرم‌افزار با تمرکز بر دقت ریاضی در خروجی چاپی و تجربه کاربری متناسب با نیازهای دانش‌آموزان و مشاوران برتر کنکور ایران طراحی شده‌اند.
+        </p>
       </div>
 
-      <div class="tech-grid">
-        <!-- ستون ۱ -->
-        <div class="tech-card">
+      <div class="features-grid">
+        <!-- کارت ۱ -->
+        <div class="feature-card">
           <div>
-            <div class="tech-card-header">
-              <div class="tech-card-icon">01</div>
-              <h4>موتور چاپ A4 بدون افت رزولوشن</h4>
+            <div class="feature-top">
+              <div class="feature-icon-badge">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                </svg>
+              </div>
+              <h4>دقت چاپ A4 بدون افت رزولوشن</h4>
             </div>
             <p>
-              برخلاف اکثر نرم‌افزارها که جدول را کشیده یا در کاغذ جا نمی‌دهند، ساختار CSS با قوانین استاندارد <code>@media print</code> ابعاد دقیق ۲۹۷ در ۲۱۰ میلی‌متر را حفظ می‌کند؛ بدون شکست خطوط، بدون تغییر سایز و با بالاترین کنتراست ممکن.
+              برخلاف دیگر ابزارها که جدول را در هنگام پرینت فشرده یا ستون‌ها را می‌شکنند، قوانین استاندارد <code>@media print</code> ابعاد دقیق ۲۹۷ در ۲۱۰ میلی‌متر را حفظ کرده و بدون نیاز به تنظیم حاشیه‌ها، خروجی وکتور شارپ صادر می‌کنند.
             </p>
           </div>
         </div>
 
-        <!-- ستون ۲ -->
-        <div class="tech-card">
+        <!-- کارت ۲ -->
+        <div class="feature-card">
           <div>
-            <div class="tech-card-header">
-              <div class="tech-card-icon">02</div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/>
+                </svg>
+              </div>
               <h4>چیدمان ترنسپوز با ارگونومی خط چشم</h4>
             </div>
             <p>
-              قرار گرفتن پارت‌ها در سرفصل ستون‌ها و روزها در سطرها باعث می‌شود مشاور و داوطلب بتوانند پیوستگی ساعات مطالعه را در کل هفته با یک حرکت افقی چشم رصد کنند. هر پارت به دو سطر مجزای مبحث و تست تفکیک شده است.
+              قرار گرفتن پارت‌ها در سرفصل ستون‌ها و روزها در سطرها باعث می‌شود داوطلب و مشاور بتوانند پیوستگی ساعات مطالعه در طول هفته را با یک حرکت طبیعی چشم رصد کنند؛ به همراه تفکیک مبحث آموزشی و تعداد تست در هر خانه جدول.
             </p>
           </div>
         </div>
 
-        <!-- ستون ۳ -->
-        <div class="tech-card">
+        <!-- کارت ۳ -->
+        <div class="feature-card">
           <div>
-            <div class="tech-card-header">
-              <div class="tech-card-icon">03</div>
-              <h4>ماژول اختصاصی کنکور دانشگاه فرهنگیان</h4>
+            <div class="feature-top">
+              <div class="feature-icon-badge">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+                </svg>
+              </div>
+              <h4>ماژول اختصاصی آزمون دانشگاه فرهنگیان</h4>
             </div>
             <p>
-              با توجه به کنکور اختصاصی تربیت معلم، سرفصل‌های مهارت معلمی، هوش و استعداد تحلیلی، تعلیم و تربیت اسلامی و منابع علوم انسانی با جدول وضعیت تسلط و صفحه‌بندی هوشمند خودکار تعبیه شده‌اند.
+              با توجه به کنکور اختصاصی تربیت معلم، سرفصل‌های مهارت معلمی استاد قرائتی، هوش و استعداد تحلیلی، تعلیم و تربیت اسلامی شهید مطهری و منابع اختصاصی با سیستم محاسبه خودکار تراز و درصد تسلط در صفحه چهارم تعبیه شده‌اند.
             </p>
           </div>
         </div>
 
-        <!-- ستون ۴ -->
-        <div class="tech-card">
+        <!-- کارت ۴ -->
+        <div class="feature-card">
           <div>
-            <div class="tech-card-header">
-              <div class="tech-card-icon">04</div>
+            <div class="feature-top">
+              <div class="feature-icon-badge">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+              </div>
               <h4>معماری ۱۰۰٪ محلی و آفلاین (Offline Vault)</h4>
             </div>
             <p>
-              تمام دارایی‌ها، فونت‌های فارسی و کدهای پردازشی در حافظه مرورگر اجرا می‌شوند. داده‌ها در حافظه محلی دستگاه شما باقی می‌مانند و هیچ برنامه‌ای برای ارسال داده به سرورهای ناشناس وجود ندارد.
+              تمام داده‌ها، پکیج استایل‌ها، فونت‌های فارسی و کدهای پردازشی در حافظه دستگاه شما نگهداری می‌شوند. هیچ دیتایی به هیچ سروری ارسال نمی‌شود و بدون نیاز به اینترنت، همیشه و همه‌جا عملکرد نرم‌افزار پایدار است.
             </p>
           </div>
         </div>
@@ -377,24 +524,24 @@
     </div>
   </section>
 
-  <!-- بنر اجرای مستقیم و بدون واسطه (Unified Launcher) -->
-  <section class="section" style="padding-top: 2rem;">
+  <!-- بنر اجرای مستقیم و بدون واسطه (CTA Banner) -->
+  <section class="section" style="padding-top: 1rem;">
     <div class="container">
-      <div class="launcher-box">
-        <div class="launcher-info">
+      <div class="cta-banner">
+        <div class="cta-info">
           <h3>شروع فوری برنامه‌ریزی بدون نیاز به ثبت‌نام</h3>
           <p>
-            سامانه بدون نیاز به ساخت حساب کاربری، بدون هزینه و بدون نیاز به نصب فایل در دسترس شماست. روی هر دستگاهی با زدن دکمه زیر مستقیماً وارد محیط ویرایش و صدور دفترچه شوید.
+            سامانه بدون نیاز به ساخت حساب کاربری، بدون هزینه و بدون نیاز به دانلود فایل نصبی در دسترس است. با کلیک روی دکمه زیر مستقیماً وارد محیط حرفه‌ای ویرایش و صدور دفترچه شوید.
           </p>
         </div>
-        <div class="launcher-actions">
-          <a href="app/index.html" class="btn btn-primary btn-lg" target="_blank">
+        <div class="cta-buttons">
+          <a href="app/index.html" class="btn btn-gold btn-lg" target="_blank">
             <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
             </svg>
             ورود به محیط برنامه
           </a>
-          <a href="https://github.com/esayest/study-planner" class="btn btn-outline btn-lg" target="_blank">
+          <a href="https://github.com/esayest/study-planner" class="btn btn-outline btn-lg" target="_blank" rel="noopener">
             مشاهده سورس‌کد
           </a>
         </div>
@@ -406,60 +553,79 @@
   <section id="faq" class="section">
     <div class="container">
       <div class="section-head">
-        <div>
-          <span class="section-tag">COMMON INQUIRIES</span>
-          <h3 class="section-title">پرسش‌های متداول فنی</h3>
-        </div>
+        <span class="section-tag">COMMON INQUIRIES</span>
+        <h3 class="section-title">پرسش‌های متداول فنی</h3>
+        <p class="section-desc">پاسخ به سوالات پرتکرار داوطلبان و مشاوران محترم در خصوص صدور و عملکرد سامانه</p>
       </div>
 
-      <div class="faq-list">
-        <div class="faq-item open">
-          <button class="faq-question">
+      <div class="faq-wrap">
+        <div class="faq-card open">
+          <button class="faq-header">
             <span>چگونه فایل دفترچه را با بالاترین کیفیت به صورت PDF دریافت کنم؟</span>
-            <svg class="faq-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            <svg class="faq-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
           </button>
-          <div class="faq-answer">
-            در نوار بالای برنامه دکمه «چاپ / صدور PDF» را بزنید (یا کلیدهای میانبر Ctrl + P را بفشارید). در پنجره باز شده مقصد را روی Save as PDF قرار دهید. حتماً اندازه کاغذ روی A4 و جهت صفحه روی Landscape (افقی) باشد تا ۴ صفحه استاندارد بدون هرگونه به‌هم‌ریختگی صادر شوند.
+          <div class="faq-body">
+            در نوار بالای برنامه روی دکمه «چاپ / صدور PDF» کلیک کنید (یا کلیدهای میانبر <code>Ctrl + P</code> را بفشارید). در پنجره بازشده مرورگر، Destination را روی <strong>Save as PDF</strong>، سایز کاغذ را روی <strong>A4</strong> و جهت را روی <strong>Landscape (افقی)</strong> قرار دهید. هر ۴ صفحه با بالاترین وضوح وکتور ذخیره خواهند شد.
           </div>
         </div>
 
-        <div class="faq-item">
-          <button class="faq-question">
-            <span>آیا در صورت قطع اینترنت اطلاعات یا برنامه از کار می‌افتد؟</span>
-            <svg class="faq-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        <div class="faq-card">
+          <button class="faq-header">
+            <span>آیا با بستن صفحه مرورگر یا قطعی اینترنت اطلاعات برنامه پاک می‌شود؟</span>
+            <svg class="faq-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
           </button>
-          <div class="faq-answer">
-            خیر؛ تمام پکیج‌های استایل (Tailwind محلی)، فونت‌های اختصاصی دانا و پیدا، و اسکریپت‌های پردازشی به صورت محلی لود می‌شوند و عملکرد برنامه در شرایط قطعی کامل اینترنت دقیقاً مشابه حالت آنلاین است.
+          <div class="faq-body">
+            خیر؛ تمام پکیج‌های استایل، فونت‌های فارسی دانا و پیدا، و منطق محاسباتی برنامه به شکل محلی در مرورگر لود می‌شوند و داده‌ها در حافظه LocalStorage دستگاه ذخیره می‌گردند. در شرایط قطع کامل اینترنت نیز برنامه بدون افت کارایی قابل استفاده است.
           </div>
         </div>
 
-        <div class="faq-item">
-          <button class="faq-question">
-            <span>آیا این سامانه برای مشاوران چندین دانش‌آموز قابل استفاده است؟</span>
-            <svg class="faq-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        <div class="faq-card">
+          <button class="faq-header">
+            <span>آیا مشاوران می‌توانند برای چندین دانش‌آموز برنامه مجزا صادر کنند؟</span>
+            <svg class="faq-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
           </button>
-          <div class="faq-answer">
-            بله، مشاوران می‌توانند با تغییر نام داوطلب و بازه مطالعاتی برای هر دانش‌آموز یک دفترچه اختصاصی تنظیم و فایل PDF آن را در چند ثانیه ذخیره کرده و از طریق پیام‌رسان‌ها یا پرینت فیزیکی در اختیار دانش‌آموز قرار دهند.
+          <div class="faq-body">
+            بله، مشاوران محترم می‌توانند به راحتی نام داوطلب، پایه تحصیلی و پارت‌های مربوطه را ویرایش کرده، در کمتر از ۵ ثانیه فایل PDF خروجی را با کیفیت فوق‌العاده دریافت نمایند و سپس برای داوطلب بعدی برنامه جدید تنظیم کنند.
+          </div>
+        </div>
+
+        <div class="faq-card">
+          <button class="faq-header">
+            <span>چرا نسخه نصبی (APK و Windows) حذف شده و تمرکز روی نسخه تحت وب است؟</span>
+            <svg class="faq-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </button>
+          <div class="faq-body">
+            نسخه تحت وب روی تمامی دستگاه‌ها (ویندوز، مک، لینوکس، تبلت و گوشی) بدون نیاز به دریافت فایل‌های حجیم نصبی، خطاهای امنیتی اسمارت‌اسکرین یا مجوزهای دسترسی اجرا می‌شود و همیشه به‌روزترین نگارش سامانه را در اختیار شما قرار می‌دهد.
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- فوتر استودیویی و رسمی -->
-  <footer class="footer">
+  <!-- فوتر رسمی و شرکتی آکادمی (Official Footer) -->
+  <footer class="site-footer">
     <div class="container">
       <div class="footer-top">
         <div class="footer-brand">
           <h4>Study Planner</h4>
-          <p>سامانه هوشمند طراحی و صدور دفترچه‌های اختصاصی برنامه‌ریزی تحصیلی • توسعه‌یافته برای آکادمی مشاوره کنکور دکتر شهروز فروتن کیا</p>
+          <p>
+            سامانه هوشمند طراحی و صدور دفترچه‌های اختصاصی برنامه‌ریزی تحصیلی • توسعه‌یافته برای آکادمی مشاوره کنکور دکتر شهروز فروتن کیا
+          </p>
         </div>
 
-        <ul class="footer-nav">
+        <ul class="footer-links">
           <li><a href="app/index.html" target="_blank">ورود به برنامه</a></li>
-          <li><a href="#specimen">برگه نمونه A4</a></li>
-          <li><a href="https://github.com/esayest/study-planner" target="_blank">مخزن گیت‌هاب</a></li>
-          <li><a href="https://github.com/esayest/study-planner/blob/main/LICENSE" target="_blank">مجوز MIT</a></li>
+          <li><a href="#showcase">پیش‌نمایش A4</a></li>
+          <li><a href="https://github.com/esayest/study-planner" target="_blank" rel="noopener">مخزن گیت‌هاب</a></li>
+          <li><a href="https://github.com/esayest/study-planner/blob/main/LICENSE" target="_blank" rel="noopener">مجوز MIT</a></li>
         </ul>
       </div>
 
@@ -468,7 +634,7 @@
           طراحی، توسعه و معماری نرم‌افزار توسط <strong>محمد شکیبا (Mohammad Shakiba)</strong>
         </div>
         <div>
-          © <span id="current-year">2026</span> آکادمی دکتر فروتن کیا • تمامی حقوق محفوظ است
+          © <span id="current-year">2026</span> آکادمی دکتر شهروز فروتن کیا • تمامی حقوق محفوظ است
         </div>
       </div>
     </div>

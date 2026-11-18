@@ -1,22 +1,23 @@
 /**
  * سامانه هوشمند برنامه‌ریزی تحصیلی آکادمی دکتر فروتن کیا
- * اسکریپت تعاملی وب‌سایت رسمی
+ * اسکریپت تعاملی پرتال معرفی سامانه (Landing Page)
  * پدیدآورنده: محمد شکیبا (Mohammad Shakiba)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // --- 1. تعویض تب‌های بازرسی برگه نمونه A4 ---
-  const specimenTabs = document.querySelectorAll('.specimen-tab, .tab-btn');
-  const specimenPanes = document.querySelectorAll('.pane-item, .tab-content');
+  // --- ۱. کنترل و تعویض تب‌های ماکاپ ۴ صفحه‌ای A4 ---
+  const mockupTabs = document.querySelectorAll('.mockup-tab');
+  const sheetPanes = document.querySelectorAll('.sheet-pane');
 
-  specimenTabs.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const targetId = btn.getAttribute('data-pane') || btn.getAttribute('data-tab');
+  mockupTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const targetId = tab.getAttribute('data-pane');
+      if (!targetId) return;
 
-      specimenTabs.forEach(b => b.classList.remove('active'));
-      specimenPanes.forEach(p => p.classList.remove('active'));
+      mockupTabs.forEach(t => t.classList.remove('active'));
+      sheetPanes.forEach(p => p.classList.remove('active'));
 
-      btn.classList.add('active');
+      tab.classList.add('active');
       const targetPane = document.getElementById(targetId);
       if (targetPane) {
         targetPane.classList.add('active');
@@ -24,31 +25,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // --- 2. آکاردئون سوالات متداول (FAQ) ---
-  const faqItems = document.querySelectorAll('.faq-item');
+  // --- ۲. آکاردئون پرسش‌های متداول (FAQ Accordion) ---
+  const faqCards = document.querySelectorAll('.faq-card');
 
-  faqItems.forEach(item => {
-    const questionBtn = item.querySelector('.faq-question');
-    if (!questionBtn) return;
-    questionBtn.addEventListener('click', () => {
-      const isOpen = item.classList.contains('open');
+  faqCards.forEach(card => {
+    const header = card.querySelector('.faq-header');
+    if (!header) return;
 
-      // بستن سایر سوالات برای انضباط بصری
-      faqItems.forEach(otherItem => {
-        if (otherItem !== item) {
-          otherItem.classList.remove('open');
-        }
+    header.addEventListener('click', () => {
+      const isOpen = card.classList.contains('open');
+
+      // بستن سایر آیتم‌ها برای نظم بصری
+      faqCards.forEach(c => {
+        if (c !== card) c.classList.remove('open');
       });
 
       if (isOpen) {
-        item.classList.remove('open');
+        card.classList.remove('open');
       } else {
-        item.classList.add('open');
+        card.classList.add('open');
       }
     });
   });
 
-  // --- 3. منوی موبایل (Mobile Hamburger) ---
+  // --- ۳. منوی همبرگری موبایل (Mobile Navigation Toggle) ---
   const menuToggle = document.querySelector('.menu-toggle');
   const navLinks = document.querySelector('.nav-links');
 
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- 4. اسکرول نرم برای پیوندهای داخلی ---
+  // --- ۴. اسکرول نرم برای پیوندهای لنگری ---
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
       const href = this.getAttribute('href');
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // --- 5. درج سال معتبر در فوتر ---
+  // --- ۵. تنظیم سال جاری میلادی / شمسی در فوتر ---
   const yearEl = document.getElementById('current-year');
   if (yearEl) {
     yearEl.textContent = new Date().getFullYear();
