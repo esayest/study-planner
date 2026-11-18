@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "name": "سامانه هوشمند برنامه‌ریزی تحصیلی | آکادمی دکتر فروتن کیا",
+  "short_name": "Study Planner",
+  "description": "سامانه تخصصی طراحی، پایش و صدور دفترچه‌های ۴ صفحه‌ای برنامه‌ریزی تحصیلی کنکور سراسری، آزمون دانشگاه فرهنگیان و امتحانات نهایی",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "window-controls-overlay",
+    "standalone",
+    "minimal-ui"
+  ],
+  "orientation": "any",
+  "theme_color": "#0f172a",
+  "background_color": "#0b1a3d",
+  "dir": "rtl",
+  "lang": "fa",
+  "id": "forootan-kia-study-planner",
+  "categories": [
+    "education",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/icons/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/favicon-32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/Study Planner App Icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
