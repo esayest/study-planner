@@ -3,7 +3,6 @@ const path = require('path');
 
 const rootDir = __dirname;
 const docsDir = path.join(rootDir, 'docs');
-const appDir = path.join(docsDir, 'app');
 
 function copyRecursive(src, dest) {
   if (!fs.existsSync(src)) return;
@@ -18,19 +17,27 @@ function copyRecursive(src, dest) {
   }
 }
 
-// 1. Ensure docs and app directories exist
-['docs', 'docs/assets', 'docs/css', 'docs/js', 'docs/app'].forEach(d => {
+function removeRecursive(target) {
+  if (fs.existsSync(target)) {
+    fs.rmSync(target, { recursive: true, force: true });
+  }
+}
+
+// 1. Clean previous landing page remnants and sub-app directories
+removeRecursive(path.join(docsDir, 'app'));
+removeRecursive(path.join(docsDir, 'css', 'landing.css'));
+removeRecursive(path.join(docsDir, 'js', 'landing.js'));
+
+// 2. Ensure docs directory structure exists
+['docs', 'docs/assets', 'docs/css', 'docs/js'].forEach(d => {
   const p = path.join(rootDir, d);
   if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
 });
 
-// 2. Synchronize assets to docs/assets
+// 3. Mirror the core web application directly to docs/ (root website)
 copyRecursive(path.join(rootDir, 'assets'), path.join(docsDir, 'assets'));
+copyRecursive(path.join(rootDir, 'css'), path.join(docsDir, 'css'));
+copyRecursive(path.join(rootDir, 'js'), path.join(docsDir, 'js'));
+fs.copyFileSync(path.join(rootDir, 'index.html'), path.join(docsDir, 'index.html'));
 
-// 3. Synchronize full app to docs/app/ for GitHub Pages live demo
-copyRecursive(path.join(rootDir, 'assets'), path.join(appDir, 'assets'));
-copyRecursive(path.join(rootDir, 'css'), path.join(appDir, 'css'));
-copyRecursive(path.join(rootDir, 'js'), path.join(appDir, 'js'));
-fs.copyFileSync(path.join(rootDir, 'index.html'), path.join(appDir, 'index.html'));
-
-console.log('✓ Successfully built and synchronized website in docs/');
+console.log('✓ Successfully mirrored web application directly to docs/ (Zero landing page overhead)');

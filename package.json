@@ -7,8 +7,7 @@
     "start": "npx serve docs -l 3000",
     "dev": "npx serve docs -l 3000",
     "serve": "npx serve docs",
-    "build": "node build-website.cjs",
-    "website": "npx serve docs -l 4000"
+    "build": "node build-website.cjs"
   },
   "keywords": [
     "study-planner",
