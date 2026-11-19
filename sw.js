@@ -2,10 +2,10 @@
  * Service Worker for Study Planner PWA
  * آکادمی دکتر شهروز فروتن کیا
  * طراح و توسعه‌دهنده: محمد شکیبا (Mohammad Shakiba)
- * نسخه: 1.0.11
+ * نسخه: 1.0.12
  */
 
-const CACHE_NAME = 'study-planner-pwa-v1.0.11';
+const CACHE_NAME = 'study-planner-pwa-v1.0.12';
 
 const PRECACHE_ASSETS = [
   './',
@@ -79,13 +79,34 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// استراتژی پاسخ‌دهی به درخواست‌ها (Cache-First with Network Fallback)
+// استراتژی پاسخ‌دهی به درخواست‌ها
 self.addEventListener('fetch', (event) => {
   // فقط درخواست‌های GET با پروتکل http/https را مدیریت کن
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
   if (!url.protocol.startsWith('http')) return;
 
+  // برای درخواست‌های ناوبری صفحه اصلی (HTML)، استراتژی Network-First جهت دریافت آنی تغییرات جدید
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseToCache = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+        }
+        return networkResponse;
+      }).catch(() => {
+        return caches.match(event.request).then((cached) => {
+          return cached || caches.match('./index.html') || caches.match('./');
+        });
+      })
+    );
+    return;
+  }
+
+  // برای فایل‌های استاتیک دیگر (فونت‌ها، تصاویر، آیکون‌ها): Cache-First با Fallback به شبکه
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
@@ -97,7 +118,7 @@ self.addEventListener('fetch', (event) => {
               cache.put(event.request, responseToCache);
             });
           }
-        }).catch(() => {/* وضعیت آفلاین، خطایی نیست */});
+        }).catch(() => {/* وضعیت آفلاین */});
 
         return cachedResponse;
       }
@@ -114,11 +135,6 @@ self.addEventListener('fetch', (event) => {
         });
 
         return networkResponse;
-      }).catch(() => {
-        // در صورت خطای شبکه و قطع اینترنت برای درخواست‌های ناوبری صفحه، فایل اصلی index.html را برگردان
-        if (event.request.mode === 'navigate') {
-          return caches.match('./index.html') || caches.match('./');
-        }
       });
     })
   );
