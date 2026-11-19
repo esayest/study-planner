@@ -1562,7 +1562,7 @@ body.auth-locked #main-app-container {
     const pattern = /(?:https?:\/\/|ftp:\/\/|www\.|t\.me\/)[^\s<>"'\u0060]+|\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b|&#[0-9]+;|&#x[0-9a-fA-F]+;|&[a-zA-Z]+;|[0-9]/gi;
     return String(input).replace(pattern, (match) => {
       if (match.length > 1 || match.startsWith('&')) {
-        const urlTrailingMatch = match.match(/^((?:https?:\/\/|ftp:\/\/|www\.|t\.me\/)[^\s<>"'\u0060]+?)([.,،؛!?)]]+)$/i);
+        const urlTrailingMatch = match.match(/^((?:https?:\/\/|ftp:\/\/|www\.|t\.me\/)[^\s<>"'\u0060]+?)([.,،؛!?)\]]+)$/i);
         if (urlTrailingMatch) {
           const urlPart = urlTrailingMatch[1];
           const trailingPunct = urlTrailingMatch[2];
@@ -2342,23 +2342,35 @@ body.auth-locked #main-app-container {
       .trim();
   }
 
+  function getFirstDefinedProp(obj, keys) {
+    if (!obj || typeof obj !== 'object') return undefined;
+    for (const k of keys) {
+      if (obj[k] !== undefined && obj[k] !== null) {
+        return obj[k];
+      }
+    }
+    return undefined;
+  }
+
   // استخراج خودکار و جامع فیلدهای مشخصات دانش‌آموز از نسخه‌های قدیمی و مترادف‌های فارسی و انگلیسی
   function normalizeLegacyStudent(src) {
     if (!src || typeof src !== 'object') return {};
     const s = { ...src };
+    const getFirst = (keys) => getFirstDefinedProp(s, keys);
 
     // ۱. نام و نام خانوادگی
-    const rawFullName = s.fullName || s.full_name || s.name || s.studentName || s.student_name ||
-      s['نام_کامل'] || s['نام کامل'] || s['نام_و_نام_خانوادگی'] || s['نام و نام خانوادگی'] ||
-      s['نام_دانش_آموز'] || s['نام دانش آموز'] || s['دانش‌آموز'] || s['دانش آموز'] || '';
+    const rawFullName = getFirst([
+      'fullName', 'full_name', 'name', 'studentName', 'student_name',
+      'نام_کامل', 'نام کامل', 'نام_و_نام_خانوادگی', 'نام و نام خانوادگی',
+      'نام_دانش_آموز', 'نام دانش آموز', 'دانش‌آموز', 'دانش آموز'
+    ]);
 
-    const rawFirstName = s.firstName || s.first_name || s.fname || s['نام_کوچک'] || s['نام کوچک'] || s['نام'] || '';
-    const rawLastName = s.lastName || s.last_name || s.family || s.familyName || s.family_name || s.lname ||
-      s['نام_خانوادگی'] || s['نام خانوادگی'] || s['فامیلی'] || '';
+    const rawFirstName = getFirst(['firstName', 'first_name', 'fname', 'نام_کوچک', 'نام کوچک', 'نام']);
+    const rawLastName = getFirst(['lastName', 'last_name', 'family', 'familyName', 'family_name', 'lname', 'نام_خانوادگی', 'نام خانوادگی', 'فامیلی']);
 
-    let fullName = String(rawFullName || '').trim();
-    let firstName = String(rawFirstName || '').trim();
-    let lastName = String(rawLastName || '').trim();
+    let fullName = String(rawFullName ?? '').trim();
+    let firstName = String(rawFirstName ?? '').trim();
+    let lastName = String(rawLastName ?? '').trim();
 
     if (!fullName && (firstName || lastName)) {
       fullName = `${firstName} ${lastName}`.trim();
@@ -2369,68 +2381,77 @@ body.auth-locked #main-app-container {
     }
 
     // ۲. نام مدرسه
-    const schoolName = String(
-      s.schoolName || s.school_name || s.school || s.schoolTitle || s.school_title ||
-      s['مدرسه'] || s['نام_مدرسه'] || s['نام مدرسه'] || s['دبیرستان'] || ''
-    ).trim();
+    const rawSchoolName = getFirst([
+      'schoolName', 'school_name', 'school', 'schoolTitle', 'school_title',
+      'مدرسه', 'نام_مدرسه', 'نام مدرسه', 'دبیرستان'
+    ]);
+    const schoolName = String(rawSchoolName ?? '').trim();
 
     // ۳. رشته تحصیلی
-    let fieldOfStudy = String(
-      s.fieldOfStudy || s.field_of_study || s.field || s.major || s.studyField || s.study_field || s.branch || s.reshteh ||
-      s['رشته'] || s['رشته_تحصیلی'] || s['رشته تحصیلی'] || ''
-    ).trim();
+    const rawField = getFirst([
+      'fieldOfStudy', 'field_of_study', 'field', 'major', 'studyField', 'study_field', 'branch', 'reshteh',
+      'رشته', 'رشته_تحصیلی', 'رشته تحصیلی'
+    ]);
+    let fieldOfStudy = String(rawField ?? '').trim();
 
     if (fieldOfStudy) {
       if (/تجربی/i.test(fieldOfStudy) && !/علوم/i.test(fieldOfStudy)) fieldOfStudy = 'علوم تجربی';
-      else if (/ریاضی/i.test(fieldOfStudy) && !/علوم/i.test(fieldOfStudy)) fieldOfStudy = 'علوم ریاضی و فنی';
+      else if (/ریاضی/i.test(fieldOfStudy)) fieldOfStudy = 'ریاضی و فیزیک';
       else if (/انسانی/i.test(fieldOfStudy) && !/ادبیات/i.test(fieldOfStudy)) fieldOfStudy = 'ادبیات و علوم انسانی';
       else if (/فرهنگیان|تربیت\s*معلم/i.test(fieldOfStudy) && !/دانشگاه/i.test(fieldOfStudy)) fieldOfStudy = 'دانشگاه فرهنگیان (تربیت معلم)';
-    } else {
+    } else if (rawField === undefined) {
       fieldOfStudy = 'علوم تجربی';
     }
 
-    // ۴. مشاور و مشاور ناظر (با مقادیر پیش‌فرض سازمانی در صورت عدم وجود)
-    const counselorName = String(
-      s.counselorName || s.counselor_name || s.counselor || s.advisor || s.consultant || s.moshaver ||
-      s['مشاور'] || s['نام_مشاور'] || s['نام مشاور'] || s['مشاور_تحصیلی'] || 'دکتر فروتن کیا'
-    ).trim() || 'دکتر فروتن کیا';
+    // ۴. مشاور و مشاور ناظر (با مقادیر پیش‌فرض سازمانی در صورت عدم وجود کلید)
+    const rawCounselor = getFirst([
+      'counselorName', 'counselor_name', 'counselor', 'advisor', 'consultant', 'moshaver',
+      'مشاور', 'نام_مشاور', 'نام مشاور', 'مشاور_تحصیلی'
+    ]);
+    const counselorName = rawCounselor !== undefined ? String(rawCounselor).trim() : 'دکتر فروتن کیا';
 
-    const supervisorCounselor = String(
-      s.supervisorCounselor || s.supervisor_counselor || s.supervisor || s.mentor || s.nazer ||
-      s['مشاور_ناظر'] || s['مشاور ناظر'] || s['ناظر'] || s['سرپرست'] || 'دکتر شهروز فروتن کیا'
-    ).trim() || 'دکتر شهروز فروتن کیا';
+    const rawSupervisor = getFirst([
+      'supervisorCounselor', 'supervisor_counselor', 'supervisor', 'mentor', 'nazer',
+      'مشاور_ناظر', 'مشاور ناظر', 'ناظر', 'سرپرست'
+    ]);
+    const supervisorCounselor = rawSupervisor !== undefined ? String(rawSupervisor).trim() : 'دکتر شهروز فروتن کیا';
 
     // ۵. تلفن همراه
-    const phone = String(
-      s.phone || s.phone_number || s.phoneNumber || s.mobile || s.mobileNumber || s.mobile_number ||
-      s.tel || s.cell || s.contact || s['تلفن'] || s['شماره_تماس'] || s['شماره تماس'] || s['موبایل'] ||
-      s['شماره_موبایل'] || s['شماره همراه'] || ''
-    ).trim();
+    const rawPhone = getFirst([
+      'phone', 'phone_number', 'phoneNumber', 'mobile', 'mobileNumber', 'mobile_number',
+      'tel', 'cell', 'contact', 'تلفن', 'شماره_تماس', 'شماره تماس', 'موبایل',
+      'شماره_موبایل', 'شماره همراه'
+    ]);
+    const phone = String(rawPhone ?? '').trim();
 
-    // ۶. آزمون آزمایشی
-    const exams = String(
-      s.exams || s.exam || s.targetExam || s.target_exam || s.tests || s.azmoon ||
-      s['آزمون'] || s['نام_آزمون'] || s['آزمون_هدف'] || s['آزمون آزمایشی'] || 'قلم‌چی و ماز'
-    ).trim() || 'قلم‌چی و ماز';
+    // ۶. آزمون آزمایشی (با مقدار پیش‌فرض سازمانی در صورت عدم وجود کلید)
+    const rawExams = getFirst([
+      'exams', 'exam', 'targetExam', 'target_exam', 'tests', 'azmoon',
+      'آزمون', 'نام_آزمون', 'آزمون_هدف', 'آزمون آزمایشی'
+    ]);
+    const exams = rawExams !== undefined ? String(rawExams).trim() : 'قلم‌چی و ماز';
 
-    // ۷. هفته مطالعاتی
-    let weeksPassed = String(
-      s.weeksPassed || s.weeks_passed || s.week || s.weekNumber || s.week_number || s.currentWeek || s.current_week ||
-      s['هفته'] || s['هفته_مطالعاتی'] || s['هفته مطالعاتی'] || s['شماره_هفته'] || '1'
-    ).trim() || '1';
+    // ۷. هفته مطالعاتی (با مقدار پیش‌فرض سازمانی در صورت عدم وجود کلید)
+    const rawWeeks = getFirst([
+      'weeksPassed', 'weeks_passed', 'week', 'weekNumber', 'week_number', 'currentWeek', 'current_week',
+      'هفته', 'هفته_مطالعاتی', 'هفته مطالعاتی', 'شماره_هفته'
+    ]);
+    let weeksPassed = rawWeeks !== undefined ? String(rawWeeks).trim() : '1';
 
     // ۸. بازه زمانی برنامه
-    const timeframe = String(
-      s.timeframe || s.time_frame || s.dateRange || s.date_range || s.period || s.dates || s.date || s.baze ||
-      s['بازه'] || s['بازه_زمانی'] || s['بازه زمانی'] || s['تاریخ'] || s['تاریخ_برنامه'] || ''
-    ).trim();
+    const rawTimeframe = getFirst([
+      'timeframe', 'time_frame', 'dateRange', 'date_range', 'period', 'dates', 'date', 'baze',
+      'بازه', 'بازه_زمانی', 'بازه زمانی', 'تاریخ', 'تاریخ_برنامه'
+    ]);
+    const timeframe = String(rawTimeframe ?? '').trim();
 
     // ۹. یادداشت‌ها و استراتژی مشاور
-    const extraNotes = String(
-      s.extraNotes || s.extra_notes || s.notes || s.description || s.strategy || s.advice ||
-      s.counselorNotes || s.counselor_notes || s.comments || s['توضیحات'] || s['یادداشت'] ||
-      s['استراتژی'] || s['نکات_مشاور'] || s['نکات مهم'] || ''
-    ).trim();
+    const rawExtraNotes = getFirst([
+      'extraNotes', 'extra_notes', 'notes', 'description', 'strategy', 'advice',
+      'counselorNotes', 'counselor_notes', 'comments', 'توضیحات', 'یادداشت',
+      'استراتژی', 'نکات_مشاور', 'نکات مهم'
+    ]);
+    const extraNotes = String(rawExtraNotes ?? '').trim();
 
     return {
       fullName,
@@ -3353,16 +3374,43 @@ body.auth-locked #main-app-container {
   let isCopyMode = false;
   let isMultiSelectMode = false;
   let hasPushedCopyHistory = false;
+  let pendingProgrammaticBacks = 0;
+
+  function silentHistoryBack() {
+    if (typeof window !== 'undefined' && window.history && typeof window.history.back === 'function') {
+      try {
+        pendingProgrammaticBacks++;
+        window.history.back();
+        setTimeout(() => {
+          if (pendingProgrammaticBacks > 0) {
+            pendingProgrammaticBacks--;
+            if (isCopyMode && !hasPushedCopyHistory) {
+              try {
+                window.history.pushState({ plannerCopyMode: true }, '');
+                hasPushedCopyHistory = true;
+              } catch (e) {}
+            }
+          }
+        }, 1000);
+      } catch (e) {
+        pendingProgrammaticBacks = Math.max(0, pendingProgrammaticBacks - 1);
+      }
+    }
+  }
 
   function enterCopyMode() {
     if (!isCopyMode) {
       isCopyMode = true;
       isMultiSelectMode = true;
       if (typeof window !== 'undefined' && window.history && typeof window.history.pushState === 'function') {
-        try {
-          window.history.pushState({ plannerCopyMode: true }, '');
-          hasPushedCopyHistory = true;
-        } catch (e) {}
+        if (pendingProgrammaticBacks === 0) {
+          try {
+            window.history.pushState({ plannerCopyMode: true }, '');
+            hasPushedCopyHistory = true;
+          } catch (e) {}
+        } else {
+          hasPushedCopyHistory = false;
+        }
       }
     }
   }
@@ -3864,6 +3912,19 @@ body.auth-locked #main-app-container {
 
       // خروج از حالت کپی در صورت لمس دکمه یا ژست بازگشت در موبایل (Back gesture / Back button on mobile)
       window.addEventListener('popstate', (e) => {
+        if (pendingProgrammaticBacks > 0) {
+          pendingProgrammaticBacks--;
+          if (isCopyMode && !hasPushedCopyHistory) {
+            if (typeof window !== 'undefined' && window.history && typeof window.history.pushState === 'function') {
+              try {
+                window.history.pushState({ plannerCopyMode: true }, '');
+                hasPushedCopyHistory = true;
+              } catch (err) {}
+            }
+          }
+          return;
+        }
+
         if (isCopyMode || isMultiSelectMode) {
           hasPushedCopyHistory = false;
           resetPlannerCopying();
@@ -4569,6 +4630,12 @@ body.auth-locked #main-app-container {
 
     const rowCount = appState.planner.rowCount;
     const orderedDays = getOrderedDays(appState.planner.startDay, appState.planner.dayCount);
+    if (!targetDayKey && lastActiveInputInfo && lastActiveInputInfo.day) {
+      targetDayKey = lastActiveInputInfo.day;
+      if (targetPartIdx === undefined || targetPartIdx === null) {
+        targetPartIdx = lastActiveInputInfo.row;
+      }
+    }
     const targetDayIdx = orderedDays.findIndex(d => d.key === targetDayKey);
 
     if (targetDayIdx === -1) return;
@@ -5320,11 +5387,7 @@ body.auth-locked #main-app-container {
     }
     if (hasPushedCopyHistory) {
       hasPushedCopyHistory = false;
-      if (typeof window !== 'undefined' && window.history && typeof window.history.back === 'function') {
-        try {
-          window.history.back();
-        } catch (e) {}
-      }
+      silentHistoryBack();
     }
   }
 
@@ -5905,10 +5968,16 @@ body.auth-locked #main-app-container {
     onConfirm = () => {},
     onCancel = () => {},
   }) {
-    let overlay = document.getElementById('app-confirm-modal-overlay');
-    if (overlay) overlay.remove();
+    const existingOverlays = document.querySelectorAll('#app-confirm-modal-overlay');
+    existingOverlays.forEach((oldOverlay) => {
+      if (typeof oldOverlay._closeModal === 'function') {
+        oldOverlay._closeModal();
+      } else {
+        oldOverlay.remove();
+      }
+    });
 
-    overlay = document.createElement('div');
+    const overlay = document.createElement('div');
     overlay.id = 'app-confirm-modal-overlay';
     overlay.className = 'fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-[60] p-4 transition-opacity';
 
@@ -5996,12 +6065,19 @@ body.auth-locked #main-app-container {
       if (isClosed) return;
       isClosed = true;
       document.removeEventListener('keydown', handleKeyDown);
+      overlay._closeModal = null;
       overlay.remove();
     };
 
+    overlay._closeModal = closeModal;
+
     const handleKeyDown = (e) => {
+      if (!overlay || (!overlay.isConnected && !document.body.contains(overlay))) {
+        document.removeEventListener('keydown', handleKeyDown);
+        return;
+      }
       const overlays = document.querySelectorAll('#app-confirm-modal-overlay');
-      if (overlays.length > 0 && overlays[overlays.length - 1] !== overlay) {
+      if (overlays.length === 0 || overlays[overlays.length - 1] !== overlay) {
         return;
       }
       if (e.key === 'Escape') {
@@ -7095,44 +7171,13 @@ body.auth-locked #main-app-container {
     let anyOverflow = false;
     for (let i = 0; i < studentPages.length; i++) {
       const page = studentPages[i];
-      const cards = page.querySelectorAll('.counselor-note-card');
       // بررسی سرریز بر اساس DOM واقعی مرورگر (ارتفاع استاندارد برگه A4 برابر ۷۹۴ پیکسل است)
       if (page.scrollHeight > 794) {
-        if (cards.length > 1) {
-          const overflow = page.scrollHeight - 794;
-          anyOverflow = true;
-          const currentBudget = getStudentPageBudget(i);
-          const minBudget = i === 0 ? 100 : 150;
-          setStudentPageBudget(i, Math.max(minBudget, currentBudget - Math.max(25, overflow + 15)));
-        } else if (cards.length === 1) {
-          // در صورتی که یک کارت به تنهایی موجب سرریز صفحه شود، شکستن آن در مرز کلمات انجام می‌گیرد
-          const cardP = cards[0].querySelector('p');
-          const noteText = cardP ? cardP.textContent.trim() : '';
-          if (noteText && noteText.length > 50) {
-            const mid = Math.floor(noteText.length / 2);
-            const spaceIdx = noteText.indexOf(' ', mid);
-            const splitAt = spaceIdx !== -1 ? spaceIdx : noteText.lastIndexOf(' ', mid);
-            if (splitAt > 0) {
-              const part1 = noteText.slice(0, splitAt).trim();
-              const part2 = noteText.slice(splitAt + 1).trim();
-              if (appState && appState.student && appState.student.extraNotes) {
-                const currentExtra = appState.student.extraNotes;
-                if (currentExtra.includes(noteText)) {
-                  appState.student.extraNotes = currentExtra.replace(noteText, part1 + '\n' + part2);
-                  anyOverflow = true;
-                } else {
-                  const latinNote = toLatinDigits(noteText);
-                  if (currentExtra.includes(latinNote)) {
-                    const latinP1 = toLatinDigits(part1);
-                    const latinP2 = toLatinDigits(part2);
-                    appState.student.extraNotes = currentExtra.replace(latinNote, latinP1 + '\n' + latinP2);
-                    anyOverflow = true;
-                  }
-                }
-              }
-            }
-          }
-        }
+        const overflow = page.scrollHeight - 794;
+        anyOverflow = true;
+        const currentBudget = getStudentPageBudget(i);
+        const minBudget = i === 0 ? 100 : 150;
+        setStudentPageBudget(i, Math.max(minBudget, currentBudget - Math.max(25, overflow + 15)));
       }
     }
 
@@ -7786,6 +7831,30 @@ body.auth-locked #main-app-container {
     return chunks;
   }
 
+  function splitNoteToFitBudget(text, budget) {
+    if (!text || text.length <= 40) return { part1: text, part2: '' };
+    const availableH = Math.max(44, budget - 10);
+    const maxLines = Math.max(1, Math.floor((availableH - 44) / 19) + 1);
+    let targetChars = maxLines * 77;
+    if (targetChars >= text.length) {
+      targetChars = Math.floor(text.length / 2);
+    }
+    targetChars = Math.max(20, Math.min(targetChars, text.length - 20));
+
+    let spaceIdx = text.lastIndexOf(' ', targetChars);
+    if (spaceIdx <= 0 || spaceIdx < targetChars * 0.4) {
+      spaceIdx = text.indexOf(' ', targetChars);
+    }
+    if (spaceIdx <= 0 || spaceIdx >= text.length - 10) {
+      spaceIdx = Math.floor(text.length / 2);
+    }
+
+    const part1 = text.slice(0, spaceIdx).trim();
+    const part2 = text.slice(spaceIdx).trim();
+    if (!part1) return { part1: text, part2: '' };
+    return { part1, part2 };
+  }
+
   function estimatePageNotesHeight(slice) {
     if (!slice || slice.length === 0) return 0;
     const useTwoColumns = true;
@@ -7866,6 +7935,15 @@ body.auth-locked #main-app-container {
 
     while (startIndex < notes.length) {
       const limit = getBudget(pageIndex);
+
+      // اگر اولین یادداشت باقیمانده به تنهایی از بودجه صفحه بیشتر باشد، شکستن آن در لایه نمایشی انجام می‌شود
+      if (estimatePageNotesHeight([notes[startIndex]]) > limit && notes[startIndex].length > 40) {
+        const splitResult = splitNoteToFitBudget(notes[startIndex], limit);
+        if (splitResult.part1 && splitResult.part2) {
+          notes.splice(startIndex, 1, splitResult.part1, splitResult.part2);
+        }
+      }
+
       const remaining = notes.slice(startIndex);
 
       if (estimatePageNotesHeight(remaining) <= limit) {
@@ -9323,8 +9401,8 @@ body.auth-locked #main-app-container {
       toggleDayCopy: (d) => toggleDaySelection(d),
       togglePartColCopy: (r) => togglePartColumnSelection(r),
       copySelectedParts: (keys) => copySelectedParts(keys),
-      pasteSinglePartToSelected: () => pasteSinglePartToSelected(),
-      pasteToSelectedParts: () => pasteToSelectedParts(),
+      pasteSinglePartToSelected: (d, r) => pasteSinglePartToSelected(d, r),
+      pasteToSelectedParts: (d, r) => pasteToSelectedParts(d, r),
       getDayLabel: (k) => getDayLabel(k),
       getPartClipboard: () => ({ count: selectedParts.size, items: getSelectedPartsPayload() }),
       isCopyMode: () => isCopyMode,
@@ -9411,6 +9489,12 @@ body.auth-locked #main-app-container {
       username: 'admin',
       hash: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
       displayName: 'مدیر آکادمی',
+      role: 'مدیر ارشد'
+    },
+    {
+      username: 'admin1234',
+      hash: 'ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270',
+      displayName: 'مدیر سیستم',
       role: 'مدیر ارشد'
     },
     {
@@ -9646,7 +9730,22 @@ body.auth-locked #main-app-container {
   const AUTH_STORAGE_KEY = 'forootan_planner_auth_session';
 
   // پیاده‌سازی مستقل و استاندارد SHA-256 (پشتیبانی کامل در تمام محیط‌ها حتی بدون HTTPS)
-  function pureJsSha256(ascii) {
+  function pureJsSha256(input) {
+    let ascii;
+    if (typeof TextEncoder !== 'undefined') {
+      const bytes = new TextEncoder().encode(String(input ?? ''));
+      let bin = '';
+      for (let idx = 0; idx < bytes.length; idx++) {
+        bin += String.fromCharCode(bytes[idx]);
+      }
+      ascii = bin;
+    } else {
+      try {
+        ascii = unescape(encodeURIComponent(String(input ?? '')));
+      } catch (_) {
+        ascii = String(input ?? '');
+      }
+    }
     function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
     const mathPow = Math.pow; const maxWord = mathPow(2, 32);
     let lengthProperty = 'length', i, j, result = '';
