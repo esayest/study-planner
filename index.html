@@ -1284,6 +1284,226 @@ body.auth-locked #main-app-container {
     display: none !important;
   }
 }
+
+/* ==================== استایل‌های حالت روشن (Light Mode) صفحه ورود ==================== */
+@media (prefers-color-scheme: light) {
+  body.auth-locked {
+    background-color: #f1f5f9 !important;
+  }
+  #auth-login-overlay {
+    background-color: rgba(241, 245, 249, 0.94) !important;
+    background-image: 
+      radial-gradient(at 10% 10%, rgba(219, 234, 254, 0.7) 0px, transparent 55%),
+      radial-gradient(at 90% 10%, rgba(254, 243, 199, 0.6) 0px, transparent 50%),
+      radial-gradient(at 50% 90%, rgba(226, 232, 240, 0.7) 0px, transparent 55%) !important;
+  }
+  #auth-card {
+    background-color: #ffffff !important;
+    background-image: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+    border-color: #e2e8f0 !important;
+    box-shadow: 
+      0 20px 25px -5px rgba(15, 23, 42, 0.08),
+      0 8px 10px -6px rgba(15, 23, 42, 0.04),
+      0 0 0 1px rgba(226, 232, 240, 0.8) !important;
+    color: #0f172a !important;
+  }
+  #auth-card-topbar {
+    background: linear-gradient(to right, #2563eb, #f59e0b, #2563eb) !important;
+  }
+  #auth-logo-badge {
+    background-image: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important;
+    border-color: #fde68a !important;
+    box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.15), 0 4px 6px -4px rgba(245, 158, 11, 0.1) !important;
+  }
+  #auth-logo-glow {
+    background-color: rgba(245, 158, 11, 0.18) !important;
+  }
+  #auth-logo-icon {
+    color: #d97706 !important;
+  }
+  #auth-title {
+    color: #0f172a !important;
+  }
+  #auth-subtitle {
+    color: #b45309 !important;
+  }
+  #auth-error-alert {
+    background-color: #fff1f2 !important;
+    border-color: #fecdd3 !important;
+    color: #be123c !important;
+  }
+  #auth-error-alert svg {
+    color: #e11d48 !important;
+  }
+  .auth-field-label {
+    color: #334155 !important;
+  }
+  .auth-input-icon,
+  #auth-login-form .relative .pointer-events-none {
+    color: #94a3b8 !important;
+  }
+  #auth-username,
+  #auth-password {
+    background-color: #f8fafc !important;
+    border-color: #cbd5e1 !important;
+    color: #0f172a !important;
+  }
+  #auth-username::placeholder,
+  #auth-password::placeholder {
+    color: #94a3b8 !important;
+  }
+  #auth-username:focus,
+  #auth-password:focus {
+    background-color: #ffffff !important;
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25) !important;
+  }
+  #btn-toggle-password {
+    color: #64748b !important;
+  }
+  #btn-toggle-password:hover {
+    color: #0f172a !important;
+  }
+  #auth-remember-label {
+    color: #475569 !important;
+  }
+  #auth-remember-label:hover {
+    color: #0f172a !important;
+  }
+  #auth-remember-me {
+    background-color: #ffffff !important;
+    border-color: #cbd5e1 !important;
+    accent-color: #d97706 !important;
+  }
+  #btn-submit-login {
+    background-image: linear-gradient(to right, #fbbf24, #f59e0b, #fbbf24) !important;
+    color: #0f172a !important;
+    box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.25), 0 4px 6px -4px rgba(245, 158, 11, 0.15) !important;
+  }
+  #btn-submit-login:hover {
+    background-image: linear-gradient(to right, #f59e0b, #d97706, #f59e0b) !important;
+    color: #0f172a !important;
+    box-shadow: 0 12px 20px -3px rgba(217, 119, 6, 0.35) !important;
+  }
+  #btn-login-spinner {
+    color: #0f172a !important;
+  }
+  #auth-footer-divider {
+    border-color: #e2e8f0 !important;
+  }
+  #auth-footer-text {
+    color: #64748b !important;
+  }
+}
+
+/* کلاس auth-light برای پشتیبانی هماهنگ با کلاینت */
+body.auth-locked.auth-light {
+  background-color: #f1f5f9 !important;
+}
+#auth-login-overlay.auth-light {
+  background-color: rgba(241, 245, 249, 0.94) !important;
+  background-image: 
+    radial-gradient(at 10% 10%, rgba(219, 234, 254, 0.7) 0px, transparent 55%),
+    radial-gradient(at 90% 10%, rgba(254, 243, 199, 0.6) 0px, transparent 50%),
+    radial-gradient(at 50% 90%, rgba(226, 232, 240, 0.7) 0px, transparent 55%) !important;
+}
+#auth-login-overlay.auth-light #auth-card {
+  background-color: #ffffff !important;
+  background-image: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: 
+    0 20px 25px -5px rgba(15, 23, 42, 0.08),
+    0 8px 10px -6px rgba(15, 23, 42, 0.04),
+    0 0 0 1px rgba(226, 232, 240, 0.8) !important;
+  color: #0f172a !important;
+}
+#auth-login-overlay.auth-light #auth-card-topbar {
+  background: linear-gradient(to right, #2563eb, #f59e0b, #2563eb) !important;
+}
+#auth-login-overlay.auth-light #auth-logo-badge {
+  background-image: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%) !important;
+  border-color: #fde68a !important;
+  box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.15), 0 4px 6px -4px rgba(245, 158, 11, 0.1) !important;
+}
+#auth-login-overlay.auth-light #auth-logo-glow {
+  background-color: rgba(245, 158, 11, 0.18) !important;
+}
+#auth-login-overlay.auth-light #auth-logo-icon {
+  color: #d97706 !important;
+}
+#auth-login-overlay.auth-light #auth-title {
+  color: #0f172a !important;
+}
+#auth-login-overlay.auth-light #auth-subtitle {
+  color: #b45309 !important;
+}
+#auth-login-overlay.auth-light #auth-error-alert {
+  background-color: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+  color: #be123c !important;
+}
+#auth-login-overlay.auth-light #auth-error-alert svg {
+  color: #e11d48 !important;
+}
+#auth-login-overlay.auth-light .auth-field-label {
+  color: #334155 !important;
+}
+#auth-login-overlay.auth-light .auth-input-icon,
+#auth-login-overlay.auth-light #auth-login-form .relative .pointer-events-none {
+  color: #94a3b8 !important;
+}
+#auth-login-overlay.auth-light #auth-username,
+#auth-login-overlay.auth-light #auth-password {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+#auth-login-overlay.auth-light #auth-username::placeholder,
+#auth-login-overlay.auth-light #auth-password::placeholder {
+  color: #94a3b8 !important;
+}
+#auth-login-overlay.auth-light #auth-username:focus,
+#auth-login-overlay.auth-light #auth-password:focus {
+  background-color: #ffffff !important;
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.25) !important;
+}
+#auth-login-overlay.auth-light #btn-toggle-password {
+  color: #64748b !important;
+}
+#auth-login-overlay.auth-light #btn-toggle-password:hover {
+  color: #0f172a !important;
+}
+#auth-login-overlay.auth-light #auth-remember-label {
+  color: #475569 !important;
+}
+#auth-login-overlay.auth-light #auth-remember-label:hover {
+  color: #0f172a !important;
+}
+#auth-login-overlay.auth-light #auth-remember-me {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  accent-color: #d97706 !important;
+}
+#auth-login-overlay.auth-light #btn-submit-login {
+  background-image: linear-gradient(to right, #fbbf24, #f59e0b, #fbbf24) !important;
+  color: #0f172a !important;
+  box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.25), 0 4px 6px -4px rgba(245, 158, 11, 0.15) !important;
+}
+#auth-login-overlay.auth-light #btn-submit-login:hover {
+  background-image: linear-gradient(to right, #f59e0b, #d97706, #f59e0b) !important;
+  color: #0f172a !important;
+  box-shadow: 0 12px 20px -3px rgba(217, 119, 6, 0.35) !important;
+}
+#auth-login-overlay.auth-light #btn-login-spinner {
+  color: #0f172a !important;
+}
+#auth-login-overlay.auth-light #auth-footer-divider {
+  border-color: #e2e8f0 !important;
+}
+#auth-login-overlay.auth-light #auth-footer-text {
+  color: #64748b !important;
+}
   </style>
 </head>
 <body class="auth-locked bg-slate-900 text-slate-800 antialiased h-screen h-dvh overflow-hidden flex flex-col selection:bg-amber-500 selection:text-white">
@@ -1292,18 +1512,18 @@ body.auth-locked #main-app-container {
   <div id="auth-login-overlay" class="fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4 overflow-y-auto selection:bg-amber-500 selection:text-white" dir="rtl">
     <div class="relative w-full max-w-md bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl text-white overflow-hidden transition-all duration-300" id="auth-card">
       <!-- نوار طلایی-آبی دکوراتیو بالا -->
-      <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-blue-600 via-amber-400 to-blue-600"></div>
+      <div id="auth-card-topbar" class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-blue-600 via-amber-400 to-blue-600"></div>
 
       <!-- سربرگ نشان و عنوان -->
       <div class="text-center mb-6 pt-2">
-        <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/80 flex items-center justify-center shadow-lg shadow-black/40 relative">
-          <div class="absolute inset-0 rounded-2xl bg-amber-400/10 blur-md pointer-events-none"></div>
-          <svg class="w-8 h-8 sm:w-10 sm:h-10 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div id="auth-logo-badge" class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/80 flex items-center justify-center shadow-lg shadow-black/40 relative">
+          <div id="auth-logo-glow" class="absolute inset-0 rounded-2xl bg-amber-400/10 blur-md pointer-events-none"></div>
+          <svg id="auth-logo-icon" class="w-8 h-8 sm:w-10 sm:h-10 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
           </svg>
         </div>
-        <h2 class="text-lg sm:text-xl font-bold font-peyda text-white tracking-wide">سامانه برنامه‌ریزی تحصیلی</h2>
-        <p class="text-xs sm:text-sm text-amber-400/90 font-medium mt-1">آکادمی مشاوره دکتر شهروز فروتن کیا</p>
+        <h2 id="auth-title" class="text-lg sm:text-xl font-bold font-peyda text-white tracking-wide">سامانه برنامه‌ریزی تحصیلی</h2>
+        <p id="auth-subtitle" class="text-xs sm:text-sm text-amber-400/90 font-medium mt-1">آکادمی مشاوره دکتر شهروز فروتن کیا</p>
       </div>
 
       <!-- کادر نمایش خطای ورود -->
@@ -1318,7 +1538,7 @@ body.auth-locked #main-app-container {
       <form id="auth-login-form" class="space-y-4" autocomplete="on">
         <!-- نام کاربری -->
         <div>
-          <label for="auth-username" class="block text-xs font-medium text-slate-300 mb-1.5">نام کاربری</label>
+          <label for="auth-username" class="auth-field-label block text-xs font-medium text-slate-300 mb-1.5">نام کاربری</label>
           <div class="relative">
             <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1331,7 +1551,7 @@ body.auth-locked #main-app-container {
 
         <!-- رمز عبور -->
         <div>
-          <label for="auth-password" class="block text-xs font-medium text-slate-300 mb-1.5">رمز عبور</label>
+          <label for="auth-password" class="auth-field-label block text-xs font-medium text-slate-300 mb-1.5">رمز عبور</label>
           <div class="relative">
             <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1348,7 +1568,7 @@ body.auth-locked #main-app-container {
 
         <!-- به خاطر سپردن -->
         <div class="flex items-center justify-between text-xs pt-1">
-          <label class="flex items-center gap-2 cursor-pointer select-none text-slate-300 hover:text-white transition">
+          <label id="auth-remember-label" class="flex items-center gap-2 cursor-pointer select-none text-slate-300 hover:text-white transition">
             <input type="checkbox" id="auth-remember-me" checked class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-amber-500 focus:ring-0 focus:ring-offset-0 cursor-pointer">
             <span>مرا در این دستگاه به خاطر بسپار</span>
           </label>
@@ -1362,9 +1582,9 @@ body.auth-locked #main-app-container {
       </form>
 
       <!-- پانویس کادر -->
-      <div class="mt-6 pt-4 border-t border-slate-800/80 text-center">
-        <p class="text-[11px] text-slate-400 leading-relaxed">
-          دسترسی به این سامانه اختصاصی بوده و کلیه اطلاعات دفترچه‌ها به صورت محلی در مرورگر شما ذخیره و پردازش می‌گردند.
+      <div id="auth-footer-divider" class="mt-6 pt-4 border-t border-slate-800/80 text-center">
+        <p id="auth-footer-text" class="text-[11px] text-slate-400 leading-relaxed">
+          دسترسی به این سامانه اختصاصی بوده و کلیه اطلاعات به صورت محلی در مرورگر شما ذخیره و پردازش می‌گردند.
         </p>
       </div>
     </div>
@@ -9878,10 +10098,37 @@ body.auth-locked #main-app-container {
     }
   }
 
+  // هماهنگی خودکار حالت روشن صفحه ورود بر اساس تنظیمات کلاینت کاربر
+  function syncAuthColorScheme() {
+    try {
+      const isClientLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      const overlay = document.getElementById('auth-login-overlay');
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+      const isLocked = document.body.classList.contains('auth-locked');
+
+      if (overlay) {
+        overlay.classList.toggle('auth-light', !!isClientLight);
+      }
+      if (isLocked) {
+        document.body.classList.toggle('auth-light', !!isClientLight);
+      } else {
+        document.body.classList.remove('auth-light');
+      }
+
+      if (metaThemeColor) {
+        metaThemeColor.setAttribute('content', (isLocked && isClientLight) ? '#f1f5f9' : '#0f172a');
+      }
+    } catch (e) {
+      console.warn('[Auth Theme]', e);
+    }
+  }
+
   function applyAuthenticatedUI(user) {
     document.body.classList.remove('auth-locked');
+    document.body.classList.remove('auth-light');
     const overlay = document.getElementById('auth-login-overlay');
     if (overlay) overlay.classList.add('hidden');
+    syncAuthColorScheme();
 
     const userBar = document.getElementById('auth-user-bar');
     const usernameBadge = document.getElementById('auth-current-username');
@@ -9898,6 +10145,7 @@ body.auth-locked #main-app-container {
     document.body.classList.add('auth-locked');
     const overlay = document.getElementById('auth-login-overlay');
     if (overlay) overlay.classList.remove('hidden');
+    syncAuthColorScheme();
 
     const userBar = document.getElementById('auth-user-bar');
     if (userBar) {
@@ -10024,6 +10272,19 @@ body.auth-locked #main-app-container {
         }
       });
     }
+
+    // هماهنگی خودکار رویداد تغییر حالت تاریک/روشن سیستم کاربر
+    try {
+      if (window.matchMedia) {
+        const schemeQuery = window.matchMedia('(prefers-color-scheme: light)');
+        if (schemeQuery.addEventListener) {
+          schemeQuery.addEventListener('change', syncAuthColorScheme);
+        } else if (schemeQuery.addListener) {
+          schemeQuery.addListener(syncAuthColorScheme);
+        }
+      }
+    } catch (e) {}
+    syncAuthColorScheme();
 
     // دکمه خروج (Logout)
     if (btnLogout) {
