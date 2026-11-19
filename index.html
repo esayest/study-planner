@@ -771,7 +771,8 @@ body, input, textarea, select, button, table, .a4-page {
 
 /* سنتر نوری تب‌های پایه در گزارش انسانی */
 .btn-humanities-grade-tab,
-.btn-tajrobi-grade-tab {
+.btn-tajrobi-grade-tab,
+.btn-riyazi-grade-tab {
   display: inline-flex !important;
   align-items: center !important;
   padding-top: 6px !important;
@@ -813,7 +814,8 @@ body, input, textarea, select, button, table, .a4-page {
 }
 
 .humanities-progress-input,
-.tajrobi-progress-input {
+.tajrobi-progress-input,
+.riyazi-progress-input {
   display: block !important;
   width: 100% !important;
   text-align: center !important;
@@ -1956,6 +1958,73 @@ body.auth-locked #main-app-container {
     return field === 'علوم تجربی' || field.includes('تجربی');
   }
 
+  // ماتریس دروس رشته ریاضی و فیزیک (صفحه ۴)
+  const RIYAZI_SUBJECTS = {
+    grade10: [
+      { id: 'shimi10', name: 'شیمی ۱۰' },
+      { id: 'fizik10', name: 'فیزیک ۱۰' },
+      { id: 'riyazi10', name: 'ریاضی ۱۰' },
+      { id: 'hendeseh10', name: 'هندسه ۱۰' },
+      { id: 'arabi10', name: 'عربی ۱۰' },
+      { id: 'zaban10', name: 'زبان ۱۰' },
+      { id: 'farsi10', name: 'فارسی ۱۰' },
+      { id: 'dini10', name: 'دینی ۱۰' },
+    ],
+    grade11: [
+      { id: 'shimi11', name: 'شیمی ۱۱' },
+      { id: 'fizik11', name: 'فیزیک ۱۱' },
+      { id: 'hesaban11', name: 'حسابان ۱۱' },
+      { id: 'hendeseh11', name: 'هندسه ۱۱' },
+      { id: 'amar', name: 'آمار و احتمال' },
+      { id: 'zamin', name: 'زمین' },
+      { id: 'arabi11', name: 'عربی ۱۱' },
+      { id: 'zaban11', name: 'زبان ۱۱' },
+      { id: 'farsi11', name: 'فارسی ۱۱' },
+      { id: 'dini11', name: 'دینی ۱۱' },
+    ],
+    grade12: [
+      { id: 'shimi12', name: 'شیمی ۱۲' },
+      { id: 'fizik12', name: 'فیزیک ۱۲' },
+      { id: 'hesaban12', name: 'حسابان ۱۲' },
+      { id: 'hendeseh12', name: 'هندسه ۱۲' },
+      { id: 'gosasteh', name: 'گسسته' },
+      { id: 'hoviat', name: 'هویت' },
+      { id: 'salamat', name: 'سلامت' },
+      { id: 'arabi12', name: 'عربی ۱۲' },
+      { id: 'zaban12', name: 'زبان ۱۲' },
+      { id: 'farsi12', name: 'فارسی ۱۲' },
+      { id: 'dini12', name: 'دینی ۱۲' },
+    ],
+    farhangian: [
+      { id: 'hoosh', name: 'هوش' },
+      { id: 'maharat', name: 'مهارت' },
+      { id: 'dini10', name: 'دینی دهم' },
+      { id: 'dini11', name: 'دینی یازدهم' },
+    ],
+  };
+
+  function getInitialRiyaziProgress() {
+    const progress = {};
+    Object.keys(RIYAZI_SUBJECTS).forEach(gradeKey => {
+      progress[gradeKey] = {};
+      RIYAZI_SUBJECTS[gradeKey].forEach(subj => {
+        progress[gradeKey][subj.id] = {
+          status: '',
+          r1: '',
+          r2: '',
+          r3: '',
+        };
+      });
+    });
+    return progress;
+  }
+
+  function isRiyaziField(state) {
+    const field = (state && state.student && state.student.fieldOfStudy) ? String(state.student.fieldOfStudy).trim() : '';
+    return field === 'ریاضی و فیزیک' || field === 'ریاضی فیزیک' || field.includes('ریاضی');
+  }
+
+
   function isHumanitiesField(state) {
     const field = (state && state.student && state.student.fieldOfStudy) ? String(state.student.fieldOfStudy).trim() : '';
     return field === 'ادبیات و علوم انسانی' || field.includes('انسانی');
@@ -2520,6 +2589,7 @@ body.auth-locked #main-app-container {
       books,
       humanitiesProgress: isPlainObject(r.humanitiesProgress) ? r.humanitiesProgress : defaults.report.humanitiesProgress,
       tajrobiProgress: isPlainObject(r.tajrobiProgress) ? r.tajrobiProgress : defaults.report.tajrobiProgress,
+      riyaziProgress: isPlainObject(r.riyaziProgress) ? r.riyaziProgress : defaults.report.riyaziProgress,
     };
   }
 
@@ -2712,6 +2782,7 @@ body.auth-locked #main-app-container {
       report: {
         humanitiesProgress: getInitialHumanitiesProgress(),
         tajrobiProgress: getInitialTajrobiProgress(),
+        riyaziProgress: getInitialRiyaziProgress(),
         books: [
           {
             id: 'b1',
@@ -2956,6 +3027,7 @@ body.auth-locked #main-app-container {
         "report": {
             "humanitiesProgress": getInitialHumanitiesProgress(),
             "tajrobiProgress": getInitialTajrobiProgress(),
+            "riyaziProgress": getInitialRiyaziProgress(),
             "books": [
                 {
                     "id": "b1",
@@ -3509,6 +3581,31 @@ body.auth-locked #main-app-container {
           report.tajrobiProgress[gradeKey] = defaultTaj[gradeKey] || {};
         } else {
           const subjects = TAJROBI_SUBJECTS[gradeKey] || [];
+          subjects.forEach(subj => {
+            const entry = gradeObj[subj.id];
+            if (!isPlainObject(entry)) {
+              gradeObj[subj.id] = { status: '', r1: '', r2: '', r3: '' };
+            } else {
+              entry.status = (entry.status !== undefined && entry.status !== null) ? String(entry.status).slice(0, 50) : '';
+              entry.r1 = (entry.r1 !== undefined && entry.r1 !== null) ? String(entry.r1).slice(0, 50) : '';
+              entry.r2 = (entry.r2 !== undefined && entry.r2 !== null) ? String(entry.r2).slice(0, 50) : '';
+              entry.r3 = (entry.r3 !== undefined && entry.r3 !== null) ? String(entry.r3).slice(0, 50) : '';
+            }
+          });
+        }
+      });
+    }
+
+    const defaultRiy = getInitialRiyaziProgress();
+    if (!isPlainObject(report.riyaziProgress)) {
+      report.riyaziProgress = defaultRiy;
+    } else {
+      ['grade10', 'grade11', 'grade12', 'farhangian'].forEach(gradeKey => {
+        const gradeObj = report.riyaziProgress[gradeKey];
+        if (!isPlainObject(gradeObj)) {
+          report.riyaziProgress[gradeKey] = defaultRiy[gradeKey] || {};
+        } else {
+          const subjects = RIYAZI_SUBJECTS[gradeKey] || [];
           subjects.forEach(subj => {
             const entry = gradeObj[subj.id];
             if (!isPlainObject(entry)) {
@@ -6363,12 +6460,180 @@ body.auth-locked #main-app-container {
     });
   }
 
+  // ==================== ویرایشگر گزارش وضعیت ریاضی و فیزیک ====================
+  let riyaziEditorActiveGrade = 'grade10';
+
+  function renderRiyaziGradeEditorTable(gradeKey, title, badgeColor) {
+    const subjects = RIYAZI_SUBJECTS[gradeKey] || [];
+    const progress = (appState.report && appState.report.riyaziProgress) || {};
+    const gradeData = progress[gradeKey] || {};
+    const isFarhangian = gradeKey === 'farhangian';
+    const farhangianClass = isFarhangian ? 'is-farhangian' : '';
+    const tableMinW = isFarhangian ? 'min-w-[540px]' : 'min-w-[1040px]';
+
+    return `
+      <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-xs">
+        <div class="p-2.5 bg-indigo-950 text-white flex items-center justify-between text-xs font-bold border-b border-indigo-900">
+          <div class="flex items-center gap-2">
+            <span class="${badgeColor} w-2 h-2 rounded-full shadow-2xs"></span>
+            <span class="text-white text-xs font-bold">${title}</span>
+            <span class="text-indigo-200 text-[10.5px] font-normal">(${toPersianDigits(subjects.length)} درس)</span>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="riyazi-editor-table ${farhangianClass} w-full ${tableMinW} text-center text-xs divide-y divide-slate-200">
+            <thead class="bg-slate-50 text-slate-800 font-bold">
+              <tr class="divide-x divide-x-reverse divide-slate-200">
+                <th class="py-2 px-2 w-24 min-w-[84px] bg-slate-100 text-slate-900 text-right pr-3 text-xs whitespace-nowrap font-bold">مرحله / درس</th>
+                ${subjects.map(s => `<th class="py-2 px-1 text-[11px] font-bold text-indigo-950 whitespace-nowrap min-w-[76px] sm:min-w-[84px]">${s.name}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 font-medium">
+              ${PROGRESS_ROWS.map(row => `
+                <tr class="hover:bg-indigo-50/20 transition-colors divide-x divide-x-reverse divide-slate-200">
+                  <td class="py-1.5 px-2 min-w-[84px] font-bold text-slate-700 bg-slate-50/90 text-right pr-3 text-[11px] whitespace-nowrap align-middle">${row.label}:</td>
+                  ${subjects.map(s => {
+                    const val = (gradeData[s.id] && gradeData[s.id][row.key] !== undefined && gradeData[s.id][row.key] !== null) ? gradeData[s.id][row.key] : '';
+                    return `
+                      <td class="p-1 min-w-[76px] sm:min-w-[84px] align-middle">
+                        <textarea rows="1" style="text-align: center !important;" class="riyazi-progress-input w-full p-1.5 text-center font-bold text-xs rounded-lg border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition bg-white text-indigo-950 resize-none overflow-hidden leading-snug block" data-grade="${gradeKey}" data-subject="${s.id}" data-row="${row.key}" placeholder="-">${sanitizeHtml(val)}</textarea>
+                      </td>
+                    `;
+                  }).join('')}
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderRiyaziReportEditorHtml() {
+    let tablesHtml = '';
+    if (riyaziEditorActiveGrade === 'all') {
+      tablesHtml = `
+        <div class="space-y-4">
+          ${renderRiyaziGradeEditorTable('grade10', 'پایه دهم', 'bg-amber-400')}
+          ${renderRiyaziGradeEditorTable('grade11', 'پایه یازدهم', 'bg-purple-400')}
+          ${renderRiyaziGradeEditorTable('grade12', 'پایه دوازدهم', 'bg-sky-400')}
+          ${renderRiyaziGradeEditorTable('farhangian', 'کنکور فرهنگیان', 'bg-emerald-400')}
+        </div>
+      `;
+    } else if (riyaziEditorActiveGrade === 'grade11') {
+      tablesHtml = renderRiyaziGradeEditorTable('grade11', 'پایه یازدهم', 'bg-purple-400');
+    } else if (riyaziEditorActiveGrade === 'grade12') {
+      tablesHtml = renderRiyaziGradeEditorTable('grade12', 'پایه دوازدهم', 'bg-sky-400');
+    } else if (riyaziEditorActiveGrade === 'farhangian') {
+      tablesHtml = renderRiyaziGradeEditorTable('farhangian', 'کنکور فرهنگیان', 'bg-emerald-400');
+    } else {
+      tablesHtml = renderRiyaziGradeEditorTable('grade10', 'پایه دهم', 'bg-amber-400');
+    }
+
+    return `
+      <div class="space-y-4">
+        <!-- تب‌های انتخاب پایه تحصیلی ریاضی و فیزیک -->
+        <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-2">
+          <button type="button" class="btn-riyazi-grade-tab px-3 py-1.5 rounded-xl text-xs font-bold transition ${riyaziEditorActiveGrade === 'grade10' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" data-grade="grade10">
+            پایه دهم (۸ درس)
+          </button>
+          <button type="button" class="btn-riyazi-grade-tab px-3 py-1.5 rounded-xl text-xs font-bold transition ${riyaziEditorActiveGrade === 'grade11' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" data-grade="grade11">
+            پایه یازدهم (۱۰ درس)
+          </button>
+          <button type="button" class="btn-riyazi-grade-tab px-3 py-1.5 rounded-xl text-xs font-bold transition ${riyaziEditorActiveGrade === 'grade12' ? 'bg-indigo-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" data-grade="grade12">
+            پایه دوازدهم (۱۱ درس)
+          </button>
+          <button type="button" class="btn-riyazi-grade-tab px-3 py-1.5 rounded-xl text-xs font-bold transition ${riyaziEditorActiveGrade === 'farhangian' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" data-grade="farhangian">
+            کنکور فرهنگیان (۴ درس)
+          </button>
+          <button type="button" class="btn-riyazi-grade-tab px-3 py-1.5 rounded-xl text-xs font-bold transition ${riyaziEditorActiveGrade === 'all' ? 'bg-purple-700 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" data-grade="all">
+            نمای یکپارچه (همه پایه‌ها)
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-amber-200/70 text-amber-900 font-bold text-xs shrink-0">↔</span>
+          <span class="font-bold text-amber-950">
+            برای دسترسی و ویرایش درس‌های دیگر، جدول را به چپ یا راست اسکرول کنید.
+          </span>
+        </div>
+
+        <!-- جدول ویرایش پایه انتخابی -->
+        ${tablesHtml}
+      </div>
+    `;
+  }
+
+  function syncRiyaziRowHeight(tr) {
+    if (!tr) return;
+    const inputs = Array.from(tr.querySelectorAll('.riyazi-progress-input'));
+    if (inputs.length === 0) return;
+    inputs.forEach(el => { el.style.height = 'auto'; });
+    let maxH = 32;
+    inputs.forEach(el => {
+      if (el.value && el.value.trim() !== '') {
+        if (el.scrollHeight > maxH) {
+          maxH = el.scrollHeight;
+        }
+      }
+    });
+    inputs.forEach(el => {
+      el.style.height = maxH + 'px';
+    });
+  }
+
+  function syncAllRiyaziRowHeights() {
+    document.querySelectorAll('.riyazi-editor-table tbody tr').forEach(tr => {
+      syncRiyaziRowHeight(tr);
+    });
+  }
+
+  function bindRiyaziReportEditorEvents() {
+    document.querySelectorAll('.btn-riyazi-grade-tab').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const grade = e.currentTarget.getAttribute('data-grade');
+        if (grade) {
+          riyaziEditorActiveGrade = grade;
+          renderEditorPanel();
+        }
+      });
+    });
+
+    syncAllRiyaziRowHeights();
+
+    document.querySelectorAll('.riyazi-progress-input').forEach(input => {
+      input.addEventListener('input', (e) => {
+        syncRiyaziRowHeight(e.target.closest('tr'));
+        resetReportBudgets();
+        const grade = e.target.getAttribute('data-grade');
+        const subject = e.target.getAttribute('data-subject');
+        const row = e.target.getAttribute('data-row');
+        if (!appState.report.riyaziProgress) {
+          appState.report.riyaziProgress = getInitialRiyaziProgress();
+        }
+        if (!appState.report.riyaziProgress[grade]) {
+          appState.report.riyaziProgress[grade] = {};
+        }
+        if (!appState.report.riyaziProgress[grade][subject]) {
+          appState.report.riyaziProgress[grade][subject] = { status: '', r1: '', r2: '', r3: '' };
+        }
+        appState.report.riyaziProgress[grade][subject][row] = e.target.value;
+        requestPagePatch('report');
+        debouncedSaveToLocalStorage(appState);
+      });
+    });
+  }
+
+
   function renderReportEditorHtml() {
     if (isHumanitiesField(appState)) {
       return renderHumanitiesReportEditorHtml();
     }
     if (isTajrobiField(appState)) {
       return renderTajrobiReportEditorHtml();
+    }
+    if (isRiyaziField(appState)) {
+      return renderRiyaziReportEditorHtml();
     }
     return renderGeneralReportEditorHtml();
   }
@@ -6532,6 +6797,8 @@ body.auth-locked #main-app-container {
       bindHumanitiesReportEditorEvents();
     } else if (isTajrobiField(appState)) {
       bindTajrobiReportEditorEvents();
+    } else if (isRiyaziField(appState)) {
+      bindRiyaziReportEditorEvents();
     } else {
       bindGeneralReportEditorEvents();
     }
@@ -6927,7 +7194,7 @@ body.auth-locked #main-app-container {
     }
     if (reportPages[0].offsetHeight === 0) return false;
 
-    const isHum = isHumanitiesField(appState);
+    const isHum = isHumanitiesField(appState) || isTajrobiField(appState) || isRiyaziField(appState);
     let anyOverflow = false;
 
     for (let i = 0; i < reportPages.length; i++) {
@@ -8175,12 +8442,251 @@ body.auth-locked #main-app-container {
     }).join('');
   }
 
+  // ==================== پیش‌نمایش و رندر گزارش ریاضی و فیزیک ====================
+  function estimateRiyaziGradeHeight(progress, g) {
+    let h = 26; // thead row
+    const subjects = RIYAZI_SUBJECTS[g] || [];
+    for (const row of PROGRESS_ROWS) {
+      let maxLines = 1;
+      for (const s of subjects) {
+        const val = (progress && progress[g] && progress[g][s.id] && progress[g][s.id][row.key] !== undefined && progress[g][s.id][row.key] !== null) ? progress[g][s.id][row.key] : '';
+        const str = String(val).trim();
+        if (str) {
+          const charLimit = g === 'grade10' ? 14 : (g === 'grade11' ? 12 : 11);
+          const lines = Math.max(1, Math.ceil(str.length / charLimit));
+          if (lines > maxLines) maxLines = lines;
+        }
+      }
+      h += maxLines <= 1 ? 26 : (26 + (maxLines - 1) * 16);
+    }
+    return h;
+  }
+
+  function partitionRiyaziReport(progress, maxPageBudget = 640) {
+    const h10 = estimateRiyaziGradeHeight(progress, 'grade10');
+    const h11 = estimateRiyaziGradeHeight(progress, 'grade11');
+    const h12 = estimateRiyaziGradeHeight(progress, 'grade12');
+    const hFar = estimateFarhangianHeight(progress);
+    const table1Overhead = 14;
+    const table1Height = table1Overhead + h10 + h11 + h12;
+    const totalAll = table1Height + hFar;
+
+    // حالت ۱: تمام جداول به راحتی روی یک صفحه جا می‌شوند
+    if (totalAll <= maxPageBudget) {
+      return [{ grades: ['grade10', 'grade11', 'grade12'], hasFarhangian: true }];
+    }
+
+    // حالت ۲: تفکیک هوشمند ۲ صفحه‌ای: دهم + یازدهم در صفحه ۱، دوازدهم + فرهنگیان در صفحه ۲
+    const hP1 = table1Overhead + h10 + h11;
+    const hP2 = table1Overhead + h12 + hFar;
+
+    if (hP1 <= maxPageBudget && hP2 <= maxPageBudget) {
+      return [
+        { grades: ['grade10', 'grade11'], hasFarhangian: false },
+        { grades: ['grade12'], hasFarhangian: true }
+      ];
+    }
+
+    // حالت ۳: در صورتی که جدول ۱ به تنهایی روی صفحه جا شود ولی دوازدهم+فرهنگیان زیاد باشد
+    if (table1Height <= maxPageBudget && hFar <= maxPageBudget) {
+      return [
+        { grades: ['grade10', 'grade11', 'grade12'], hasFarhangian: false },
+        { grades: [], hasFarhangian: true }
+      ];
+    }
+
+    // حالت ۴: تفکیک ۳ صفحه‌ای زمانی که سطرها بسیار پر باشند
+    if (hP1 <= maxPageBudget) {
+      return [
+        { grades: ['grade10', 'grade11'], hasFarhangian: false },
+        { grades: ['grade12'], hasFarhangian: false },
+        { grades: [], hasFarhangian: true }
+      ];
+    }
+
+    // حالت حداکثری ۴ صفحه‌ای برای متون فوق‌العاده حجیم
+    return [
+      { grades: ['grade10'], hasFarhangian: false },
+      { grades: ['grade11'], hasFarhangian: false },
+      { grades: ['grade12'], hasFarhangian: false },
+      { grades: [], hasFarhangian: true }
+    ];
+  }
+
+  function shouldSplitRiyaziReport(progress) {
+    const pages = partitionRiyaziReport(progress, humanitiesPageBudget);
+    return pages.length > 1;
+  }
+
+  function renderRiyaziGradeSection(gradeKey, progress, cfg) {
+    let theadClass = cfg.humanitiesG10Thead;
+    let thTextClass = cfg.humanitiesG10ThText;
+    let title = 'پایه دهم';
+    let getStatusRowBg = (isStatus, rIdx) => isStatus ? cfg.humanitiesStatusRow : (rIdx % 2 === 0 ? 'bg-white' : 'bg-slate-50/65');
+    let getHeaderBg = (isStatus) => isStatus ? cfg.humanitiesStatusHeader : 'bg-slate-100/90 text-slate-700';
+    let getCellTextClass = (hasVal) => hasVal ? (cfg.humanitiesStatusCell + ' bg-amber-50/60 text-[11.5px]') : 'text-slate-300 font-normal';
+    let colWidth = 'w-[11.25%]'; // ۸ درس دهم: ۸ × ۱۱.۲۵ = ۹۰٪ + ۱۰٪ عنوان
+
+    if (gradeKey === 'grade11') {
+      theadClass = cfg.humanitiesG11Thead;
+      thTextClass = cfg.humanitiesG11ThText;
+      title = 'پایه یازدهم';
+      getStatusRowBg = (isStatus, rIdx) => isStatus ? 'bg-purple-50/40' : (rIdx % 2 === 0 ? 'bg-white' : 'bg-slate-50/65');
+      getHeaderBg = (isStatus) => isStatus ? 'bg-purple-100/85 text-purple-950' : 'bg-slate-100/90 text-slate-700';
+      getCellTextClass = (hasVal) => hasVal ? 'text-purple-950 bg-amber-50/60 text-[11.5px]' : 'text-slate-300 font-normal';
+      colWidth = 'w-[9%]'; // ۱۰ درس یازدهم: ۱۰ × ۹ = ۹۰٪ + ۱۰٪ عنوان
+    } else if (gradeKey === 'grade12') {
+      theadClass = cfg.humanitiesG12Thead;
+      thTextClass = cfg.humanitiesG12ThText;
+      title = 'پایه دوازدهم';
+      getStatusRowBg = (isStatus, rIdx) => isStatus ? cfg.humanitiesG12StatusRow : (rIdx % 2 === 0 ? 'bg-white' : 'bg-slate-50/65');
+      getHeaderBg = (isStatus) => isStatus ? cfg.humanitiesG12StatusHeader : 'bg-slate-100/90 text-slate-700';
+      getCellTextClass = (hasVal) => hasVal ? (cfg.humanitiesG12StatusCell + ' bg-amber-50/60 text-[11.5px]') : 'text-slate-300 font-normal';
+      colWidth = 'w-[8.18%]'; // ۱۱ درس دوازدهم: ۱۱ × ۸.۱۸ = ۸۹.۹۸٪ + ۱۰٪ عنوان
+    }
+
+    const subjects = RIYAZI_SUBJECTS[gradeKey] || [];
+    const gradeData = (progress && progress[gradeKey]) || {};
+
+    return `
+      <table class="w-full table-fixed border-collapse text-center">
+        <thead>
+          <tr class="${theadClass}">
+            <th class="py-1.5 px-1 w-[10%] text-center ${thTextClass} font-bold whitespace-nowrap text-[11px]">${title}</th>
+            ${subjects.map(s => `
+              <th class="py-1.5 px-0.5 ${colWidth} ${thTextClass} font-bold whitespace-nowrap text-[11px]">${s.name}</th>
+            `).join('')}
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          ${PROGRESS_ROWS.map((row, rIdx) => {
+            const isStatus = row.key === 'status';
+            const rowBg = getStatusRowBg(isStatus, rIdx);
+            const headerBg = getHeaderBg(isStatus);
+            return `
+              <tr class="${rowBg} divide-x divide-x-reverse divide-slate-200 text-[11px] leading-snug">
+                <td class="py-1.5 px-1 w-[10%] font-bold ${headerBg}">${row.label}</td>
+                ${subjects.map(s => {
+                  const val = (gradeData[s.id] && gradeData[s.id][row.key] !== undefined && gradeData[s.id][row.key] !== null) ? gradeData[s.id][row.key] : '';
+                  const hasVal = Boolean(val !== '' && String(val).trim() !== '');
+                  return `<td class="py-1.5 px-1 ${colWidth} font-bold text-center break-words whitespace-normal align-middle ${getCellTextClass(hasVal)}">${hasVal ? sanitizeHtml(toPersianDigits(val)) : '-'}</td>`;
+                }).join('')}
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  function renderRiyaziTable1Html(progress, cfg, gradesToRender = ['grade10', 'grade11', 'grade12']) {
+    if (!gradesToRender || gradesToRender.length === 0) return '';
+    return `
+      <!-- جدول پیشروی ریاضی و فیزیک -->
+      <div class="${cfg.reportTableBorder} rounded-lg overflow-hidden shadow-2xs mb-3.5 divide-y divide-slate-200">
+        ${gradesToRender.map(g => renderRiyaziGradeSection(g, progress, cfg)).join('')}
+      </div>
+    `;
+  }
+
+  function renderRiyaziFarhangianTableHtml(progress, cfg, isStandalone = false) {
+    const wrapClass = isStandalone ? 'flex justify-center mt-6' : 'flex justify-center mt-3';
+    const boxWidthClass = isStandalone ? 'w-[75%] min-w-[500px]' : 'w-[62%] min-w-[460px]';
+    return `
+      <!-- جدول ۲: کنکور فرهنگیان (مرکزچین و استاندارد) -->
+      <div class="${wrapClass}">
+        <div class="${boxWidthClass} ${cfg.humanitiesFarhangianBorder} rounded-lg overflow-hidden shadow-2xs">
+          <table class="w-full table-fixed border-collapse text-center">
+            <thead>
+              <tr class="${cfg.humanitiesFarhangianThead}">
+                <th class="py-2 px-1.5 w-[24%] text-center ${cfg.humanitiesFarhangianThText} font-bold whitespace-nowrap text-[11px]">کنکور فرهنگیان</th>
+                ${RIYAZI_SUBJECTS.farhangian.map(s => `
+                  <th class="py-2 px-1 w-[19%] ${cfg.humanitiesFarhangianThText} font-bold whitespace-nowrap text-[11px]">${s.name}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody class="divide-y ${cfg.humanitiesFarhangianTbodyDivide}">
+              ${PROGRESS_ROWS.map((row, rIdx) => {
+                const isStatus = row.key === 'status';
+                const rowBg = isStatus ? cfg.humanitiesFarhangianStatusRow : (rIdx % 2 === 0 ? 'bg-white' : cfg.humanitiesFarhangianRowAlt);
+                const headerBg = isStatus ? cfg.humanitiesFarhangianStatusHeader : 'bg-slate-100/90 text-slate-700';
+                return `
+                  <tr class="${rowBg} divide-x divide-x-reverse ${cfg.humanitiesFarhangianRowDivide} text-[11px] leading-snug">
+                    <td class="py-2 px-1.5 font-bold ${headerBg}">${row.label}</td>
+                    ${RIYAZI_SUBJECTS.farhangian.map(s => {
+                      const val = (progress.farhangian && progress.farhangian[s.id] && progress.farhangian[s.id][row.key] !== undefined && progress.farhangian[s.id][row.key] !== null) ? progress.farhangian[s.id][row.key] : '';
+                      const hasVal = Boolean(val !== '' && String(val).trim() !== '');
+                      return `<td class="py-2 px-1 font-bold text-center break-words whitespace-normal align-middle ${hasVal ? cfg.humanitiesFarhangianCellActive + ' text-[11.5px]' : 'text-slate-300 font-normal'}">${hasVal ? sanitizeHtml(toPersianDigits(val)) : '-'}</td>`;
+                    }).join('')}
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderRiyaziReportPreview(state) {
+    const student = state.student || {};
+    const fullName = getStudentFullName(student) || '-';
+    const progress = (state.report && state.report.riyaziProgress) || getInitialRiyaziProgress();
+    const themeName = (state.meta && state.meta.theme === 'pink') ? 'pink' : 'navy';
+    const cfg = getThemeConfig(themeName);
+    const pages = partitionRiyaziReport(progress, humanitiesPageBudget);
+    const totalPages = pages.length;
+
+    return pages.map((pageCfg, idx) => {
+      const pageNum = idx + 1;
+      const pageId = idx === 0 ? 'pdf-page-4' : ('pdf-page-4-part-' + pageNum);
+      const badgeText = totalPages > 1 ? toPersianDigits('4.' + pageNum) : '۴';
+      const badgeDir = totalPages > 1 ? 'dir="ltr"' : '';
+      const titleText = totalPages > 1
+        ? ('گزارش وضعیت مطالعه (بخش ' + toPersianDigits(pageNum) + ' از ' + toPersianDigits(totalPages) + ')')
+        : 'گزارش وضعیت مطالعه';
+
+      const table1Html = renderRiyaziTable1Html(progress, cfg, pageCfg.grades);
+      const isStandaloneFarhangian = pageCfg.grades.length === 0;
+      const farhangianHtml = pageCfg.hasFarhangian ? renderRiyaziFarhangianTableHtml(progress, cfg, isStandaloneFarhangian) : '';
+
+      return `
+        <div class="a4-page page-report theme-${themeName} flex flex-col justify-start bg-white text-slate-900 relative" id="${pageId}">
+          <div>
+            <!-- سربرگ رسمی و شکیل صفحه ۴ -->
+            <div class="flex items-center justify-between ${cfg.pageHeaderBorder} pb-2 mb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="page-badge-num w-7 h-7 rounded-lg ${cfg.pageBadge} flex items-center justify-center font-bold text-xs shadow-2xs" ${badgeDir}>${badgeText}</div>
+                <div>
+                  <h2 class="text-base font-bold ${cfg.pageTitleText} leading-tight">${titleText}</h2>
+                </div>
+              </div>
+              <div class="flex items-center gap-2 text-xs">
+                <span class="page-header-meta-pill text-[10.5px] font-bold text-slate-600 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-md">دانش‌آموز: <strong class="${cfg.pagePillText} font-bold">${sanitizeHtml(fullName)}</strong></span>
+                <span class="page-header-meta-pill text-[9.5px] font-bold bg-amber-50 text-amber-900 border border-amber-200 px-2 py-1 rounded-md">${sanitizeHtml(formatWeekDisplay(student.weeksPassed))}</span>
+              </div>
+            </div>
+
+            <!-- محتوای جداول صفحه ۴ -->
+            <div>
+              ${table1Html}
+              ${farhangianHtml}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
   function renderReportPreviewPage(state) {
     if (isHumanitiesField(state)) {
       return renderHumanitiesReportPreview(state);
     }
     if (isTajrobiField(state)) {
       return renderTajrobiReportPreview(state);
+    }
+    if (isRiyaziField(state)) {
+      return renderRiyaziReportPreview(state);
     }
     return renderGeneralReportPreview(state);
   }
