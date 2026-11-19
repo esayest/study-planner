@@ -1261,9 +1261,114 @@ body.is-printing #pdf-pages-wrapper {
   }
 }
 
+
+/* ==================== استایل‌های سامانه ورود اختصاصی ==================== */
+@keyframes authShake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+.auth-shake {
+  animation: authShake 0.4s ease-in-out;
+}
+body.auth-locked #app-header,
+body.auth-locked #main-app-container {
+  display: none !important;
+}
+@media print {
+  body.auth-locked {
+    display: none !important;
+  }
+}
   </style>
 </head>
-<body class="bg-slate-900 text-slate-800 antialiased h-screen h-dvh overflow-hidden flex flex-col selection:bg-amber-500 selection:text-white">
+<body class="auth-locked bg-slate-900 text-slate-800 antialiased h-screen h-dvh overflow-hidden flex flex-col selection:bg-amber-500 selection:text-white">
+
+  <!-- ==================== صفحه ورود اختصاصی آکادمی (SHA-256 Auth) ==================== -->
+  <div id="auth-login-overlay" class="fixed inset-0 z-[99999] bg-slate-950/95 backdrop-blur-2xl flex items-center justify-center p-4 overflow-y-auto selection:bg-amber-500 selection:text-white" dir="rtl">
+    <div class="relative w-full max-w-md bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl text-white overflow-hidden transition-all duration-300" id="auth-card">
+      <!-- نوار طلایی-آبی دکوراتیو بالا -->
+      <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-blue-600 via-amber-400 to-blue-600"></div>
+
+      <!-- سربرگ نشان و عنوان -->
+      <div class="text-center mb-6 pt-2">
+        <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700/80 flex items-center justify-center shadow-lg shadow-black/40 relative">
+          <div class="absolute inset-0 rounded-2xl bg-amber-400/10 blur-md pointer-events-none"></div>
+          <svg class="w-8 h-8 sm:w-10 sm:h-10 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+        </div>
+        <h2 class="text-lg sm:text-xl font-bold font-peyda text-white tracking-wide">سامانه برنامه‌ریزی تحصیلی</h2>
+        <p class="text-xs sm:text-sm text-amber-400/90 font-medium mt-1">آکادمی مشاوره دکتر شهروز فروتن کیا</p>
+        <span class="inline-block mt-2 text-[10px] sm:text-xs font-semibold px-2.5 py-0.5 rounded-full bg-slate-800/90 border border-slate-700 text-slate-300">
+          ورود اختصاصی اعضای مجاز
+        </span>
+      </div>
+
+      <!-- کادر نمایش خطای ورود -->
+      <div id="auth-error-alert" class="hidden mb-4 p-3 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 text-xs sm:text-sm flex items-center gap-2 transition-all">
+        <svg class="w-4 h-4 shrink-0 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <span id="auth-error-text">نام کاربری یا رمز عبور نامعتبر است.</span>
+      </div>
+
+      <!-- فرم ورود -->
+      <form id="auth-login-form" class="space-y-4" autocomplete="on">
+        <!-- نام کاربری -->
+        <div>
+          <label for="auth-username" class="block text-xs font-medium text-slate-300 mb-1.5">نام کاربری</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+              </svg>
+            </div>
+            <input type="text" id="auth-username" required class="w-full bg-slate-800/80 border border-slate-700 rounded-xl pr-10 pl-3 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition" placeholder="مثلاً admin یا forootan" dir="ltr">
+          </div>
+        </div>
+
+        <!-- رمز عبور -->
+        <div>
+          <label for="auth-password" class="block text-xs font-medium text-slate-300 mb-1.5">رمز عبور</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+              </svg>
+            </div>
+            <input type="password" id="auth-password" required class="w-full bg-slate-800/80 border border-slate-700 rounded-xl pr-10 pl-10 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition" placeholder="رمز عبور خود را وارد کنید" dir="ltr">
+            <button type="button" id="btn-toggle-password" class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400 hover:text-slate-200 transition" title="نمایش/پنهان‌سازی رمز">
+              <svg id="icon-eye-show" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+              <svg id="icon-eye-hide" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- به خاطر سپردن -->
+        <div class="flex items-center justify-between text-xs pt-1">
+          <label class="flex items-center gap-2 cursor-pointer select-none text-slate-300 hover:text-white transition">
+            <input type="checkbox" id="auth-remember-me" checked class="w-4 h-4 rounded bg-slate-800 border-slate-700 text-amber-500 focus:ring-0 focus:ring-offset-0 cursor-pointer">
+            <span>مرا در این دستگاه به خاطر بسپار</span>
+          </label>
+        </div>
+
+        <!-- دکمه ورود -->
+        <button type="submit" id="btn-submit-login" class="w-full mt-2 py-3 px-4 rounded-xl bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-sm tracking-wide shadow-lg shadow-amber-500/20 active:scale-[0.99] transition flex items-center justify-center gap-2">
+          <span id="btn-login-text">ورود به سامانه</span>
+          <svg id="btn-login-spinner" class="w-4 h-4 animate-spin hidden text-slate-950" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+        </button>
+      </form>
+
+      <!-- پانویس کادر -->
+      <div class="mt-6 pt-4 border-t border-slate-800/80 text-center">
+        <p class="text-[11px] text-slate-400 leading-relaxed">
+          دسترسی به این سامانه اختصاصی بوده و کلیه اطلاعات دفترچه‌ها به صورت محلی در مرورگر شما ذخیره و پردازش می‌گردند.
+        </p>
+      </div>
+    </div>
+  </div>
+
 
   <!-- ==================== هدر اصلی سامانه ==================== -->
   <header id="app-header" class="bg-slate-950/90 backdrop-blur-md border-b border-slate-800 text-white shrink-0 z-50 px-3 sm:px-4 py-2 sm:py-2.5 shadow-lg no-print">
@@ -8294,15 +8399,316 @@ body.is-printing #pdf-pages-wrapper {
     });
   }
 
+
+  // ==================== سیستم احراز هویت هش‌شده (SHA-256 Auth System) ====================
+  /**
+   * جدول کاربران مجاز با هش SHA-256 رمزهای عبور
+   * شما می‌توانید نام‌های کاربری و رمزهای عبور جدید را در این بخش تعریف یا ویرایش نمایید.
+   * برای تولید هش رمز عبور دلخواه جدید، در کنسول مرورگر دستور زیر را اجرا کنید:
+   * generatePasswordHash("رمز_جدید")
+   */
+  const AUTH_USERS = [
+    {
+      username: 'admin',
+      // رمز عبور پیش‌فرض: admin123
+      hash: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
+      displayName: 'مدیر آکادمی',
+      role: 'مدیر ارشد'
+    },
+    {
+      username: 'forootan',
+      // رمز عبور پیش‌فرض: forootan2026
+      hash: 'ba19429b4406f832298281b0d0cd920962c3312b78f23dae0b00fda945fb0980',
+      displayName: 'دکتر شهروز فروتن کیا',
+      role: 'مدیر کل'
+    },
+    {
+      username: 'advisor',
+      // رمز عبور پیش‌فرض: planner1403
+      hash: 'cc91e171e8579c71ae9f9252181351d18bac93ebc8730d098583a3d0fe8a009e',
+      displayName: 'مشاور تحصیلی',
+      role: 'مشاور'
+    }
+  ];
+
+  const AUTH_STORAGE_KEY = 'forootan_planner_auth_session';
+
+  // پیاده‌سازی مستقل و استاندارد SHA-256 (پشتیبانی کامل در تمام محیط‌ها حتی بدون HTTPS)
+  function pureJsSha256(ascii) {
+    function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+    const mathPow = Math.pow; const maxWord = mathPow(2, 32);
+    let lengthProperty = 'length', i, j, result = '';
+    const words = []; const asciiBitLength = ascii[lengthProperty] * 8;
+    let hash = []; const k = []; let primeCounter = 0; const isComposite = {};
+    for (let candidate = 2; primeCounter < 64; candidate++) {
+      if (!isComposite[candidate]) {
+        for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+        hash[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
+        k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+      }
+    }
+    ascii += '\x80';
+    while ((ascii[lengthProperty] % 64) - 56) ascii += '\x00';
+    for (i = 0; i < ascii[lengthProperty]; i++) {
+      j = ascii.charCodeAt(i);
+      words[i >> 2] |= j << ((3 - (i % 4)) * 8);
+    }
+    words[words[lengthProperty]] = (asciiBitLength / maxWord) | 0;
+    words[words[lengthProperty]] = asciiBitLength;
+    for (j = 0; j < words[lengthProperty];) {
+      const w = words.slice(j, (j += 16)); const oldHash = hash; hash = hash.slice(0, 8);
+      for (i = 0; i < 64; i++) {
+        const w15 = w[i - 15], w2 = w[i - 2];
+        const s0 = rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3);
+        const s1 = rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10);
+        const ch = (hash[4] & hash[5]) ^ (~hash[4] & hash[6]);
+        const maj = (hash[0] & hash[1]) ^ (hash[0] & hash[2]) ^ (hash[1] & hash[2]);
+        const temp1 = hash[7] + (rightRotate(hash[4], 6) ^ rightRotate(hash[4], 11) ^ rightRotate(hash[4], 25)) + ch + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + s0 + w[i - 7] + s1) | 0);
+        const temp2 = (rightRotate(hash[0], 2) ^ rightRotate(hash[0], 13) ^ rightRotate(hash[0], 22)) + maj;
+        hash = [(temp1 + temp2) | 0].concat(hash);
+        hash[4] = (hash[4] + temp1) | 0;
+      }
+      for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+    }
+    for (i = 0; i < 8; i++) {
+      for (let b = 3; b >= 0; b--) {
+        const byte = (hash[i] >> (b * 8)) & 255;
+        result += (byte < 16 ? '0' : '') + byte.toString(16);
+      }
+    }
+    return result;
+  }
+
+  // تابع استاندارد محاسبه هش با اولویت Web Crypto API مرورگر و فال‌بک Pure JS
+  async function computeSHA256(str) {
+    const text = (str || '').trim();
+    if (window.crypto && window.crypto.subtle && window.crypto.subtle.digest) {
+      try {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(text);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      } catch (e) {
+        return pureJsSha256(text);
+      }
+    }
+    return pureJsSha256(text);
+  }
+
+  // ابزار کمکی در کنسول مرورگر جهت تولید سریع هش برای رمزهای عبور دلخواه
+  window.generatePasswordHash = async function(plainPassword) {
+    if (!plainPassword) {
+      console.warn('لطفاً رمز عبور مورد نظر را به عنوان آرگومان وارد کنید: generatePasswordHash("myPassword")');
+      return;
+    }
+    const h = await computeSHA256(plainPassword);
+    console.log('%c[Study Planner Auth]%c هش رمز عبور تولید شد:', 'color: #f59e0b; font-weight: bold;', 'color: #38bdf8;');
+    console.log('Plain Password:', plainPassword);
+    console.log('SHA-256 Hash:', h);
+    return h;
+  };
+
+  let isAppStarted = false;
+  function startApplication() {
+    if (isAppStarted) return;
+    isAppStarted = true;
+    initApp();
+    initPWA();
+  }
+
+  function getStoredAuth() {
+    try {
+      const raw = localStorage.getItem(AUTH_STORAGE_KEY) || sessionStorage.getItem(AUTH_STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      if (!parsed || !parsed.username || !parsed.hash) return null;
+      const matched = AUTH_USERS.find(u => 
+        u.username.toLowerCase() === parsed.username.toLowerCase() && 
+        u.hash.toLowerCase() === parsed.hash.toLowerCase()
+      );
+      return matched || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function applyAuthenticatedUI(user) {
+    document.body.classList.remove('auth-locked');
+    const overlay = document.getElementById('auth-login-overlay');
+    if (overlay) overlay.classList.add('hidden');
+
+    const userBar = document.getElementById('auth-user-bar');
+    const usernameBadge = document.getElementById('auth-current-username');
+    if (userBar && usernameBadge) {
+      usernameBadge.textContent = user.displayName || user.username;
+      userBar.classList.remove('hidden');
+      userBar.classList.add('flex');
+    }
+
+    startApplication();
+  }
+
+  function applyLockedUI() {
+    document.body.classList.add('auth-locked');
+    const overlay = document.getElementById('auth-login-overlay');
+    if (overlay) overlay.classList.remove('hidden');
+
+    const userBar = document.getElementById('auth-user-bar');
+    if (userBar) {
+      userBar.classList.add('hidden');
+      userBar.classList.remove('flex');
+    }
+
+    const passInput = document.getElementById('auth-password');
+    if (passInput) passInput.value = '';
+    const errAlert = document.getElementById('auth-error-alert');
+    if (errAlert) errAlert.classList.add('hidden');
+  }
+
+  function initAuthSystem() {
+    const loginForm = document.getElementById('auth-login-form');
+    const userInput = document.getElementById('auth-username');
+    const passInput = document.getElementById('auth-password');
+    const rememberMe = document.getElementById('auth-remember-me');
+    const errAlert = document.getElementById('auth-error-alert');
+    const errText = document.getElementById('auth-error-text');
+    const authCard = document.getElementById('auth-card');
+    const btnSubmit = document.getElementById('btn-submit-login');
+    const btnText = document.getElementById('btn-login-text');
+    const btnSpinner = document.getElementById('btn-login-spinner');
+    const btnLogout = document.getElementById('btn-logout');
+    const btnTogglePass = document.getElementById('btn-toggle-password');
+    const iconEyeShow = document.getElementById('icon-eye-show');
+    const iconEyeHide = document.getElementById('icon-eye-hide');
+
+    // کلیک روی دکمه چشم برای نمایش/مخفی‌سازی رمز عبور
+    if (btnTogglePass && passInput) {
+      btnTogglePass.addEventListener('click', () => {
+        const isPass = passInput.getAttribute('type') === 'password';
+        passInput.setAttribute('type', isPass ? 'text' : 'password');
+        if (iconEyeShow && iconEyeHide) {
+          iconEyeShow.classList.toggle('hidden', isPass);
+          iconEyeHide.classList.toggle('hidden', !isPass);
+        }
+      });
+    }
+
+    // ارسال فرم ورود
+    if (loginForm) {
+      loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const usernameVal = (userInput ? userInput.value : '').trim();
+        const passwordVal = (passInput ? passInput.value : '').trim();
+
+        if (!usernameVal || !passwordVal) {
+          if (errAlert && errText) {
+            errText.textContent = 'لطفاً نام کاربری و رمز عبور را وارد فرمایید.';
+            errAlert.classList.remove('hidden');
+          }
+          return;
+        }
+
+        // حالت لودینگ دکمه
+        if (btnText && btnSpinner) {
+          btnText.textContent = 'در حال بررسی...';
+          btnSpinner.classList.remove('hidden');
+        }
+        if (btnSubmit) btnSubmit.disabled = true;
+
+        try {
+          const passHash = await computeSHA256(passwordVal);
+          const matchedUser = AUTH_USERS.find(u => 
+            u.username.toLowerCase() === usernameVal.toLowerCase() && 
+            u.hash.toLowerCase() === passHash.toLowerCase()
+          );
+
+          if (matchedUser) {
+            if (errAlert) errAlert.classList.add('hidden');
+            if (btnText) btnText.textContent = 'ورود موفقیت‌آمیز...';
+
+            const sessionData = JSON.stringify({
+              username: matchedUser.username,
+              hash: matchedUser.hash,
+              loginAt: Date.now()
+            });
+
+            if (rememberMe && rememberMe.checked) {
+              localStorage.setItem(AUTH_STORAGE_KEY, sessionData);
+              sessionStorage.removeItem(AUTH_STORAGE_KEY);
+            } else {
+              sessionStorage.setItem(AUTH_STORAGE_KEY, sessionData);
+              localStorage.removeItem(AUTH_STORAGE_KEY);
+            }
+
+            setTimeout(() => {
+              applyAuthenticatedUI(matchedUser);
+              if (btnText) btnText.textContent = 'ورود به سامانه';
+              if (btnSpinner) btnSpinner.classList.add('hidden');
+              if (btnSubmit) btnSubmit.disabled = false;
+            }, 300);
+
+          } else {
+            // خطا در اطلاعات ورود
+            if (errAlert && errText) {
+              errText.textContent = 'نام کاربری یا رمز عبور اشتباه است.';
+              errAlert.classList.remove('hidden');
+            }
+            if (authCard) {
+              authCard.classList.remove('auth-shake');
+              void authCard.offsetWidth; // ریست ترنزیشن انیمیشن لرزش
+              authCard.classList.add('auth-shake');
+            }
+            if (passInput) {
+              passInput.focus();
+              passInput.select();
+            }
+            if (btnText) btnText.textContent = 'ورود به سامانه';
+            if (btnSpinner) btnSpinner.classList.add('hidden');
+            if (btnSubmit) btnSubmit.disabled = false;
+          }
+        } catch (err) {
+          console.error('[Auth Error]', err);
+          if (errAlert && errText) {
+            errText.textContent = 'خطای سیستمی در اعتبارسنجی رخ داد.';
+            errAlert.classList.remove('hidden');
+          }
+          if (btnText) btnText.textContent = 'ورود به سامانه';
+          if (btnSpinner) btnSpinner.classList.add('hidden');
+          if (btnSubmit) btnSubmit.disabled = false;
+        }
+      });
+    }
+
+    // دکمه خروج (Logout)
+    if (btnLogout) {
+      btnLogout.addEventListener('click', () => {
+        localStorage.removeItem(AUTH_STORAGE_KEY);
+        sessionStorage.removeItem(AUTH_STORAGE_KEY);
+        applyLockedUI();
+        if (userInput) {
+          userInput.focus();
+          userInput.select();
+        }
+      });
+    }
+
+    // بررسی وضعیت قبلی نشست
+    const existing = getStoredAuth();
+    if (existing) {
+      applyAuthenticatedUI(existing);
+    } else {
+      applyLockedUI();
+    }
+  }
+
   // ==================== راه‌اندازی (Init) ====================
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
-      initApp();
-      initPWA();
+      initAuthSystem();
     });
   } else {
-    initApp();
-    initPWA();
+    initAuthSystem();
   }
 })();
 
