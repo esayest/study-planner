@@ -8407,10 +8407,237 @@ body.auth-locked #main-app-container {
   const AUTH_USERS = [
     {
       username: 'admin',
-      // رمز عبور پیش‌فرض: admin123
       hash: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
       displayName: 'مدیر آکادمی',
       role: 'مدیر ارشد'
+    },
+    {
+      username: 'diar',
+      hash: '1b3439cfb7bcd620408fd6ea832192925434a9a016710516275f94a5a04230c8',
+      displayName: 'مشاور دیار',
+      role: 'مشاور'
+    },
+    {
+      username: 'niknazar',
+      hash: '50867af2f507df188a8944d22a27eb00805929bc619a6a4eb0e94705146d9dc4',
+      displayName: 'مشاور نیک‌نظر',
+      role: 'مشاور'
+    },
+    {
+      username: 'hashemiasl',
+      hash: '658264444b791122bf36d4d5aaa94ec05018ad916c174edff3155c378baa4982',
+      displayName: 'مشاور هاشمی اصل',
+      role: 'مشاور'
+    },
+    {
+      username: 'khadem',
+      hash: 'ba22b4fe6b18c7273d84d0579091a9f3ed888ab3731e6a1e773dfbd025f9040c',
+      displayName: 'مشاور خادم',
+      role: 'مشاور'
+    },
+    {
+      username: 'amiraali',
+      hash: '53e4ab61a0afc5335f9cce9f4e708b7efb741b798d3c4143efe03f01e7ddf80d',
+      displayName: 'مشاور امیرعلی',
+      role: 'مشاور'
+    },
+    {
+      username: 'khajevand',
+      hash: '813a226155aa2a06e12a66995c26a55f5be2870ac46b05c014149d69a1f852d5',
+      displayName: 'مشاور خواجوند',
+      role: 'مشاور'
+    },
+    {
+      username: 'spapi',
+      hash: '3f6b839840b28a7799b3d038c175f1de20d4940e420a78bda592f73eae3c0166',
+      displayName: 'مشاور پاپی',
+      role: 'مشاور'
+    },
+    {
+      username: 'daraeei',
+      hash: '8aed9deabdca4f6d233fb9b6036bbd5b1c554ed4f53e0f05480654f398775c9f',
+      displayName: 'مشاور دارایی',
+      role: 'مشاور'
+    },
+    {
+      username: 'sharifi',
+      hash: 'c37ec56eea5fc44dddcd68aa5d85a6aaa72a224f007c3ccc5c84d72fe90feca0',
+      displayName: 'مشاور شریفی',
+      role: 'مشاور'
+    },
+    {
+      username: 'heidari',
+      hash: 'de83bc39f737206e2a9e15d5f9392521fdbc822fa140d7b5c8ea7df8e7ee05b9',
+      displayName: 'مشاور حیدری',
+      role: 'مشاور'
+    },
+    {
+      username: 'davoodi',
+      hash: 'f51b2d65ee254d43a4a2f227037fec310162be52922484728e44098d5db3b938',
+      displayName: 'مشاور داوودی',
+      role: 'مشاور'
+    },
+    {
+      username: 'moridan',
+      hash: '54b60ff4f3eb67fb6294b96e363d0a2dd12e9c316847aad646b13530a9bfa49c',
+      displayName: 'مشاور مریدان',
+      role: 'مشاور'
+    },
+    {
+      username: 'farhadian',
+      hash: '80a7a3c525b9d24a0fcf165a356e76c6a51101e45b5aca21fcb9bc6afac245f2',
+      displayName: 'مشاور فرهادیان',
+      role: 'مشاور'
+    },
+    {
+      username: 'mardani',
+      hash: '42fd32d6b66e11c8d2db8ae660991dc659f7dd885213b83798090253d0a890de',
+      displayName: 'مشاور مردانی',
+      role: 'مشاور'
+    },
+    {
+      username: 'razavi',
+      hash: 'ffd305d567b16adbafaf6a33807a8eda0697dc2c71206ce4f5f8fc7a16858d03',
+      displayName: 'مشاور رضوی',
+      role: 'مشاور'
+    },
+    {
+      username: 'ranjbar',
+      hash: 'c642d8e6982af0a7539f80825b30aa6b23ff07333a7f8f8aec963b2befade283',
+      displayName: 'مشاور رنجبر',
+      role: 'مشاور'
+    },
+    {
+      username: 'rezaei',
+      hash: '4191fcc04da95ff83f43785d605bc6b593c3985a6bb1e191e2e275ad963bf50f',
+      displayName: 'مشاور رضایی',
+      role: 'مشاور'
+    },
+    {
+      username: 'zjafari',
+      hash: 'e50e1ae9e9fb80196225d18bd67cecc6a924261accdbe0199d1ff1fa8e42f600',
+      displayName: 'مشاور جعفری',
+      role: 'مشاور'
+    },
+    {
+      username: 'alimohammadi',
+      hash: 'd84dad554976fddf4a179bf27a740b29dfaf14b9545acbc49abb82b4a951af18',
+      displayName: 'مشاور علی‌محمدی',
+      role: 'مشاور'
+    },
+    {
+      username: 'hosseinzade',
+      hash: 'b97561df789d9553665436168ce23178ed2582778c95feede6798f9ded94c757',
+      displayName: 'مشاور حسین‌زاده',
+      role: 'مشاور'
+    },
+    {
+      username: 'sinaei',
+      hash: 'f2ef1d5ca1de3e7e467835a6c9a81a7e53ba1c2435beaeaf982c0092b1475b95',
+      displayName: 'مشاور سینایی',
+      role: 'مشاور'
+    },
+    {
+      username: 'roshangar',
+      hash: 'ccf808cd575fce09aa0bd9934d0477a3c542b3a538a8eb2448f376fd170d5a89',
+      displayName: 'مشاور روشنگر',
+      role: 'مشاور'
+    },
+    {
+      username: 'moghadam',
+      hash: 'aeab42c89aff6b7f864c4fd677fc5f485bafde7b78d88f7d83e8471e395ff239',
+      displayName: 'مشاور مقدم',
+      role: 'مشاور'
+    },
+    {
+      username: 'ara',
+      hash: 'aa219d93764cc01a2f9b7480c257e33e4414f3f8aa5d2a99d4fd6a872ba1d1af',
+      displayName: 'مشاور آرا',
+      role: 'مشاور'
+    },
+    {
+      username: 'ahmadie',
+      hash: 'd89c6eefaa95e52376a214c912a670b50a5c059e9349a33a2401505ec93ab27c',
+      displayName: 'مشاور احمدیه',
+      role: 'مشاور'
+    },
+    {
+      username: 'mokhtarpour',
+      hash: '0b001dd103a3f173d051b0826aab3b443439534dc28911257a1f71841e7a243f',
+      displayName: 'مشاور مختارپور',
+      role: 'مشاور'
+    },
+    {
+      username: 'mjafari',
+      hash: 'f1f6552ca60c8cfbec1704fb215a64e785c53e4e7b243849b36ef9c37a9d41e7',
+      displayName: 'مشاور جعفری',
+      role: 'مشاور'
+    },
+    {
+      username: 'amini',
+      hash: '7faefcaa4a79681f624dabaff4f072093622fb99e0362c8aea8309e168c86097',
+      displayName: 'مشاور امینی',
+      role: 'مشاور'
+    },
+    {
+      username: 'jnaderi',
+      hash: '5693ea74be04d4852fdea58f224ca0c0110aedb1985e47174290452430f7aed9',
+      displayName: 'مشاور نادری',
+      role: 'مشاور'
+    },
+    {
+      username: 'razaghi',
+      hash: 'e057fdb4a31304b43526e504a751d2185b635148d51556a5c32ee311a0614feb',
+      displayName: 'مشاور رزاقی',
+      role: 'مشاور'
+    },
+    {
+      username: 'shoeibi',
+      hash: 'b376fbe901172b4666faf542aaa175d28f9b639cedfa77575a6a46504985b999',
+      displayName: 'مشاور شعیبی',
+      role: 'مشاور'
+    },
+    {
+      username: 'omidi',
+      hash: '1b47548b46e26562391b0fd50a453a69ce5429723ba4b6ad4c9aa2b3b91130f1',
+      displayName: 'مشاور امیدی',
+      role: 'مشاور'
+    },
+    {
+      username: 'vesal',
+      hash: '9b686ecb6ee849a3f400e3e351e6bf3898fb341815839c0b79725ebff861afe9',
+      displayName: 'مشاور وصال',
+      role: 'مشاور'
+    },
+    {
+      username: 'mahmoodi',
+      hash: 'd51cf1cf227f628f814c8bd54d95c8282bf61b4a8cbe99d45eb7fd522b37cd74',
+      displayName: 'مشاور محمودی',
+      role: 'مشاور'
+    },
+    {
+      username: 'lachiani',
+      hash: '9ccc549d39b57844e8f827e229e0dca8630b1ae47e5eaa9491f837838e2daa8a',
+      displayName: 'مشاور لاچیانی',
+      role: 'مشاور'
+    },
+    {
+      username: 'askari',
+      hash: '15b726624f8da2752d78a0a6fc534ede0aa25f98d4a1ec483361fb2588759877',
+      displayName: 'مشاور عسکری',
+      role: 'مشاور'
+    },
+    {
+      username: 'ardan',
+      hash: '1c345022d5d18d5c1525b834dd3217b0b4cb1ed556912947645749e99db4f05d',
+      displayName: 'مشاور اردان',
+      role: 'مشاور'
+    },
+    {
+      username: 'tarkarooni',
+      hash: 'b8d8356e042b90c56c9117d6d850cff8a953eeff7d84f2d91b32fae1ce004e7d',
+      displayName: 'مشاور تارکارونی',
+      role: 'مشاور'
     }
   ];
 
