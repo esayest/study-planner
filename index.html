@@ -1889,6 +1889,71 @@ body.auth-locked #main-app-container {
     return progress;
   }
 
+
+  // ماتریس دروس رشته علوم تجربی (صفحه ۴)
+  const TAJROBI_SUBJECTS = {
+    grade10: [
+      { id: 'zist10', name: 'زیست ۱۰' },
+      { id: 'shimi10', name: 'شیمی ۱۰' },
+      { id: 'fizik10', name: 'فیزیک ۱۰' },
+      { id: 'riyazi10', name: 'ریاضی ۱۰' },
+      { id: 'arabi10', name: 'عربی ۱۰' },
+      { id: 'zaban10', name: 'زبان ۱۰' },
+      { id: 'farsi10', name: 'فارسی ۱۰' },
+      { id: 'dini10', name: 'دینی ۱۰' },
+    ],
+    grade11: [
+      { id: 'zist11', name: 'زیست ۱۱' },
+      { id: 'shimi11', name: 'شیمی ۱۱' },
+      { id: 'fizik11', name: 'فیزیک ۱۱' },
+      { id: 'riyazi11', name: 'ریاضی ۱۱' },
+      { id: 'zamin', name: 'زمین' },
+      { id: 'arabi11', name: 'عربی ۱۱' },
+      { id: 'zaban11', name: 'زبان ۱۱' },
+      { id: 'farsi11', name: 'فارسی ۱۱' },
+      { id: 'dini11', name: 'دینی ۱۱' },
+    ],
+    grade12: [
+      { id: 'zist12', name: 'زیست ۱۲' },
+      { id: 'shimi12', name: 'شیمی ۱۲' },
+      { id: 'fizik12', name: 'فیزیک ۱۲' },
+      { id: 'riyazi12', name: 'ریاضی ۱۲' },
+      { id: 'salamat', name: 'سلامت' },
+      { id: 'hoviat', name: 'هویت' },
+      { id: 'arabi12', name: 'عربی ۱۲' },
+      { id: 'zaban12', name: 'زبان ۱۲' },
+      { id: 'farsi12', name: 'فارسی ۱۲' },
+      { id: 'dini12', name: 'دینی ۱۲' },
+    ],
+    farhangian: [
+      { id: 'hoosh', name: 'هوش' },
+      { id: 'maharat', name: 'مهارت' },
+      { id: 'dini10', name: 'دینی دهم' },
+      { id: 'dini11', name: 'دینی یازدهم' },
+    ],
+  };
+
+  function getInitialTajrobiProgress() {
+    const progress = {};
+    Object.keys(TAJROBI_SUBJECTS).forEach(gradeKey => {
+      progress[gradeKey] = {};
+      TAJROBI_SUBJECTS[gradeKey].forEach(subj => {
+        progress[gradeKey][subj.id] = {
+          status: '',
+          r1: '',
+          r2: '',
+          r3: '',
+        };
+      });
+    });
+    return progress;
+  }
+
+  function isTajrobiField(state) {
+    const field = (state && state.student && state.student.fieldOfStudy) ? String(state.student.fieldOfStudy).trim() : '';
+    return field === 'علوم تجربی' || field.includes('تجربی');
+  }
+
   function isHumanitiesField(state) {
     const field = (state && state.student && state.student.fieldOfStudy) ? String(state.student.fieldOfStudy).trim() : '';
     return field === 'ادبیات و علوم انسانی' || field.includes('انسانی');
@@ -2452,6 +2517,7 @@ body.auth-locked #main-app-container {
     return {
       books,
       humanitiesProgress: isPlainObject(r.humanitiesProgress) ? r.humanitiesProgress : defaults.report.humanitiesProgress,
+      tajrobiProgress: isPlainObject(r.tajrobiProgress) ? r.tajrobiProgress : defaults.report.tajrobiProgress,
     };
   }
 
@@ -2643,6 +2709,7 @@ body.auth-locked #main-app-container {
       },
       report: {
         humanitiesProgress: getInitialHumanitiesProgress(),
+        tajrobiProgress: getInitialTajrobiProgress(),
         books: [
           {
             id: 'b1',
@@ -2886,6 +2953,7 @@ body.auth-locked #main-app-container {
         },
         "report": {
             "humanitiesProgress": getInitialHumanitiesProgress(),
+            "tajrobiProgress": getInitialTajrobiProgress(),
             "books": [
                 {
                     "id": "b1",
@@ -3414,6 +3482,31 @@ body.auth-locked #main-app-container {
           report.humanitiesProgress[gradeKey] = defaultHum[gradeKey] || {};
         } else {
           const subjects = HUMANITIES_SUBJECTS[gradeKey] || [];
+          subjects.forEach(subj => {
+            const entry = gradeObj[subj.id];
+            if (!isPlainObject(entry)) {
+              gradeObj[subj.id] = { status: '', r1: '', r2: '', r3: '' };
+            } else {
+              entry.status = (entry.status !== undefined && entry.status !== null) ? String(entry.status).slice(0, 50) : '';
+              entry.r1 = (entry.r1 !== undefined && entry.r1 !== null) ? String(entry.r1).slice(0, 50) : '';
+              entry.r2 = (entry.r2 !== undefined && entry.r2 !== null) ? String(entry.r2).slice(0, 50) : '';
+              entry.r3 = (entry.r3 !== undefined && entry.r3 !== null) ? String(entry.r3).slice(0, 50) : '';
+            }
+          });
+        }
+      });
+    }
+
+    const defaultTaj = getInitialTajrobiProgress();
+    if (!isPlainObject(report.tajrobiProgress)) {
+      report.tajrobiProgress = defaultTaj;
+    } else {
+      ['grade10', 'grade11', 'grade12', 'farhangian'].forEach(gradeKey => {
+        const gradeObj = report.tajrobiProgress[gradeKey];
+        if (!isPlainObject(gradeObj)) {
+          report.tajrobiProgress[gradeKey] = defaultTaj[gradeKey] || {};
+        } else {
+          const subjects = TAJROBI_SUBJECTS[gradeKey] || [];
           subjects.forEach(subj => {
             const entry = gradeObj[subj.id];
             if (!isPlainObject(entry)) {
