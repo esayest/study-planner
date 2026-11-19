@@ -8149,17 +8149,16 @@ body.auth-locked #main-app-container {
         <div class="a4-page page-report theme-${themeName} flex flex-col justify-start bg-white text-slate-900 relative" id="${pageId}">
           <div>
             <!-- سربرگ رسمی و شکیل صفحه ۴ -->
-            <div class="${cfg.reportHeaderWrap} flex items-center justify-between pb-2 mb-3.5 border-b-2">
-              <div class="flex items-center gap-2">
-                <span class="${cfg.reportBadge} text-white font-bold text-xs px-2.5 py-0.5 rounded-md" ${badgeDir}>${badgeText}</span>
-                <h2 class="text-sm font-bold ${cfg.reportTitle}">${titleText}</h2>
+            <div class="flex items-center justify-between ${cfg.pageHeaderBorder} pb-2 mb-3">
+              <div class="flex items-center gap-2.5">
+                <div class="page-badge-num w-7 h-7 rounded-lg ${cfg.pageBadge} flex items-center justify-center font-bold text-xs shadow-2xs" ${badgeDir}>${badgeText}</div>
+                <div>
+                  <h2 class="text-base font-bold ${cfg.pageTitleText} leading-tight">${titleText}</h2>
+                </div>
               </div>
-              <div class="text-xs ${cfg.reportStudentMeta} font-medium flex items-center gap-3">
-                <span>دانش‌آموز: <strong class="font-bold text-slate-900">${sanitizeHtml(fullName)}</strong></span>
-                <span class="text-slate-300">|</span>
-                <span>رشته: <strong class="font-bold text-slate-900">${sanitizeHtml(student.fieldOfStudy || 'علوم تجربی')}</strong></span>
-                <span class="text-slate-300">|</span>
-                <span>هفته: <strong class="font-bold text-slate-900">${toPersianDigits(sanitizeHtml(student.weeksPassed || '۱'))}</strong></span>
+              <div class="flex items-center gap-2 text-xs">
+                <span class="page-header-meta-pill text-[10.5px] font-bold text-slate-600 bg-slate-50 border border-slate-200 px-2.5 py-1 rounded-md">دانش‌آموز: <strong class="${cfg.pagePillText} font-bold">${sanitizeHtml(fullName)}</strong></span>
+                <span class="page-header-meta-pill text-[9.5px] font-bold bg-amber-50 text-amber-900 border border-amber-200 px-2 py-1 rounded-md">${sanitizeHtml(formatWeekDisplay(student.weeksPassed))}</span>
               </div>
             </div>
 
@@ -8168,12 +8167,6 @@ body.auth-locked #main-app-container {
               ${table1Html}
               ${farhangianHtml}
             </div>
-          </div>
-
-          <!-- پانویس رسمی صفحه ۴ -->
-          <div class="page-footer mt-auto pt-2 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-400 font-medium">
-            <span>آکادمی مشاوره دکتر شهروز فروتن کیا</span>
-            <span>سامانه هوشمند برنامه‌ریزی تحصیلی</span>
           </div>
         </div>
       `;
