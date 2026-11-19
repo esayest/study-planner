@@ -1380,7 +1380,7 @@ body.auth-locked #main-app-container {
         <div>
           <div class="flex items-center gap-1.5 sm:gap-2">
             <h1 class="text-sm sm:text-base font-bold text-white tracking-wide">سامانه برنامه‌ریزی</h1>
-            <span class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه 1.0.14</span>
+            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۰.۱۵</span>
           </div>
           <p class="text-[10px] sm:text-xs text-slate-400 font-medium hidden sm:block">آکادمی مشاوره دکتر فروتن کیا</p>
         </div>
@@ -1588,6 +1588,21 @@ body.auth-locked #main-app-container {
     return str;
   }
 
+  // ==========================================
+  // نگارش رسمی سامانه (Single Source of Truth)
+  // ==========================================
+  const APP_VERSION = '1.0.15';
+
+  function updateAppVersionBadge() {
+    if (typeof document !== 'undefined') {
+      const badge = document.getElementById('app-version-badge') || document.querySelector('.app-version-badge');
+      if (badge) {
+        badge.textContent = `نسخه ${toPersianDigits(APP_VERSION)}`;
+      }
+    }
+  }
+  updateAppVersionBadge();
+
   function getStudentFullName(student) {
     if (!student) return '';
     if (student.fullName !== undefined && student.fullName !== null && String(student.fullName).trim()) {
@@ -1657,19 +1672,20 @@ body.auth-locked #main-app-container {
     if (val === null || val === undefined || String(val).trim() === '') {
       return 'هفته اول';
     }
-    const cleanStr = String(val).trim();
-    if (cleanStr.startsWith('هفته ')) {
-      return cleanStr;
+    let cleanStr = String(val).trim();
+    cleanStr = cleanStr.replace(/^هفته(?:[\s\u200c]+|$)/, '').trim();
+    if (!cleanStr) {
+      return 'هفته اول';
     }
     const latin = toLatinDigits(cleanStr);
-    const num = parseInt(latin, 10);
-    if (!isNaN(num) && num > 0) {
-      if (PERSIAN_ORDINALS[num]) {
+    if (/^\d+$/.test(latin)) {
+      const num = parseInt(latin, 10);
+      if (num > 0 && PERSIAN_ORDINALS[num]) {
         return 'هفته ' + PERSIAN_ORDINALS[num];
       }
       return 'هفته ' + toPersianDigits(num);
     }
-    return 'هفته ' + cleanStr;
+    return 'هفته ' + toPersianDigits(cleanStr);
   }
 
   function formatJalaliDate(date = new Date()) {
@@ -2289,12 +2305,12 @@ body.auth-locked #main-app-container {
         : 'bg-indigo-950 text-white font-bold divide-x divide-x-reverse divide-indigo-800 text-[11px]',
       humanitiesG10ThText: isPink ? 'text-pink-100' : 'text-indigo-100',
       humanitiesG11Thead: isPink
-        ? 'bg-[#701a75] text-white font-bold divide-x divide-x-reverse divide-[#86198f] text-[11px] border-t-2 border-[#831843]'
-        : 'bg-indigo-900 text-white font-bold divide-x divide-x-reverse divide-indigo-800 text-[11px] border-t-2 border-indigo-950',
+        ? 'bg-[#701a75] text-white font-bold divide-x divide-x-reverse divide-[#86198f] text-[11px]'
+        : 'bg-indigo-900 text-white font-bold divide-x divide-x-reverse divide-indigo-800 text-[11px]',
       humanitiesG11ThText: isPink ? 'text-purple-100' : 'text-purple-100',
       humanitiesG12Thead: isPink
-        ? 'bg-[#500724] text-white font-bold divide-x divide-x-reverse divide-[#831843] text-[11px] border-t-2 border-[#831843]'
-        : 'bg-indigo-950 text-white font-bold divide-x divide-x-reverse divide-indigo-800 text-[11px] border-t-2 border-indigo-950',
+        ? 'bg-[#500724] text-white font-bold divide-x divide-x-reverse divide-[#831843] text-[11px]'
+        : 'bg-indigo-950 text-white font-bold divide-x divide-x-reverse divide-indigo-800 text-[11px]',
       humanitiesG12ThText: isPink ? 'text-rose-100' : 'text-sky-100',
       humanitiesStatusRow: isPink ? 'bg-rose-50/45' : 'bg-indigo-50/45',
       humanitiesStatusHeader: isPink ? 'bg-rose-100/85 text-rose-950' : 'bg-indigo-100/85 text-indigo-950',
@@ -2786,7 +2802,7 @@ body.auth-locked #main-app-container {
         schoolName: '',
         exams: 'قلم‌چی و ماز',
         phone: '',
-        supervisorCounselor: 'دکتر فروتن کیا',
+        supervisorCounselor: 'دکتر شهروز فروتن کیا',
         counselorName: 'دکتر فروتن کیا',
         fieldOfStudy: 'علوم تجربی',
         weeksPassed: '۱',
@@ -3691,6 +3707,7 @@ body.auth-locked #main-app-container {
   }
 
   function initApp() {
+    updateAppVersionBadge();
     try {
       try {
         const savedHeights = localStorage.getItem(STORAGE_KEY_MEASURED_HEIGHTS);
@@ -6273,7 +6290,7 @@ body.auth-locked #main-app-container {
           <!-- ۶. مشاور ناظر -->
           <div>
             <label class="block font-bold text-indigo-900 mb-1">مشاور ناظر <span class="text-rose-500">*</span>:</label>
-            <input type="text" data-prop="supervisorCounselor" value="${sanitizeHtml(s.supervisorCounselor || '')}" placeholder="مثال: دکتر فروتن کیا" class="student-field w-full p-2.5 rounded-xl border border-indigo-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium text-indigo-950 bg-indigo-50/20" />
+            <input type="text" data-prop="supervisorCounselor" value="${sanitizeHtml(s.supervisorCounselor || '')}" placeholder="مثال: دکتر شهروز فروتن کیا" class="student-field w-full p-2.5 rounded-xl border border-indigo-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium text-indigo-950 bg-indigo-50/20" />
           </div>
 
           <!-- ۷. مشاور -->
@@ -7498,7 +7515,7 @@ body.auth-locked #main-app-container {
                 </div>
                 <div class="${cfg.coverSchoolCard} p-3 rounded-lg border shadow-2xs">
                   <span class="block text-[10.5px] font-bold mb-1">نام مدرسه:</span>
-                  <strong class="${cfg.coverSchoolText} font-bold block text-xs truncate" title="${sanitizeHtml(student.schoolName || '-')}">${sanitizeHtml(student.schoolName || '-')}</strong>
+                  <strong class="${cfg.coverSchoolText} font-bold block text-xs truncate" title="${student.schoolName ? sanitizeHtml(toPersianDigits(student.schoolName)) : '-'}">${student.schoolName ? sanitizeHtml(toPersianDigits(student.schoolName)) : '-'}</strong>
                 </div>
               </div>
             </div>
@@ -7757,9 +7774,9 @@ body.auth-locked #main-app-container {
                           <div class="planner-card ${cardNightClass} rounded-lg ${cardPaddingClass} transition-colors">
                             <!-- سطر ۱ درون سلول: عنوان مبحث یا نام کتاب -->
                             <div class="planner-topic-wrapper" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;min-height:38px;">
-                              <div class="planner-topic-text ${topicFontSizeClass}" style="text-align:center;-webkit-box-align:center;-webkit-box-pack:center;margin:0 auto;width:100%;" title="${sanitizeHtml(item.topic)}">
+                              <div class="planner-topic-text ${topicFontSizeClass}" style="text-align:center;-webkit-box-align:center;-webkit-box-pack:center;margin:0 auto;width:100%;" title="${sanitizeHtml(toPersianDigits(item.topic))}">
                                 <div class="planner-topic-inner" style="text-align:center;margin:0 auto;width:100%;">
-                                  ${hasTopic ? sanitizeHtml(item.topic) : '<span class="text-slate-300 font-normal text-[10px]">-</span>'}
+                                  ${hasTopic ? sanitizeHtml(toPersianDigits(item.topic)) : '<span class="text-slate-300 font-normal text-[10px]">-</span>'}
                                 </div>
                               </div>
                             </div>
@@ -8054,7 +8071,7 @@ body.auth-locked #main-app-container {
                   <span class="w-1.5 h-1.5 rounded-xs bg-purple-600 shrink-0"></span>
                   نام مدرسه:
                 </div>
-                <div class="dossier-card-value text-[13px] font-bold text-purple-950 truncate" title="${sanitizeHtml(s.schoolName) || '-'}">${sanitizeHtml(s.schoolName) || '-'}</div>
+                <div class="dossier-card-value text-[13px] font-bold text-purple-950 truncate" title="${s.schoolName ? sanitizeHtml(toPersianDigits(s.schoolName)) : '-'}">${s.schoolName ? sanitizeHtml(toPersianDigits(s.schoolName)) : '-'}</div>
               </div>
 
               <!-- ۴. هفته (۲ ستون) -->
@@ -8099,7 +8116,7 @@ body.auth-locked #main-app-container {
                   <span class="w-1.5 h-1.5 rounded-xs bg-rose-600 shrink-0"></span>
                   آزمون‌های آزمایشی:
                 </div>
-                <div class="dossier-card-value text-[13px] font-bold text-rose-950 truncate" title="${sanitizeHtml(s.exams) || '-'}">${sanitizeHtml(s.exams) || '-'}</div>
+                <div class="dossier-card-value text-[13px] font-bold text-rose-950 truncate" title="${s.exams ? sanitizeHtml(toPersianDigits(s.exams)) : '-'}">${s.exams ? sanitizeHtml(toPersianDigits(s.exams)) : '-'}</div>
               </div>
 
               <!-- ۹. بازه زمانی (۳ ستون) -->
@@ -8829,10 +8846,10 @@ body.auth-locked #main-app-container {
                           </span>
                         </td>
                         <td class="py-2 px-3 font-bold ${cfg.reportBookName} break-words">
-                          ${sanitizeHtml(b.name) || '-'}
+                          ${b.name ? sanitizeHtml(toPersianDigits(b.name)) : '-'}
                         </td>
-                        <td class="py-2 px-3 text-slate-700 font-medium break-words">${sanitizeHtml(b.topicsCovered) || '-'}</td>
-                        <td class="py-2 px-3 text-[11px] text-slate-600 leading-snug break-words">${sanitizeHtml(b.notes) || '-'}</td>
+                        <td class="py-2 px-3 text-slate-700 font-medium break-words">${b.topicsCovered ? sanitizeHtml(toPersianDigits(b.topicsCovered)) : '-'}</td>
+                        <td class="py-2 px-3 text-[11px] text-slate-600 leading-snug break-words">${b.notes ? sanitizeHtml(toPersianDigits(b.notes)) : '-'}</td>
                       </tr>
                     `;
                   }).join('')}
@@ -8873,31 +8890,33 @@ body.auth-locked #main-app-container {
     const gradeData = (progress && progress[gradeKey]) || {};
 
     return `
-      <thead>
-        <tr class="${theadClass}">
-          <th class="py-1.5 px-1 w-[10%] text-center ${thTextClass} font-bold whitespace-nowrap text-[11px]">${title}</th>
-          ${subjects.map(s => `
-            <th class="py-1.5 px-0.5 w-[8.18%] ${thTextClass} font-bold whitespace-nowrap text-[11px]">${s.name}</th>
-          `).join('')}
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-slate-200">
-        ${PROGRESS_ROWS.map((row, rIdx) => {
-          const isStatus = row.key === 'status';
-          const rowBg = getStatusRowBg(isStatus, rIdx);
-          const headerBg = getHeaderBg(isStatus);
-          return `
-            <tr class="${rowBg} divide-x divide-x-reverse divide-slate-200 text-[11px] leading-snug">
-              <td class="py-1.5 px-1 font-bold ${headerBg}">${row.label}</td>
-              ${subjects.map(s => {
-                const val = (gradeData[s.id] && gradeData[s.id][row.key] !== undefined && gradeData[s.id][row.key] !== null) ? gradeData[s.id][row.key] : '';
-                const hasVal = Boolean(val !== '' && String(val).trim() !== '');
-                return `<td class="py-1.5 px-1 font-bold text-center break-words whitespace-normal align-middle ${getCellTextClass(hasVal)}">${hasVal ? sanitizeHtml(toPersianDigits(val)) : '-'}</td>`;
-              }).join('')}
-            </tr>
-          `;
-        }).join('')}
-      </tbody>
+      <table class="w-full table-fixed border-collapse text-center">
+        <thead>
+          <tr class="${theadClass}">
+            <th class="py-1.5 px-1 w-[10%] text-center ${thTextClass} font-bold whitespace-nowrap text-[11px]">${title}</th>
+            ${subjects.map(s => `
+              <th class="py-1.5 px-0.5 w-[8.18%] ${thTextClass} font-bold whitespace-nowrap text-[11px]">${s.name}</th>
+            `).join('')}
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          ${PROGRESS_ROWS.map((row, rIdx) => {
+            const isStatus = row.key === 'status';
+            const rowBg = getStatusRowBg(isStatus, rIdx);
+            const headerBg = getHeaderBg(isStatus);
+            return `
+              <tr class="${rowBg} divide-x divide-x-reverse divide-slate-200 text-[11px] leading-snug">
+                <td class="py-1.5 px-1 w-[10%] font-bold ${headerBg}">${row.label}</td>
+                ${subjects.map(s => {
+                  const val = (gradeData[s.id] && gradeData[s.id][row.key] !== undefined && gradeData[s.id][row.key] !== null) ? gradeData[s.id][row.key] : '';
+                  const hasVal = Boolean(val !== '' && String(val).trim() !== '');
+                  return `<td class="py-1.5 px-1 w-[8.18%] font-bold text-center break-words whitespace-normal align-middle ${getCellTextClass(hasVal)}">${hasVal ? sanitizeHtml(toPersianDigits(val)) : '-'}</td>`;
+                }).join('')}
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
     `;
   }
 
@@ -8905,10 +8924,8 @@ body.auth-locked #main-app-container {
     if (!gradesToRender || gradesToRender.length === 0) return '';
     return `
       <!-- جدول پیشروی انسانی -->
-      <div class="${cfg.reportTableBorder} rounded-lg overflow-hidden shadow-2xs mb-3.5">
-        <table class="w-full table-fixed border-collapse text-center">
-          ${gradesToRender.map(g => renderHumanitiesGradeSection(g, progress, cfg)).join('')}
-        </table>
+      <div class="${cfg.reportTableBorder} rounded-lg overflow-hidden shadow-2xs mb-3.5 divide-y divide-slate-200">
+        ${gradesToRender.map(g => renderHumanitiesGradeSection(g, progress, cfg)).join('')}
       </div>
     `;
   }
@@ -9312,7 +9329,7 @@ body.auth-locked #main-app-container {
   if (typeof window !== 'undefined') {
     window.StudyPlannerApp = {
       name: 'Dr. Forootan Kia Study Planner',
-      version: '1.0.14',
+      version: APP_VERSION,
       author: 'Mohammad Shakiba',
       getState: () => appState,
       setState: (s) => {
@@ -9429,16 +9446,33 @@ body.auth-locked #main-app-container {
 
     // ==================== پشتیبانی از Progressive Web App (PWA) ====================
   function initPWA() {
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then((reg) => {
-            console.log('[PWA] Service Worker registered with scope:', reg.scope);
-          })
-          .catch((err) => {
-            console.warn('[PWA] Service Worker registration failed:', err);
-          });
-      });
+    if ('serviceWorker' in navigator && typeof window !== 'undefined' && window.location) {
+      const hostname = window.location.hostname || '';
+      const isLocalhost = Boolean(
+        hostname === 'localhost' ||
+        hostname === '127.0.0.1' ||
+        hostname === '[::1]' ||
+        hostname.endsWith('.localhost')
+      );
+      const isHttps = window.location.protocol === 'https:';
+
+      if (isHttps || isLocalhost) {
+        const registerSW = () => {
+          navigator.serviceWorker.register('./sw.js')
+            .then((reg) => {
+              console.log('[PWA] Service Worker registered with scope:', reg.scope);
+            })
+            .catch((err) => {
+              console.warn('[PWA] Service Worker registration failed:', err);
+            });
+        };
+
+        if (document.readyState === 'complete') {
+          registerSW();
+        } else {
+          window.addEventListener('load', registerSW);
+        }
+      }
     }
 
     let deferredPrompt = null;
