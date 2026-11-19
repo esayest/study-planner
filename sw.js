@@ -2,10 +2,10 @@
  * Service Worker for Study Planner PWA
  * آکادمی دکتر شهروز فروتن کیا
  * طراح و توسعه‌دهنده: محمد شکیبا (Mohammad Shakiba)
- * نسخه: 1.0.8
+ * نسخه: 1.0.9
  */
 
-const CACHE_NAME = 'study-planner-pwa-v1.0.8';
+const CACHE_NAME = 'study-planner-pwa-v1.0.9';
 
 const PRECACHE_ASSETS = [
   './',

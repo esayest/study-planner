@@ -6196,9 +6196,177 @@ body.auth-locked #main-app-container {
   // ==================== فرم صفحه ۴: گزارش وضعیت ====================
   let humanitiesEditorActiveGrade = 'grade10';
 
+
+  // ==================== ویرایشگر گزارش وضعیت تجربی ====================
+  let tajrobiEditorActiveGrade = 'grade10';
+
+  function renderTajrobiGradeEditorTable(gradeKey, title, badgeColor) {
+    const subjects = TAJROBI_SUBJECTS[gradeKey] || [];
+    const progress = (appState.report && appState.report.tajrobiProgress) || {};
+    const gradeData = progress[gradeKey] || {};
+    const isFarhangian = gradeKey === 'farhangian';
+    const farhangianClass = isFarhangian ? 'is-farhangian' : '';
+    const tableMinW = isFarhangian ? 'min-w-[540px]' : 'min-w-[880px]';
+
+    return `
+      <div class="border border-slate-200 rounded-xl overflow-hidden bg-white shadow-xs">
+        <div class="p-2.5 bg-emerald-950 text-white flex items-center justify-between text-xs font-bold border-b border-emerald-900">
+          <div class="flex items-center gap-2">
+            <span class="${badgeColor} w-2 h-2 rounded-full shadow-2xs"></span>
+            <span class="text-white text-xs font-bold">${title}</span>
+            <span class="text-emerald-200 text-[10.5px] font-normal">(${toPersianDigits(subjects.length)} درس)</span>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="tajrobi-editor-table ${farhangianClass} w-full ${tableMinW} text-center text-xs divide-y divide-slate-200">
+            <thead class="bg-slate-50 text-slate-800 font-bold">
+              <tr class="divide-x divide-x-reverse divide-slate-200">
+                <th class="py-2 px-2 w-24 min-w-[84px] bg-slate-100 text-slate-900 text-right pr-3 text-xs whitespace-nowrap font-bold">مرحله / درس</th>
+                ${subjects.map(s => `<th class="py-2 px-1 text-[11px] font-bold text-emerald-950 whitespace-nowrap min-w-[76px] sm:min-w-[84px]">${s.name}</th>`).join('')}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 font-medium">
+              ${PROGRESS_ROWS.map(row => `
+                <tr class="hover:bg-emerald-50/20 transition-colors divide-x divide-x-reverse divide-slate-200">
+                  <td class="py-1.5 px-2 min-w-[84px] font-bold text-slate-700 bg-slate-50/90 text-right pr-3 text-[11px] whitespace-nowrap align-middle">${row.label}:</td>
+                  ${subjects.map(s => {
+                    const val = (gradeData[s.id] && gradeData[s.id][row.key] !== undefined && gradeData[s.id][row.key] !== null) ? gradeData[s.id][row.key] : '';
+                    return `
+                      <td class="p-1 min-w-[76px] sm:min-w-[84px] align-middle">
+                        <textarea rows="1" style="text-align: center !important;" class="tajrobi-progress-input w-full p-1.5 text-center font-bold text-xs rounded-lg border border-slate-200 hover:border-emerald-400 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-100 focus:outline-none transition bg-white text-emerald-950 resize-none overflow-hidden leading-snug block" data-grade="${gradeKey}" data-subject="${s.id}" data-row="${row.key}" placeholder="-">${sanitizeHtml(val)}</textarea>
+                      </td>
+                    `;
+                  }).join('')}
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderTajrobiReportEditorHtml() {
+    let tablesHtml = '';
+    if (tajrobiEditorActiveGrade === 'all') {
+      tablesHtml = `
+        <div class="space-y-4">
+          ${renderTajrobiGradeEditorTable('grade10', 'پایه دهم', 'bg-amber-400')}
+          ${renderTajrobiGradeEditorTable('grade11', 'پایه یازدهم', 'bg-purple-400')}
+          ${renderTajrobiGradeEditorTable('grade12', 'پایه دوازدهم', 'bg-sky-400')}
+          ${renderTajrobiGradeEditorTable('farhangian', 'کنکور فرهنگیان', 'bg-emerald-400')}
+        </div>
+      `;
+    } else if (tajrobiEditorActiveGrade === 'grade11') {
+      tablesHtml = renderTajrobiGradeEditorTable('grade11', 'پایه یازدهم', 'bg-purple-400');
+    } else if (tajrobiEditorActiveGrade === 'grade12') {
+      tablesHtml = renderTajrobiGradeEditorTable('grade12', 'پایه دوازدهم', 'bg-sky-400');
+    } else if (tajrobiEditorActiveGrade === 'farhangian') {
+      tablesHtml = renderTajrobiGradeEditorTable('farhangian', 'کنکور فرهنگیان', 'bg-emerald-400');
+    } else {
+      tablesHtml = renderTajrobiGradeEditorTable('grade10', 'پایه دهم', 'bg-amber-400');
+    }
+
+    return `
+      <div class="space-y-4">
+        <!-- تب‌های انتخاب پایه تحصیلی علوم تجربی -->
+        <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-2">
+          <button type="button" class="btn-tajrobi-grade-tab px-3 py-1.5 rounded-xl text-xs font-bold transition ${tajrobiEditorActiveGrade === 'grade10' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" data-grade="grade10">
+            پایه دهم (۸ درس)
+          </button>
+          <button type="button" class="btn-tajrobi-grade-tab px-3 py-1.5 rounded-xl text-xs font-bold transition ${tajrobiEditorActiveGrade === 'grade11' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" data-grade="grade11">
+            پایه یازدهم (۹ درس)
+          </button>
+          <button type="button" class="btn-tajrobi-grade-tab px-3 py-1.5 rounded-xl text-xs font-bold transition ${tajrobiEditorActiveGrade === 'grade12' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" data-grade="grade12">
+            پایه دوازدهم (۱۰ درس)
+          </button>
+          <button type="button" class="btn-tajrobi-grade-tab px-3 py-1.5 rounded-xl text-xs font-bold transition ${tajrobiEditorActiveGrade === 'farhangian' ? 'bg-teal-600 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" data-grade="farhangian">
+            کنکور فرهنگیان (۴ درس)
+          </button>
+          <button type="button" class="btn-tajrobi-grade-tab px-3 py-1.5 rounded-xl text-xs font-bold transition ${tajrobiEditorActiveGrade === 'all' ? 'bg-emerald-800 text-white shadow-xs' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'}" data-grade="all">
+            نمای یکپارچه (همه پایه‌ها)
+          </button>
+        </div>
+
+        <div class="flex items-center gap-2 text-xs bg-emerald-50/70 border border-emerald-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-emerald-200/70 text-emerald-900 font-bold text-xs shrink-0">↔</span>
+          <span class="font-bold text-emerald-950">
+            جدول منابع رشته علوم تجربی به تفکیک پایه دهم، یازدهم، دوازدهم و کنکور فرهنگیان.
+          </span>
+        </div>
+
+        <!-- جدول ویرایش پایه انتخابی -->
+        ${tablesHtml}
+      </div>
+    `;
+  }
+
+  function syncTajrobiRowHeight(tr) {
+    if (!tr) return;
+    const inputs = Array.from(tr.querySelectorAll('.tajrobi-progress-input'));
+    if (inputs.length === 0) return;
+    inputs.forEach(el => { el.style.height = 'auto'; });
+    let maxH = 32;
+    inputs.forEach(el => {
+      if (el.value && el.value.trim() !== '') {
+        if (el.scrollHeight > maxH) {
+          maxH = el.scrollHeight;
+        }
+      }
+    });
+    inputs.forEach(el => {
+      el.style.height = maxH + 'px';
+    });
+  }
+
+  function syncAllTajrobiRowHeights() {
+    document.querySelectorAll('.tajrobi-editor-table tbody tr').forEach(tr => {
+      syncTajrobiRowHeight(tr);
+    });
+  }
+
+  function bindTajrobiReportEditorEvents() {
+    document.querySelectorAll('.btn-tajrobi-grade-tab').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const grade = e.currentTarget.getAttribute('data-grade');
+        if (grade) {
+          tajrobiEditorActiveGrade = grade;
+          renderEditorPanel();
+        }
+      });
+    });
+
+    syncAllTajrobiRowHeights();
+
+    document.querySelectorAll('.tajrobi-progress-input').forEach(input => {
+      input.addEventListener('input', (e) => {
+        syncTajrobiRowHeight(e.target.closest('tr'));
+        resetReportBudgets();
+        const grade = e.target.getAttribute('data-grade');
+        const subject = e.target.getAttribute('data-subject');
+        const row = e.target.getAttribute('data-row');
+        if (!appState.report.tajrobiProgress) {
+          appState.report.tajrobiProgress = getInitialTajrobiProgress();
+        }
+        if (!appState.report.tajrobiProgress[grade]) {
+          appState.report.tajrobiProgress[grade] = {};
+        }
+        if (!appState.report.tajrobiProgress[grade][subject]) {
+          appState.report.tajrobiProgress[grade][subject] = { status: '', r1: '', r2: '', r3: '' };
+        }
+        appState.report.tajrobiProgress[grade][subject][row] = e.target.value;
+        requestPagePatch('report');
+        debouncedSaveToLocalStorage(appState);
+      });
+    });
+  }
+
   function renderReportEditorHtml() {
     if (isHumanitiesField(appState)) {
       return renderHumanitiesReportEditorHtml();
+    }
+    if (isTajrobiField(appState)) {
+      return renderTajrobiReportEditorHtml();
     }
     return renderGeneralReportEditorHtml();
   }
@@ -6360,6 +6528,8 @@ body.auth-locked #main-app-container {
   function bindReportEditorEvents() {
     if (isHumanitiesField(appState)) {
       bindHumanitiesReportEditorEvents();
+    } else if (isTajrobiField(appState)) {
+      bindTajrobiReportEditorEvents();
     } else {
       bindGeneralReportEditorEvents();
     }
@@ -7775,9 +7945,247 @@ body.auth-locked #main-app-container {
     return pages.length > 1;
   }
 
+
+  // ==================== پیش‌نمایش و رندر گزارش تجربی ====================
+  function estimateTajrobiGradeHeight(progress, g) {
+    let h = 26; // thead row
+    const subjects = TAJROBI_SUBJECTS[g] || [];
+    for (const row of PROGRESS_ROWS) {
+      let maxLines = 1;
+      for (const s of subjects) {
+        const val = (progress && progress[g] && progress[g][s.id] && progress[g][s.id][row.key] !== undefined && progress[g][s.id][row.key] !== null) ? progress[g][s.id][row.key] : '';
+        const str = String(val).trim();
+        if (str) {
+          const lines = Math.max(1, Math.ceil(str.length / 12));
+          if (lines > maxLines) maxLines = lines;
+        }
+      }
+      h += maxLines <= 1 ? 26 : (26 + (maxLines - 1) * 16);
+    }
+    return h;
+  }
+
+  function partitionTajrobiReport(progress, maxPageBudget = 640) {
+    const h10 = estimateTajrobiGradeHeight(progress, 'grade10');
+    const h11 = estimateTajrobiGradeHeight(progress, 'grade11');
+    const h12 = estimateTajrobiGradeHeight(progress, 'grade12');
+    const hFar = estimateFarhangianHeight(progress);
+    const table1Overhead = 14;
+    const table1Height = table1Overhead + h10 + h11 + h12;
+    const totalAll = table1Height + hFar;
+
+    // حالت ۱: تمام جداول روی یک صفحه جا می‌شوند
+    if (totalAll <= maxPageBudget) {
+      return [{ grades: ['grade10', 'grade11', 'grade12'], hasFarhangian: true }];
+    }
+
+    // حالت ۲: تفکیک هوشمند ۲ صفحه‌ای: دهم + یازدهم در صفحه ۱، دوازدهم + فرهنگیان در صفحه ۲
+    const hP1 = table1Overhead + h10 + h11;
+    const hP2 = table1Overhead + h12 + hFar;
+
+    if (hP1 <= maxPageBudget && hP2 <= maxPageBudget) {
+      return [
+        { grades: ['grade10', 'grade11'], hasFarhangian: false },
+        { grades: ['grade12'], hasFarhangian: true }
+      ];
+    }
+
+    if (table1Height <= maxPageBudget && hFar <= maxPageBudget) {
+      return [
+        { grades: ['grade10', 'grade11', 'grade12'], hasFarhangian: false },
+        { grades: [], hasFarhangian: true }
+      ];
+    }
+
+    if (hP1 <= maxPageBudget) {
+      return [
+        { grades: ['grade10', 'grade11'], hasFarhangian: false },
+        { grades: ['grade12'], hasFarhangian: false },
+        { grades: [], hasFarhangian: true }
+      ];
+    }
+
+    return [
+      { grades: ['grade10'], hasFarhangian: false },
+      { grades: ['grade11'], hasFarhangian: false },
+      { grades: ['grade12'], hasFarhangian: false },
+      { grades: [], hasFarhangian: true }
+    ];
+  }
+
+  function renderTajrobiGradeSection(gradeKey, progress, cfg) {
+    let theadClass = cfg.humanitiesG10Thead;
+    let thTextClass = cfg.humanitiesG10ThText;
+    let title = 'پایه دهم';
+    let getStatusRowBg = (isStatus, rIdx) => isStatus ? cfg.humanitiesStatusRow : (rIdx % 2 === 0 ? 'bg-white' : 'bg-slate-50/65');
+    let getHeaderBg = (isStatus) => isStatus ? cfg.humanitiesStatusHeader : 'bg-slate-100/90 text-slate-700';
+    let getCellTextClass = (hasVal) => hasVal ? (cfg.humanitiesStatusCell + ' bg-amber-50/60 text-[11.5px]') : 'text-slate-300 font-normal';
+    let colWidth = 'w-[11.25%]'; // ۸ درس دهم: ۸ × ۱۱.۲۵ = ۹۰٪ + ۱۰٪ عنوان
+
+    if (gradeKey === 'grade11') {
+      theadClass = cfg.humanitiesG11Thead;
+      thTextClass = cfg.humanitiesG11ThText;
+      title = 'پایه یازدهم';
+      getStatusRowBg = (isStatus, rIdx) => isStatus ? 'bg-purple-50/40' : (rIdx % 2 === 0 ? 'bg-white' : 'bg-slate-50/65');
+      getHeaderBg = (isStatus) => isStatus ? 'bg-purple-100/85 text-purple-950' : 'bg-slate-100/90 text-slate-700';
+      getCellTextClass = (hasVal) => hasVal ? 'text-purple-950 bg-amber-50/60 text-[11.5px]' : 'text-slate-300 font-normal';
+      colWidth = 'w-[10%]'; // ۹ درس یازدهم: ۹ × ۱۰ = ۹۰٪ + ۱۰٪ عنوان
+    } else if (gradeKey === 'grade12') {
+      theadClass = cfg.humanitiesG12Thead;
+      thTextClass = cfg.humanitiesG12ThText;
+      title = 'پایه دوازدهم';
+      getStatusRowBg = (isStatus, rIdx) => isStatus ? cfg.humanitiesG12StatusRow : (rIdx % 2 === 0 ? 'bg-white' : 'bg-slate-50/65');
+      getHeaderBg = (isStatus) => isStatus ? cfg.humanitiesG12StatusHeader : 'bg-slate-100/90 text-slate-700';
+      getCellTextClass = (hasVal) => hasVal ? (cfg.humanitiesG12StatusCell + ' bg-amber-50/60 text-[11.5px]') : 'text-slate-300 font-normal';
+      colWidth = 'w-[9%]'; // ۱۰ درس دوازدهم: ۱۰ × ۹ = ۹۰٪ + ۱۰٪ عنوان
+    }
+
+    const subjects = TAJROBI_SUBJECTS[gradeKey] || [];
+    const gradeData = (progress && progress[gradeKey]) || {};
+
+    return `
+      <table class="w-full table-fixed border-collapse text-center">
+        <thead>
+          <tr class="${theadClass}">
+            <th class="py-1.5 px-1 w-[10%] text-center ${thTextClass} font-bold whitespace-nowrap text-[11px]">${title}</th>
+            ${subjects.map(s => `
+              <th class="py-1.5 px-0.5 ${colWidth} ${thTextClass} font-bold whitespace-nowrap text-[11px]">${s.name}</th>
+            `).join('')}
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          ${PROGRESS_ROWS.map((row, rIdx) => {
+            const isStatus = row.key === 'status';
+            const rowBg = getStatusRowBg(isStatus, rIdx);
+            const headerBg = getHeaderBg(isStatus);
+            return `
+              <tr class="${rowBg} divide-x divide-x-reverse divide-slate-200 text-[11px] leading-snug">
+                <td class="py-1.5 px-1 w-[10%] font-bold ${headerBg}">${row.label}</td>
+                ${subjects.map(s => {
+                  const val = (gradeData[s.id] && gradeData[s.id][row.key] !== undefined && gradeData[s.id][row.key] !== null) ? gradeData[s.id][row.key] : '';
+                  const hasVal = Boolean(val !== '' && String(val).trim() !== '');
+                  return `<td class="py-1.5 px-1 ${colWidth} font-bold text-center break-words whitespace-normal align-middle ${getCellTextClass(hasVal)}">${hasVal ? sanitizeHtml(toPersianDigits(val)) : '-'}</td>`;
+                }).join('')}
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  function renderTajrobiTable1Html(progress, cfg, gradesToRender = ['grade10', 'grade11', 'grade12']) {
+    if (!gradesToRender || gradesToRender.length === 0) return '';
+    return `
+      <!-- جدول پیشروی تجربی -->
+      <div class="${cfg.reportTableBorder} rounded-lg overflow-hidden shadow-2xs mb-3.5 divide-y divide-slate-200">
+        ${gradesToRender.map(g => renderTajrobiGradeSection(g, progress, cfg)).join('')}
+      </div>
+    `;
+  }
+
+  function renderTajrobiFarhangianTableHtml(progress, cfg, isStandalone = false) {
+    const wrapClass = isStandalone ? 'flex justify-center mt-6' : 'flex justify-center mt-3';
+    const boxWidthClass = isStandalone ? 'w-[75%] min-w-[500px]' : 'w-[62%] min-w-[460px]';
+    return `
+      <!-- جدول ۲: کنکور فرهنگیان (مرکزچین و استاندارد) -->
+      <div class="${wrapClass}">
+        <div class="${boxWidthClass} ${cfg.humanitiesFarhangianBorder} rounded-lg overflow-hidden shadow-2xs">
+          <table class="w-full table-fixed border-collapse text-center">
+            <thead>
+              <tr class="${cfg.humanitiesFarhangianThead}">
+                <th class="py-2 px-1.5 w-[24%] text-center ${cfg.humanitiesFarhangianThText} font-bold whitespace-nowrap text-[11px]">کنکور فرهنگیان</th>
+                ${TAJROBI_SUBJECTS.farhangian.map(s => `
+                  <th class="py-2 px-1 w-[19%] ${cfg.humanitiesFarhangianThText} font-bold whitespace-nowrap text-[11px]">${s.name}</th>
+                `).join('')}
+              </tr>
+            </thead>
+            <tbody class="divide-y ${cfg.humanitiesFarhangianTbodyDivide}">
+              ${PROGRESS_ROWS.map((row, rIdx) => {
+                const isStatus = row.key === 'status';
+                const rowBg = isStatus ? cfg.humanitiesFarhangianStatusRow : (rIdx % 2 === 0 ? 'bg-white' : cfg.humanitiesFarhangianRowAlt);
+                const headerBg = isStatus ? cfg.humanitiesFarhangianStatusHeader : 'bg-slate-100/90 text-slate-700';
+                return `
+                  <tr class="${rowBg} divide-x divide-x-reverse ${cfg.humanitiesFarhangianRowDivide} text-[11px] leading-snug">
+                    <td class="py-2 px-1.5 font-bold ${headerBg}">${row.label}</td>
+                    ${TAJROBI_SUBJECTS.farhangian.map(s => {
+                      const val = (progress.farhangian && progress.farhangian[s.id] && progress.farhangian[s.id][row.key] !== undefined && progress.farhangian[s.id][row.key] !== null) ? progress.farhangian[s.id][row.key] : '';
+                      const hasVal = Boolean(val !== '' && String(val).trim() !== '');
+                      return `<td class="py-2 px-1 font-bold text-center break-words whitespace-normal align-middle ${hasVal ? cfg.humanitiesFarhangianCellActive + ' text-[11.5px]' : 'text-slate-300 font-normal'}">${hasVal ? sanitizeHtml(toPersianDigits(val)) : '-'}</td>`;
+                    }).join('')}
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderTajrobiReportPreview(state) {
+    const student = state.student || {};
+    const fullName = getStudentFullName(student) || '-';
+    const progress = (state.report && state.report.tajrobiProgress) || getInitialTajrobiProgress();
+    const themeName = (state.meta && state.meta.theme === 'pink') ? 'pink' : 'navy';
+    const cfg = getThemeConfig(themeName);
+    const pages = partitionTajrobiReport(progress, humanitiesPageBudget);
+    const totalPages = pages.length;
+
+    return pages.map((pageCfg, idx) => {
+      const pageNum = idx + 1;
+      const pageId = idx === 0 ? 'pdf-page-4' : ('pdf-page-4-part-' + pageNum);
+      const badgeText = totalPages > 1 ? toPersianDigits('4.' + pageNum) : '۴';
+      const badgeDir = totalPages > 1 ? 'dir="ltr"' : '';
+      const titleText = totalPages > 1
+        ? ('گزارش وضعیت مطالعه (بخش ' + toPersianDigits(pageNum) + ' از ' + toPersianDigits(totalPages) + ')')
+        : 'گزارش وضعیت مطالعه';
+
+      const table1Html = renderTajrobiTable1Html(progress, cfg, pageCfg.grades);
+      const isStandaloneFarhangian = pageCfg.grades.length === 0;
+      const farhangianHtml = pageCfg.hasFarhangian ? renderTajrobiFarhangianTableHtml(progress, cfg, isStandaloneFarhangian) : '';
+
+      return `
+        <div class="a4-page page-report theme-${themeName} flex flex-col justify-start bg-white text-slate-900 relative" id="${pageId}">
+          <div>
+            <!-- سربرگ رسمی و شکیل صفحه ۴ -->
+            <div class="${cfg.reportHeaderWrap} flex items-center justify-between pb-2 mb-3.5 border-b-2">
+              <div class="flex items-center gap-2">
+                <span class="${cfg.reportBadge} text-white font-bold text-xs px-2.5 py-0.5 rounded-md" ${badgeDir}>${badgeText}</span>
+                <h2 class="text-sm font-bold ${cfg.reportTitle}">${titleText}</h2>
+              </div>
+              <div class="text-xs ${cfg.reportStudentMeta} font-medium flex items-center gap-3">
+                <span>دانش‌آموز: <strong class="font-bold text-slate-900">${sanitizeHtml(fullName)}</strong></span>
+                <span class="text-slate-300">|</span>
+                <span>رشته: <strong class="font-bold text-slate-900">${sanitizeHtml(student.fieldOfStudy || 'علوم تجربی')}</strong></span>
+                <span class="text-slate-300">|</span>
+                <span>هفته: <strong class="font-bold text-slate-900">${toPersianDigits(sanitizeHtml(student.weeksPassed || '۱'))}</strong></span>
+              </div>
+            </div>
+
+            <!-- محتوای جداول صفحه ۴ -->
+            <div>
+              ${table1Html}
+              ${farhangianHtml}
+            </div>
+          </div>
+
+          <!-- پانویس رسمی صفحه ۴ -->
+          <div class="page-footer mt-auto pt-2 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-400 font-medium">
+            <span>آکادمی مشاوره دکتر شهروز فروتن کیا</span>
+            <span>سامانه هوشمند برنامه‌ریزی تحصیلی</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
   function renderReportPreviewPage(state) {
     if (isHumanitiesField(state)) {
       return renderHumanitiesReportPreview(state);
+    }
+    if (isTajrobiField(state)) {
+      return renderTajrobiReportPreview(state);
     }
     return renderGeneralReportPreview(state);
   }
