@@ -1757,6 +1757,19 @@ body.auth-locked.auth-light {
 (function () {
   'use strict';
 
+  // Disable DevTools shortcuts (F12, Ctrl+Shift+I/J/C, Ctrl+U)
+  document.addEventListener('keydown', (e) => {
+    const isModifier = e.ctrlKey || e.metaKey;
+    const key = e.key;
+    if (
+      key === 'F12' ||
+      (isModifier && e.shiftKey && (key === 'I' || key === 'i' || key === 'J' || key === 'j' || key === 'C' || key === 'c')) ||
+      (isModifier && (key === 'u' || key === 'U'))
+    ) {
+      e.preventDefault();
+    }
+  });
+
   // ==========================================
   // ۱. آرم رسمی و اصلی آکادمی با رنگ‌های دقیق و شفافیت ۱۰۰٪
   // ==========================================
@@ -1813,7 +1826,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.0.16';
+  const APP_VERSION = '1.0.17';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
