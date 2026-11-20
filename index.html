@@ -1826,7 +1826,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.0.17';
+  const APP_VERSION = '1.0.18';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -2070,6 +2070,8 @@ body.auth-locked.auth-light {
     'علوم و معارف اسلامی',
     'منحصرا زبان',
     'هنر',
+    'تیزهوشان',
+    'ماده 28',
   ];
 
   // ماتریس دروس رشته ادبیات و علوم انسانی (صفحه ۴)
@@ -2650,6 +2652,8 @@ body.auth-locked.auth-light {
       else if (/ریاضی/i.test(fieldOfStudy)) fieldOfStudy = 'ریاضی و فیزیک';
       else if (/انسانی/i.test(fieldOfStudy) && !/ادبیات/i.test(fieldOfStudy)) fieldOfStudy = 'ادبیات و علوم انسانی';
       else if (/فرهنگیان|تربیت\s*معلم/i.test(fieldOfStudy) && !/دانشگاه/i.test(fieldOfStudy)) fieldOfStudy = 'دانشگاه فرهنگیان (تربیت معلم)';
+      else if (/تیزهوشان|سمپاد/i.test(fieldOfStudy)) fieldOfStudy = 'تیزهوشان';
+      else if (/ماده\s*[2۲][8۸]/i.test(fieldOfStudy)) fieldOfStudy = 'ماده 28';
     } else if (rawField === undefined) {
       fieldOfStudy = 'علوم تجربی';
     }
