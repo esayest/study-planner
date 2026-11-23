@@ -433,7 +433,19 @@ body, input, textarea, select, button, table, .a4-page {
   overflow: visible !important;
 }
 
-.planner-input-topic,
+.planner-input-topic {
+  text-align: center !important;
+  text-align: -webkit-center !important;
+  resize: none !important;
+  overflow: hidden !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  white-space: pre-wrap !important;
+  box-sizing: border-box !important;
+  min-height: 32px !important;
+  line-height: 1.4 !important;
+}
+
 .planner-input-tests {
   text-align: center !important;
   text-align: -webkit-center !important;
@@ -3345,7 +3357,7 @@ body.auth-locked.auth-light {
   }
 
   const STORAGE_KEY_CURRENT = 'forootan_kia_current_plan';
-  const STORAGE_KEY_MEASURED_HEIGHTS = 'forootan_kia_measured_heights';
+  const STORAGE_KEY_MEASURED_HEIGHTS = 'forootan_kia_measured_heights_v3';
   const STORAGE_KEY_MOBILE_VIEW = 'forootan_kia_mobile_view';
   const STORAGE_KEY_CORRUPT_BACKUP_PREFIX = 'forootan_kia_corrupt_backup_';
 
@@ -4933,11 +4945,13 @@ body.auth-locked.auth-light {
         const topicInp = document.querySelector(`.planner-input-topic[data-row="${destRow}"][data-day="${destDayKey}"]`);
         if (topicInp) {
           topicInp.value = item.topic || '';
+          autoResizePlannerInput(topicInp);
           lastPastedInput = topicInp;
         }
         const testsInp = document.querySelector(`.planner-input-tests[data-row="${destRow}"][data-day="${destDayKey}"]`);
         if (testsInp) {
           testsInp.value = item.tests || '';
+          autoResizePlannerInput(testsInp);
           lastPastedInput = testsInp;
         }
       }
@@ -4967,6 +4981,7 @@ body.auth-locked.auth-light {
 
     // ریست کردن فرآیند کپی پس از جای‌گذاری و حفظ امکان بازگردانی محتوا
     resetPlannerCopying(true);
+    syncPlannerDayRowHeights();
     patchPreviewPage('planner');
     debouncedSaveToLocalStorage(appState);
 
@@ -5384,11 +5399,13 @@ body.auth-locked.auth-light {
       const topicInp = document.querySelector(`.planner-input-topic[data-row="${destRow}"][data-day="${destDayKey}"]`);
       if (topicInp) {
         topicInp.value = prevTopic || '';
+        autoResizePlannerInput(topicInp);
         lastRestoredInput = topicInp;
       }
       const testsInp = document.querySelector(`.planner-input-tests[data-row="${destRow}"][data-day="${destDayKey}"]`);
       if (testsInp) {
         testsInp.value = prevTests || '';
+        autoResizePlannerInput(testsInp);
         lastRestoredInput = testsInp;
       }
     });
@@ -5404,6 +5421,7 @@ body.auth-locked.auth-light {
     });
 
     updateClipboardBar();
+    syncPlannerDayRowHeights();
     patchPreviewPage('planner');
     debouncedSaveToLocalStorage(appState);
     showToast('محتوای جای‌گذاری‌شده بازگردانده شد (Undo).', 'info', 2500);
@@ -5526,8 +5544,9 @@ body.auth-locked.auth-light {
 
     const topicInp = document.querySelector(`.planner-input-topic[data-row="${r}"][data-day="${dayKey}"]`);
     const testsInp = document.querySelector(`.planner-input-tests[data-row="${r}"][data-day="${dayKey}"]`);
-    if (topicInp) topicInp.value = '';
-    if (testsInp) testsInp.value = '';
+    if (topicInp) { topicInp.value = ''; autoResizePlannerInput(topicInp); }
+    if (testsInp) { testsInp.value = ''; autoResizePlannerInput(testsInp); }
+    syncPlannerDayRowHeights();
 
     patchPreviewPage('planner');
     debouncedSaveToLocalStorage(appState);
@@ -5572,8 +5591,9 @@ body.auth-locked.auth-light {
         if (cachedMeasuredHeights[appState.planner.rowCount]) {
           delete cachedMeasuredHeights[appState.planner.rowCount][dayKey];
         }
-        document.querySelectorAll('.planner-input-topic[data-day="' + dayKey + '"]').forEach(inp => { inp.value = ''; });
-        document.querySelectorAll('.planner-input-tests[data-day="' + dayKey + '"]').forEach(inp => { inp.value = ''; });
+        document.querySelectorAll('.planner-input-topic[data-day="' + dayKey + '"]').forEach(inp => { inp.value = ''; autoResizePlannerInput(inp); });
+        document.querySelectorAll('.planner-input-tests[data-day="' + dayKey + '"]').forEach(inp => { inp.value = ''; autoResizePlannerInput(inp); });
+        syncPlannerDayRowHeights();
         updateClipboardBar();
         patchPreviewPage('planner');
         debouncedSaveToLocalStorage(appState);
@@ -5619,8 +5639,9 @@ body.auth-locked.auth-light {
           });
         }
         cachedMeasuredHeights = {};
-        document.querySelectorAll('.planner-input-topic[data-row="' + partIdx + '"]').forEach(inp => { inp.value = ''; });
-        document.querySelectorAll('.planner-input-tests[data-row="' + partIdx + '"]').forEach(inp => { inp.value = ''; });
+        document.querySelectorAll('.planner-input-topic[data-row="' + partIdx + '"]').forEach(inp => { inp.value = ''; autoResizePlannerInput(inp); });
+        document.querySelectorAll('.planner-input-tests[data-row="' + partIdx + '"]').forEach(inp => { inp.value = ''; autoResizePlannerInput(inp); });
+        syncPlannerDayRowHeights();
         updateClipboardBar();
         patchPreviewPage('planner');
         debouncedSaveToLocalStorage(appState);
@@ -5850,19 +5871,18 @@ body.auth-locked.auth-light {
                     ${renderPartCardHeaderHtml(d.key, r, isNight, isSelected, isCopyMode, selectedParts.size)}
                   </div>
                   <div>
-                    <input 
-                      type="text" 
+                    <textarea 
+                      rows="1" 
                       data-row="${r}" 
                       data-day="${d.key}" 
                       data-field="topic" 
-                      enterkeyhint="next"
+                      enterkeyhint="enter"
                       ${lockAttrs}
                       aria-label="${d.label} - ${partLabelText} - مبحث"
                       placeholder="${topicPlaceholder}" 
-                      value="${sanitizeHtml(item.topic)}" 
-                      style="text-align: center !important; -webkit-appearance: none;" 
-                      class="planner-input-topic ${lockClass} w-full text-xs text-center px-2.5 py-1.5 rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-400 focus:outline-none transition bg-white font-medium shadow-2xs placeholder:text-slate-400" 
-                    />
+                      style="text-align: center !important; -webkit-appearance: none; resize: none;" 
+                      class="planner-input-topic ${lockClass} w-full text-xs text-center px-2.5 py-1.5 rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-400 focus:outline-none transition bg-white font-medium shadow-2xs placeholder:text-slate-400 resize-none overflow-hidden block leading-normal" 
+                    >${sanitizeHtml(item.topic || '')}</textarea>
                   </div>
                   <div class="flex items-center gap-1.5 bg-white/95 px-2 py-1 rounded-lg border border-slate-200/90 shadow-2xs">
                     <span class="editor-test-label text-slate-500 font-bold text-[10.5px] shrink-0">تست:</span>
@@ -5875,7 +5895,7 @@ body.auth-locked.auth-light {
                       ${lockAttrs}
                       aria-label="${d.label} - ${partLabelText} - تست"
                       placeholder="توضیحات..." 
-                      value="${sanitizeHtml(item.tests)}" 
+                      value="${sanitizeHtml(item.tests || '')}" 
                       style="text-align: center !important; -webkit-appearance: none;" 
                       class="planner-input-tests ${lockClass} flex-1 min-w-0 text-xs text-center py-0.5 px-1.5 rounded-md border border-slate-300 focus:border-amber-500 focus:ring-1 focus:ring-amber-400 focus:outline-none transition font-bold bg-amber-50 text-amber-950 placeholder:text-slate-300" 
                     />
@@ -5899,11 +5919,45 @@ body.auth-locked.auth-light {
     return html;
   }
 
-  function syncPlannerDayRowHeights() {
-    // No longer needed — cards size naturally with height: auto and never overflow.
-    // If you still want uniform minimum height per row, use minHeight (never fixed height):
+  function autoResizePlannerInput(el) {
+    if (!el || !el.classList.contains('planner-input-topic')) return;
+    el.style.height = 'auto';
+    const minH = 32;
+    const targetH = Math.max(minH, el.scrollHeight);
+    el.style.height = targetH + 'px';
+  }
+
+  function autoResizeAllPlannerInputs() {
     const table = document.getElementById('planner-editor-table-scroll');
     if (!table) return;
+    table.querySelectorAll('.planner-input-topic').forEach(el => {
+      autoResizePlannerInput(el);
+    });
+  }
+
+  function syncPlannerRowHeightsForCard(card) {
+    if (!card) return;
+    const tr = card.closest('tr');
+    if (!tr) return;
+    const cards = Array.from(tr.querySelectorAll('.planner-editor-card'));
+    if (cards.length === 0) return;
+
+    for (const c of cards) {
+      c.style.height = '';
+      c.style.minHeight = '';
+    }
+    const maxH = Math.max(0, ...cards.map(c => c.offsetHeight));
+    if (maxH > 0) {
+      for (const c of cards) c.style.minHeight = maxH + 'px';
+    }
+  }
+
+  function syncPlannerDayRowHeights() {
+    const table = document.getElementById('planner-editor-table-scroll');
+    if (!table) return;
+
+    autoResizeAllPlannerInputs();
+
     const rows = Array.from(table.querySelectorAll('tbody tr'))
       .map(tr => Array.from(tr.querySelectorAll('.planner-editor-card')))
       .filter(cards => cards.length > 0);
@@ -5925,6 +5979,7 @@ body.auth-locked.auth-light {
   }
 
   function bindPlannerEditorEvents() {
+    autoResizeAllPlannerInputs();
     requestAnimationFrame(syncPlannerDayRowHeights);
     const tableContainer = document.getElementById('planner-editor-table-scroll');
     if (tableContainer) {
@@ -6032,16 +6087,34 @@ body.auth-locked.auth-light {
         }
       });
 
-      // پیمایش روان کیبورد مجازی موبایل با کلید Enter / Next (Virtual Keyboard enterkeyhint Flow)
+      // پشتیبانی از گسترش عمودی فیلد مبحث و پیمایش هوشمند کیبورد
       tableContainer.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           const topicInput = e.target.closest('.planner-input-topic');
           const testsInput = e.target.closest('.planner-input-tests');
 
-          if (e.shiftKey) {
-            // پیمایش رو به عقب با Shift+Enter
-            if (testsInput) {
+          if (!topicInput && !testsInput) return;
+
+          // درون تکست‌اریای مبحث: Enter یا Shift+Enter خط جدید ایجاد کرده و کادر را عمودی گسترش می‌دهد.
+          // با کلید کمکی Ctrl+Enter یا Alt+Enter مستقیم به فیلد تست می‌پرد.
+          if (topicInput) {
+            if (e.ctrlKey || e.altKey) {
               e.preventDefault();
+              const card = topicInput.closest('.planner-editor-card');
+              const targetTests = card?.querySelector('.planner-input-tests');
+              if (targetTests) {
+                targetTests.focus();
+                targetTests.select?.();
+                targetTests.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+              }
+            }
+            return;
+          }
+
+          // درون فیلد تست: Enter به مبحث پارت بعدی می‌رود؛ Shift+Enter به مبحث همین پارت برمی‌گردد
+          if (testsInput) {
+            e.preventDefault();
+            if (e.shiftKey) {
               const card = testsInput.closest('.planner-editor-card');
               const targetTopic = card?.querySelector('.planner-input-topic');
               if (targetTopic) {
@@ -6051,78 +6124,33 @@ body.auth-locked.auth-light {
               }
               return;
             }
-            if (topicInput) {
-              e.preventDefault();
-              const currentDay = topicInput.getAttribute('data-day');
-              const currentRow = parseInt(topicInput.getAttribute('data-row'), 10);
-              const rowCount = appState.planner.rowCount;
-              const orderedDays = getOrderedDays(appState.planner.startDay, appState.planner.dayCount);
-              const currentDayIdx = orderedDays.findIndex(d => d.key === currentDay);
 
-              let prevDay = currentDay;
-              let prevRow = currentRow - 1;
-              if (prevRow < 0) {
-                if (currentDayIdx > 0) {
-                  prevDay = orderedDays[currentDayIdx - 1].key;
-                  prevRow = rowCount - 1;
-                } else {
-                  return;
-                }
+            const currentDay = testsInput.getAttribute('data-day');
+            const currentRow = parseInt(testsInput.getAttribute('data-row'), 10);
+            const rowCount = appState.planner.rowCount;
+            const orderedDays = getOrderedDays(appState.planner.startDay, appState.planner.dayCount);
+            const currentDayIdx = orderedDays.findIndex(d => d.key === currentDay);
+
+            let nextDay = currentDay;
+            let nextRow = currentRow + 1;
+
+            if (nextRow >= rowCount) {
+              if (currentDayIdx !== -1 && currentDayIdx + 1 < orderedDays.length) {
+                nextDay = orderedDays[currentDayIdx + 1].key;
+                nextRow = 0;
+              } else {
+                testsInput.blur();
+                return;
               }
-              const prevTests = document.querySelector('.planner-input-tests[data-day="' + prevDay + '"][data-row="' + prevRow + '"]');
-              if (prevTests) {
-                prevTests.focus();
-                prevTests.select?.();
-                prevTests.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-              }
-              return;
-            }
-          } else {
-            // پیمایش رو به جلو با Enter / Next
-            if (topicInput) {
-              e.preventDefault();
-              // پرش مستقیم به فیلد تست همان پارت
-              const card = topicInput.closest('.planner-editor-card');
-              const targetTests = card?.querySelector('.planner-input-tests');
-              if (targetTests) {
-                targetTests.focus();
-                targetTests.select?.();
-                targetTests.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-              }
-              return;
             }
 
-            if (testsInput) {
-              e.preventDefault();
-              // پرش مستقیم به فیلد مبحث پارت بعدی
-              const currentDay = testsInput.getAttribute('data-day');
-              const currentRow = parseInt(testsInput.getAttribute('data-row'), 10);
-              const rowCount = appState.planner.rowCount;
-              const orderedDays = getOrderedDays(appState.planner.startDay, appState.planner.dayCount);
-              const currentDayIdx = orderedDays.findIndex(d => d.key === currentDay);
-
-              let nextDay = currentDay;
-              let nextRow = currentRow + 1;
-
-              if (nextRow >= rowCount) {
-                if (currentDayIdx !== -1 && currentDayIdx + 1 < orderedDays.length) {
-                  nextDay = orderedDays[currentDayIdx + 1].key;
-                  nextRow = 0;
-                } else {
-                  // پایان جدول برنامه هفتگی
-                  testsInput.blur();
-                  return;
-                }
-              }
-
-              const nextTopic = document.querySelector('.planner-input-topic[data-day="' + nextDay + '"][data-row="' + nextRow + '"]');
-              if (nextTopic) {
-                nextTopic.focus();
-                nextTopic.select?.();
-                nextTopic.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-              }
-              return;
+            const nextTopic = document.querySelector('.planner-input-topic[data-day="' + nextDay + '"][data-row="' + nextRow + '"]');
+            if (nextTopic) {
+              nextTopic.focus();
+              nextTopic.select?.();
+              nextTopic.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
             }
+            return;
           }
         }
       });
@@ -6175,6 +6203,8 @@ body.auth-locked.auth-light {
       input.addEventListener('pointerdown', (e) => registerActiveInput(e.target));
       input.addEventListener('input', (e) => {
         registerActiveInput(e.target);
+        autoResizePlannerInput(e.target);
+        syncPlannerRowHeightsForCard(e.target.closest('.planner-editor-card'));
         const row = parseInt(e.target.getAttribute('data-row'), 10);
         const day = e.target.getAttribute('data-day');
         if (!appState.planner.blocks[row]) {
@@ -6199,6 +6229,8 @@ body.auth-locked.auth-light {
       input.addEventListener('pointerdown', (e) => registerActiveInput(e.target));
       input.addEventListener('input', (e) => {
         registerActiveInput(e.target);
+        autoResizePlannerInput(e.target);
+        syncPlannerRowHeightsForCard(e.target.closest('.planner-editor-card'));
         const row = parseInt(e.target.getAttribute('data-row'), 10);
         const day = e.target.getAttribute('data-day');
         if (!appState.planner.blocks[row]) {
@@ -8022,20 +8054,12 @@ body.auth-locked.auth-light {
                             <!-- سطر ۱ درون سلول: عنوان مبحث یا نام کتاب -->
                             <div class="planner-topic-wrapper" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;width:100%;min-height:38px;">
                               <div class="planner-topic-text ${topicFontSizeClass}" style="text-align:center;-webkit-box-align:center;-webkit-box-pack:center;margin:0 auto;width:100%;" title="${sanitizeHtml(toPersianDigits(item.topic))}">
-                                <div class="planner-topic-inner" style="text-align:center;margin:0 auto;width:100%;">
-                                  ${hasTopic ? sanitizeHtml(toPersianDigits(item.topic)) : '<span class="text-slate-300 font-normal text-[10px]">-</span>'}
-                                </div>
+                                <div class="planner-topic-inner" style="text-align:center;margin:0 auto;width:100%;">${hasTopic ? sanitizeHtml(toPersianDigits(item.topic)).replace(/\r?\n/g, '<br>') : '<span class="text-slate-300 font-normal text-[10px]">-</span>'}</div>
                               </div>
                             </div>
-                            <!-- سطر ۲ درون سلول: نمایش مستقیم اطلاعات بخش تست با استفاده حداکثری از فضا -->
+                            <!-- سطر ۲ درون سلول: نمایش فشرده و استاندارد بخش تست بدون اشغال فضای اضافی -->
                             <div class="planner-test-bar">
-                              ${hasTests ? `
-                                <span class="planner-test-badge ${testBadgeClass} px-1.5 py-0.5 rounded w-full ${testFontSizeClass} shadow-2xs" title="${sanitizeHtml(toPersianDigits(item.tests))}">
-                                  ${sanitizeHtml(toPersianDigits(item.tests))}
-                                </span>
-                              ` : `
-                                <span class="planner-test-badge text-slate-300 font-bold w-full ${testFontSizeClass}">-</span>
-                              `}
+                              ${hasTests ? `<span class="planner-test-badge ${testBadgeClass} px-1.5 py-0.5 rounded w-full ${testFontSizeClass} shadow-2xs" title="${sanitizeHtml(toPersianDigits(item.tests))}">${sanitizeHtml(toPersianDigits(item.tests))}</span>` : `<span class="planner-test-badge text-slate-300 font-bold w-full ${testFontSizeClass}">-</span>`}
                             </div>
                           </div>
                         </td>
