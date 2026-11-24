@@ -1637,7 +1637,7 @@ body.auth-locked.auth-light {
         <div>
           <div class="flex items-center gap-1.5 sm:gap-2">
             <h1 class="text-sm sm:text-base font-bold text-white tracking-wide">سامانه برنامه‌ریزی</h1>
-            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۰.۲۰</span>
+            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۰.۲۱</span>
           </div>
           <p class="text-[10px] sm:text-xs text-slate-400 font-medium hidden sm:block">آکادمی مشاوره دکتر فروتن کیا</p>
         </div>
@@ -1868,7 +1868,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.0.20';
+  const APP_VERSION = '1.0.21';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -2114,7 +2114,6 @@ body.auth-locked.auth-light {
     'هنر',
     'تیزهوشان',
     'ماده 28',
-    'دانشگاه فرهنگیان (تربیت معلم)',
   ];
 
   // ماتریس دروس رشته ادبیات و علوم انسانی (صفحه ۴)
@@ -2708,7 +2707,6 @@ body.auth-locked.auth-light {
         else if (/(?:^|\s)هنر(?:\s|$)/.test(fieldOfStudy)) fieldOfStudy = 'هنر';
         else if (/تیزهوشان|سمپاد/i.test(fieldOfStudy)) fieldOfStudy = 'تیزهوشان';
         else if (/ماده\s*[2۲][8۸]/i.test(fieldOfStudy)) fieldOfStudy = 'ماده 28';
-        else if (/فرهنگیان|تربیت\s*معلم/.test(fieldOfStudy)) fieldOfStudy = 'دانشگاه فرهنگیان (تربیت معلم)';
       }
       out.fieldOfStudy = fieldOfStudy;
     }
