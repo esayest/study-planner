@@ -1637,7 +1637,7 @@ body.auth-locked.auth-light {
         <div>
           <div class="flex items-center gap-1.5 sm:gap-2">
             <h1 class="text-sm sm:text-base font-bold text-white tracking-wide">سامانه برنامه‌ریزی</h1>
-            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۰.۲۱</span>
+            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۰.۲۲</span>
           </div>
           <p class="text-[10px] sm:text-xs text-slate-400 font-medium hidden sm:block">آکادمی مشاوره دکتر فروتن کیا</p>
         </div>
@@ -1868,7 +1868,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.0.21';
+  const APP_VERSION = '1.0.22';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -7638,6 +7638,22 @@ body.auth-locked.auth-light {
     generalReportBodyBudget = 650;
   }
 
+  function getActiveStreamReportPages(state) {
+    if (isHumanitiesField(state)) {
+      const progress = (state.report && state.report.humanitiesProgress) || getInitialHumanitiesProgress();
+      return partitionStreamReport(progress, estimateHumanitiesGradeHeight, humanitiesPageBudget);
+    }
+    if (isTajrobiField(state)) {
+      const progress = (state.report && state.report.tajrobiProgress) || getInitialTajrobiProgress();
+      return partitionStreamReport(progress, estimateTajrobiGradeHeight, humanitiesPageBudget);
+    }
+    if (isRiyaziField(state)) {
+      const progress = (state.report && state.report.riyaziProgress) || getInitialRiyaziProgress();
+      return partitionStreamReport(progress, estimateRiyaziGradeHeight, humanitiesPageBudget);
+    }
+    return null;
+  }
+
   function checkAndFixReportDomOverflow(pass = 0) {
     if (isAdjustingReportDom) return false;
     if (typeof document === 'undefined') return false;
@@ -7653,25 +7669,38 @@ body.auth-locked.auth-light {
     }
     if (reportPages[0].offsetHeight === 0) return false;
 
-    const isHum = isHumanitiesField(appState) || isTajrobiField(appState) || isRiyaziField(appState);
+    const streamPages = getActiveStreamReportPages(appState);
+    const isHum = Boolean(streamPages);
+    const prevBudget = isHum ? humanitiesPageBudget : generalReportBodyBudget;
     let anyOverflow = false;
 
     for (let i = 0; i < reportPages.length; i++) {
       const page = reportPages[i];
       const tableRows = page.querySelectorAll('tbody tr');
-      // اگر صفحه بیش از ۷۹۴ پیکسل شده باشد و قابلیت تفکیک بیشتر وجود داشته باشد
-      if (page.scrollHeight > 794 && (isHum || tableRows.length > 1)) {
+      if (isHum) {
+        const pageMeta = streamPages[i];
+        const blockCount = pageMeta ? (pageMeta.grades.length + (pageMeta.hasFarhangian ? 1 : 0)) : 0;
+        if (page.scrollHeight > 794 && blockCount > 1) {
+          const overflow = page.scrollHeight - 794;
+          const baseBudget = Math.min(humanitiesPageBudget, pageMeta.estHeight);
+          const nextBudget = Math.max(260, baseBudget - Math.max(30, overflow + 20));
+          if (nextBudget < humanitiesPageBudget) {
+            humanitiesPageBudget = nextBudget;
+            anyOverflow = true;
+          }
+        }
+      } else if (page.scrollHeight > 794 && tableRows.length > 1) {
         const overflow = page.scrollHeight - 794;
-        anyOverflow = true;
-        if (isHum) {
-          humanitiesPageBudget = Math.max(260, humanitiesPageBudget - Math.max(30, overflow + 20));
-        } else {
-          generalReportBodyBudget = Math.max(180, generalReportBodyBudget - Math.max(30, overflow + 20));
+        const nextBudget = Math.max(180, generalReportBodyBudget - Math.max(30, overflow + 20));
+        if (nextBudget < generalReportBodyBudget) {
+          generalReportBodyBudget = nextBudget;
+          anyOverflow = true;
         }
       }
     }
 
-    if (anyOverflow) {
+    const budgetChanged = isHum ? (humanitiesPageBudget < prevBudget) : (generalReportBodyBudget < prevBudget);
+    if (anyOverflow && budgetChanged) {
       isAdjustingReportDom = true;
       try {
         const existingPages = Array.from(container.querySelectorAll('.page-report'));
@@ -8640,23 +8669,36 @@ body.auth-locked.auth-light {
     return pages.length ? pages : [[]];
   }
 
-  function estimateHumanitiesGradeHeight(progress, g) {
+  function estimateProgressCellLines(val, charsPerLine) {
+    const str = (val !== undefined && val !== null) ? String(val).trim() : '';
+    if (!str) return 1;
+    const explicitLines = str.split(/\r?\n/);
+    let totalLines = 0;
+    for (const part of explicitLines) {
+      const trimmed = part.trim();
+      totalLines += trimmed ? Math.max(1, Math.ceil(trimmed.length / charsPerLine)) : 1;
+    }
+    return Math.max(1, totalLines);
+  }
+
+  function estimateStreamGradeHeight(progress, subjectsMap, gradeKey, getCharsPerLine) {
     let h = 26; // thead row
-    const subjects = HUMANITIES_SUBJECTS[g] || [];
+    const subjects = subjectsMap[gradeKey] || [];
+    const charsPerLine = typeof getCharsPerLine === 'function' ? getCharsPerLine(gradeKey) : getCharsPerLine;
     for (const row of PROGRESS_ROWS) {
       let maxLines = 1;
       for (const s of subjects) {
-        const val = (progress && progress[g] && progress[g][s.id] && progress[g][s.id][row.key] !== undefined && progress[g][s.id][row.key] !== null) ? progress[g][s.id][row.key] : '';
-        const str = String(val).trim();
-        if (str) {
-          // عرض ستون حدود ۸.۱۸٪ (حدود ۸۵ پیکسل)، تقریباً ۱۱ کاراکتر در هر سطر
-          const lines = Math.max(1, Math.ceil(str.length / 11));
-          if (lines > maxLines) maxLines = lines;
-        }
+        const val = (progress && progress[gradeKey] && progress[gradeKey][s.id]) ? progress[gradeKey][s.id][row.key] : '';
+        const lines = estimateProgressCellLines(val, charsPerLine);
+        if (lines > maxLines) maxLines = lines;
       }
       h += maxLines <= 1 ? 26 : (26 + (maxLines - 1) * 16);
     }
     return h;
+  }
+
+  function estimateHumanitiesGradeHeight(progress, g) {
+    return estimateStreamGradeHeight(progress, HUMANITIES_SUBJECTS, g, 11);
   }
 
   function estimateFarhangianHeight(progress) {
@@ -8665,68 +8707,59 @@ body.auth-locked.auth-light {
     for (const row of PROGRESS_ROWS) {
       let maxLines = 1;
       for (const s of subjects) {
-        const val = (progress && progress.farhangian && progress.farhangian[s.id] && progress.farhangian[s.id][row.key] !== undefined && progress.farhangian[s.id][row.key] !== null) ? progress.farhangian[s.id][row.key] : '';
-        const str = String(val).trim();
-        if (str) {
-          // فرهنگیان ۴ ستون با عرض ۱۹٪ دارد (حدود ۱۵۰ پیکسل)، تقریباً ۱۸ کاراکتر در سطر
-          const lines = Math.max(1, Math.ceil(str.length / 18));
-          if (lines > maxLines) maxLines = lines;
-        }
+        const val = (progress && progress.farhangian && progress.farhangian[s.id]) ? progress.farhangian[s.id][row.key] : '';
+        // فرهنگیان ۴ ستون با عرض ۱۹٪ دارد (حدود ۱۵۰ پیکسل)، تقریباً ۱۸ کاراکتر در سطر
+        const lines = estimateProgressCellLines(val, 18);
+        if (lines > maxLines) maxLines = lines;
       }
       h += maxLines <= 1 ? 26 : (26 + (maxLines - 1) * 16);
     }
     return h;
   }
 
-  function partitionHumanitiesReport(progress, maxPageBudget = 640) {
-    const h10 = estimateHumanitiesGradeHeight(progress, 'grade10');
-    const h11 = estimateHumanitiesGradeHeight(progress, 'grade11');
-    const h12 = estimateHumanitiesGradeHeight(progress, 'grade12');
-    const hFar = estimateFarhangianHeight(progress);
+  function partitionStreamReport(progress, estimateGradeFn, maxPageBudget = 640) {
     const table1Overhead = 14;
-    const table1Height = table1Overhead + h10 + h11 + h12;
-    const totalAll = table1Height + hFar;
+    const hFar = estimateFarhangianHeight(progress);
+    const gradeKeys = ['grade10', 'grade11', 'grade12'];
+    const gradeHeights = {};
+    gradeKeys.forEach(g => {
+      gradeHeights[g] = estimateGradeFn(progress, g);
+    });
 
-    // حالت ۱: تمام جداول به راحتی روی یک صفحه جا می‌شوند
-    if (totalAll <= maxPageBudget) {
-      return [{ grades: ['grade10', 'grade11', 'grade12'], hasFarhangian: true }];
+    // چیدمان مرحله‌ای حریصانه: تا زمانی که جدول بعدی در صفحه فعلی جا شود اضافه می‌شود و تنها بخش سرریزکننده به صفحه بعد می‌رود
+    const pages = [];
+    let current = { grades: [], hasFarhangian: false, estHeight: 0 };
+
+    for (const g of gradeKeys) {
+      const addedHeight = (current.grades.length === 0 ? table1Overhead : 0) + gradeHeights[g];
+      if (current.grades.length > 0 && current.estHeight + addedHeight > maxPageBudget) {
+        pages.push(current);
+        current = {
+          grades: [g],
+          hasFarhangian: false,
+          estHeight: table1Overhead + gradeHeights[g]
+        };
+      } else {
+        current.grades.push(g);
+        current.estHeight += addedHeight;
+      }
     }
 
-    // حالت ۲: تفکیک هوشمند ۲ صفحه‌ای: دهم + یازدهم در صفحه ۱، دوازدهم + فرهنگیان در صفحه ۲
-    const hP1 = table1Overhead + h10 + h11;
-    const hP2 = table1Overhead + h12 + hFar;
-
-    if (hP1 <= maxPageBudget && hP2 <= maxPageBudget) {
-      return [
-        { grades: ['grade10', 'grade11'], hasFarhangian: false },
-        { grades: ['grade12'], hasFarhangian: true }
-      ];
+    if ((current.grades.length > 0 || current.hasFarhangian) && current.estHeight + hFar > maxPageBudget) {
+      pages.push(current);
+      pages.push({ grades: [], hasFarhangian: true, estHeight: hFar });
+    } else {
+      current.hasFarhangian = true;
+      current.estHeight += hFar;
+      pages.push(current);
     }
 
-    // حالت ۳: در صورتی که جدول ۱ به تنهایی روی صفحه جا شود ولی دوازدهم+فرهنگیان زیاد باشد
-    if (table1Height <= maxPageBudget && hFar <= maxPageBudget) {
-      return [
-        { grades: ['grade10', 'grade11', 'grade12'], hasFarhangian: false },
-        { grades: [], hasFarhangian: true }
-      ];
-    }
+    return pages;
+  }
 
-    // حالت ۴: تفکیک ۳ صفحه‌ای زمانی که سطرها بسیار پر باشند
-    if (hP1 <= maxPageBudget) {
-      return [
-        { grades: ['grade10', 'grade11'], hasFarhangian: false },
-        { grades: ['grade12'], hasFarhangian: false },
-        { grades: [], hasFarhangian: true }
-      ];
-    }
-
-    // حالت حداکثری ۴ صفحه‌ای برای متون فوق‌العاده حجیم
-    return [
-      { grades: ['grade10'], hasFarhangian: false },
-      { grades: ['grade11'], hasFarhangian: false },
-      { grades: ['grade12'], hasFarhangian: false },
-      { grades: [], hasFarhangian: true }
-    ];
+  function partitionHumanitiesReport(progress, maxPageBudget = 640) {
+    return partitionStreamReport(progress, estimateHumanitiesGradeHeight, maxPageBudget)
+      .map(({ grades, hasFarhangian }) => ({ grades, hasFarhangian }));
   }
 
   function shouldSplitHumanitiesReport(progress) {
@@ -8737,69 +8770,12 @@ body.auth-locked.auth-light {
 
   // ==================== پیش‌نمایش و رندر گزارش تجربی ====================
   function estimateTajrobiGradeHeight(progress, g) {
-    let h = 26; // thead row
-    const subjects = TAJROBI_SUBJECTS[g] || [];
-    for (const row of PROGRESS_ROWS) {
-      let maxLines = 1;
-      for (const s of subjects) {
-        const val = (progress && progress[g] && progress[g][s.id] && progress[g][s.id][row.key] !== undefined && progress[g][s.id][row.key] !== null) ? progress[g][s.id][row.key] : '';
-        const str = String(val).trim();
-        if (str) {
-          const lines = Math.max(1, Math.ceil(str.length / 12));
-          if (lines > maxLines) maxLines = lines;
-        }
-      }
-      h += maxLines <= 1 ? 26 : (26 + (maxLines - 1) * 16);
-    }
-    return h;
+    return estimateStreamGradeHeight(progress, TAJROBI_SUBJECTS, g, 12);
   }
 
   function partitionTajrobiReport(progress, maxPageBudget = 640) {
-    const h10 = estimateTajrobiGradeHeight(progress, 'grade10');
-    const h11 = estimateTajrobiGradeHeight(progress, 'grade11');
-    const h12 = estimateTajrobiGradeHeight(progress, 'grade12');
-    const hFar = estimateFarhangianHeight(progress);
-    const table1Overhead = 14;
-    const table1Height = table1Overhead + h10 + h11 + h12;
-    const totalAll = table1Height + hFar;
-
-    // حالت ۱: تمام جداول روی یک صفحه جا می‌شوند
-    if (totalAll <= maxPageBudget) {
-      return [{ grades: ['grade10', 'grade11', 'grade12'], hasFarhangian: true }];
-    }
-
-    // حالت ۲: تفکیک هوشمند ۲ صفحه‌ای: دهم + یازدهم در صفحه ۱، دوازدهم + فرهنگیان در صفحه ۲
-    const hP1 = table1Overhead + h10 + h11;
-    const hP2 = table1Overhead + h12 + hFar;
-
-    if (hP1 <= maxPageBudget && hP2 <= maxPageBudget) {
-      return [
-        { grades: ['grade10', 'grade11'], hasFarhangian: false },
-        { grades: ['grade12'], hasFarhangian: true }
-      ];
-    }
-
-    if (table1Height <= maxPageBudget && hFar <= maxPageBudget) {
-      return [
-        { grades: ['grade10', 'grade11', 'grade12'], hasFarhangian: false },
-        { grades: [], hasFarhangian: true }
-      ];
-    }
-
-    if (hP1 <= maxPageBudget) {
-      return [
-        { grades: ['grade10', 'grade11'], hasFarhangian: false },
-        { grades: ['grade12'], hasFarhangian: false },
-        { grades: [], hasFarhangian: true }
-      ];
-    }
-
-    return [
-      { grades: ['grade10'], hasFarhangian: false },
-      { grades: ['grade11'], hasFarhangian: false },
-      { grades: ['grade12'], hasFarhangian: false },
-      { grades: [], hasFarhangian: true }
-    ];
+    return partitionStreamReport(progress, estimateTajrobiGradeHeight, maxPageBudget)
+      .map(({ grades, hasFarhangian }) => ({ grades, hasFarhangian }));
   }
 
   function renderTajrobiGradeSection(gradeKey, progress, cfg) {
@@ -8964,73 +8940,17 @@ body.auth-locked.auth-light {
 
   // ==================== پیش‌نمایش و رندر گزارش ریاضی و فیزیک ====================
   function estimateRiyaziGradeHeight(progress, g) {
-    let h = 26; // thead row
-    const subjects = RIYAZI_SUBJECTS[g] || [];
-    for (const row of PROGRESS_ROWS) {
-      let maxLines = 1;
-      for (const s of subjects) {
-        const val = (progress && progress[g] && progress[g][s.id] && progress[g][s.id][row.key] !== undefined && progress[g][s.id][row.key] !== null) ? progress[g][s.id][row.key] : '';
-        const str = String(val).trim();
-        if (str) {
-          const charLimit = g === 'grade10' ? 14 : (g === 'grade11' ? 12 : 11);
-          const lines = Math.max(1, Math.ceil(str.length / charLimit));
-          if (lines > maxLines) maxLines = lines;
-        }
-      }
-      h += maxLines <= 1 ? 26 : (26 + (maxLines - 1) * 16);
-    }
-    return h;
+    return estimateStreamGradeHeight(
+      progress,
+      RIYAZI_SUBJECTS,
+      g,
+      (grade) => (grade === 'grade10' ? 14 : (grade === 'grade11' ? 12 : 11))
+    );
   }
 
   function partitionRiyaziReport(progress, maxPageBudget = 640) {
-    const h10 = estimateRiyaziGradeHeight(progress, 'grade10');
-    const h11 = estimateRiyaziGradeHeight(progress, 'grade11');
-    const h12 = estimateRiyaziGradeHeight(progress, 'grade12');
-    const hFar = estimateFarhangianHeight(progress);
-    const table1Overhead = 14;
-    const table1Height = table1Overhead + h10 + h11 + h12;
-    const totalAll = table1Height + hFar;
-
-    // حالت ۱: تمام جداول به راحتی روی یک صفحه جا می‌شوند
-    if (totalAll <= maxPageBudget) {
-      return [{ grades: ['grade10', 'grade11', 'grade12'], hasFarhangian: true }];
-    }
-
-    // حالت ۲: تفکیک هوشمند ۲ صفحه‌ای: دهم + یازدهم در صفحه ۱، دوازدهم + فرهنگیان در صفحه ۲
-    const hP1 = table1Overhead + h10 + h11;
-    const hP2 = table1Overhead + h12 + hFar;
-
-    if (hP1 <= maxPageBudget && hP2 <= maxPageBudget) {
-      return [
-        { grades: ['grade10', 'grade11'], hasFarhangian: false },
-        { grades: ['grade12'], hasFarhangian: true }
-      ];
-    }
-
-    // حالت ۳: در صورتی که جدول ۱ به تنهایی روی صفحه جا شود ولی دوازدهم+فرهنگیان زیاد باشد
-    if (table1Height <= maxPageBudget && hFar <= maxPageBudget) {
-      return [
-        { grades: ['grade10', 'grade11', 'grade12'], hasFarhangian: false },
-        { grades: [], hasFarhangian: true }
-      ];
-    }
-
-    // حالت ۴: تفکیک ۳ صفحه‌ای زمانی که سطرها بسیار پر باشند
-    if (hP1 <= maxPageBudget) {
-      return [
-        { grades: ['grade10', 'grade11'], hasFarhangian: false },
-        { grades: ['grade12'], hasFarhangian: false },
-        { grades: [], hasFarhangian: true }
-      ];
-    }
-
-    // حالت حداکثری ۴ صفحه‌ای برای متون فوق‌العاده حجیم
-    return [
-      { grades: ['grade10'], hasFarhangian: false },
-      { grades: ['grade11'], hasFarhangian: false },
-      { grades: ['grade12'], hasFarhangian: false },
-      { grades: [], hasFarhangian: true }
-    ];
+    return partitionStreamReport(progress, estimateRiyaziGradeHeight, maxPageBudget)
+      .map(({ grades, hasFarhangian }) => ({ grades, hasFarhangian }));
   }
 
   function shouldSplitRiyaziReport(progress) {

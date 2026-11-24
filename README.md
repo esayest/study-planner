@@ -1,5 +1,5 @@
 # سامانه هوشمند برنامه‌ریزی تحصیلی آکادمی دکتر فروتن کیا
-### Study Planner — نسخه 1.0.21 (Web Edition)
+### Study Planner — نسخه 1.0.22 (Web Edition)
 
 [![Live Web App](https://img.shields.io/badge/Web%20App-Online%20Platform-2563eb)](https://esayest.github.io/study-planner/)
 [![PWA Ready](https://img.shields.io/badge/PWA-Installable%20%26%20Offline-059669)](https://esayest.github.io/study-planner/)
