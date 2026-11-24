@@ -794,35 +794,60 @@ body, input, textarea, select, button, table, .a4-page {
 }
 
 /* ==========================================================================
-   جدول ویرایشگر گزارش وضعیت تحصیلی رشته انسانی (Humanities Report Editor)
+   جداول ویرایشگر گزارش وضعیت تحصیلی (انسانی، تجربی و ریاضی)
    ========================================================================== */
-.humanities-editor-table {
-  min-width: 1040px !important;
+.humanities-editor-table,
+.tajrobi-editor-table,
+.riyazi-editor-table {
+  min-width: calc(96px + var(--report-subject-cols, 11) * 86px) !important;
   width: 100% !important;
   table-layout: fixed !important;
 }
 
-.humanities-editor-table.is-farhangian {
+.humanities-editor-table.is-farhangian,
+.tajrobi-editor-table.is-farhangian,
+.riyazi-editor-table.is-farhangian {
   min-width: 540px !important;
 }
 
 .humanities-editor-table th,
-.humanities-editor-table td {
+.humanities-editor-table td,
+.tajrobi-editor-table th,
+.tajrobi-editor-table td,
+.riyazi-editor-table th,
+.riyazi-editor-table td {
   vertical-align: middle !important;
   box-sizing: border-box !important;
 }
 
 .humanities-editor-table th:first-child,
-.humanities-editor-table td:first-child {
+.humanities-editor-table td:first-child,
+.tajrobi-editor-table th:first-child,
+.tajrobi-editor-table td:first-child,
+.riyazi-editor-table th:first-child,
+.riyazi-editor-table td:first-child {
   width: 96px !important;
   min-width: 96px !important;
   max-width: 96px !important;
 }
 
 .humanities-editor-table th:not(:first-child),
-.humanities-editor-table td:not(:first-child) {
+.humanities-editor-table td:not(:first-child),
+.tajrobi-editor-table th:not(:first-child),
+.tajrobi-editor-table td:not(:first-child),
+.riyazi-editor-table th:not(:first-child),
+.riyazi-editor-table td:not(:first-child) {
   min-width: 86px !important;
-  width: calc((100% - 96px) / 11) !important;
+  width: calc((100% - 96px) / var(--report-subject-cols, 11)) !important;
+}
+
+.humanities-editor-table.is-farhangian th:not(:first-child),
+.humanities-editor-table.is-farhangian td:not(:first-child),
+.tajrobi-editor-table.is-farhangian th:not(:first-child),
+.tajrobi-editor-table.is-farhangian td:not(:first-child),
+.riyazi-editor-table.is-farhangian th:not(:first-child),
+.riyazi-editor-table.is-farhangian td:not(:first-child) {
+  width: calc((100% - 96px) / 4) !important;
 }
 
 .humanities-progress-input,
@@ -981,9 +1006,7 @@ html, body {
   scroll-behavior: auto;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-x pan-y;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: block;
 }
 
 #pdf-preview-container {
@@ -1614,7 +1637,7 @@ body.auth-locked.auth-light {
         <div>
           <div class="flex items-center gap-1.5 sm:gap-2">
             <h1 class="text-sm sm:text-base font-bold text-white tracking-wide">سامانه برنامه‌ریزی</h1>
-            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۰.۱۶</span>
+            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۰.۲۰</span>
           </div>
           <p class="text-[10px] sm:text-xs text-slate-400 font-medium hidden sm:block">آکادمی مشاوره دکتر فروتن کیا</p>
         </div>
@@ -1649,7 +1672,7 @@ body.auth-locked.auth-light {
         <div class="h-5 sm:h-6 w-px bg-slate-700 mx-0.5 sm:mx-1 hidden md:block"></div>
 
         <!-- دکمه نصب اپلیکیشن PWA -->
-        <button type="button" id="btn-pwa-install" class="hidden p-1.5 sm:px-3 sm:py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold transition flex items-center justify-center gap-1.5 shadow-xs shrink-0" title="نصب اپلیکیشن روی دستگاه (PWA)" aria-label="نصب اپلیکیشن">
+        <button type="button" id="btn-pwa-install" class="hidden p-1.5 sm:px-3 sm:py-2 rounded-lg bg-sky-600 hover:bg-sky-500 text-white font-bold transition items-center justify-center gap-1.5 shadow-xs shrink-0" title="نصب اپلیکیشن روی دستگاه (PWA)" aria-label="نصب اپلیکیشن">
           <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
           <span class="hidden sm:inline text-xs">نصب برنامه</span>
         </button>
@@ -1740,7 +1763,7 @@ body.auth-locked.auth-light {
       </div>
 
       <!-- محوطه اسکرول پیش‌نمایش صفحات A4 -->
-      <div id="pdf-preview-scroll" dir="ltr" class="flex-1 min-h-0 overflow-auto p-2 sm:p-4 md:p-6 flex flex-col items-center">
+      <div id="pdf-preview-scroll" dir="ltr" class="flex-1 min-h-0 overflow-auto p-2 sm:p-4 md:p-6">
         <div id="pdf-preview-container" class="mx-auto my-0 relative flex-shrink-0">
           <div id="pdf-pages-wrapper" class="flex flex-col items-center origin-top-left transition-transform duration-150">
             <!-- ۴ صفحه استاندارد رندر می‌شوند -->
@@ -1797,16 +1820,27 @@ body.auth-locked.auth-light {
   const PERSIAN_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
   const ARABIC_DIGITS = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
 
+  function digitCharToPersian(ch) {
+    const code = ch.charCodeAt(0);
+    if (code >= 48 && code <= 57) {
+      return PERSIAN_DIGITS[code - 48];
+    }
+    if (code >= 1632 && code <= 1641) {
+      return PERSIAN_DIGITS[code - 1632];
+    }
+    return ch;
+  }
+
   function toPersianDigits(input, preserveUrls = true) {
     if (input === null || input === undefined) return '';
     if (!preserveUrls) {
-      return String(input).replace(/&#[0-9]+;|&#x[0-9a-fA-F]+;|&[a-zA-Z]+;|[0-9]/g, (match) => {
+      return String(input).replace(/&#[0-9]+;|&#x[0-9a-fA-F]+;|&[a-zA-Z]+;|[0-9\u0660-\u0669]/g, (match) => {
         if (match.startsWith('&')) return match;
-        return PERSIAN_DIGITS[+match];
+        return digitCharToPersian(match);
       });
     }
 
-    const pattern = /(?:https?:\/\/|ftp:\/\/|www\.|t\.me\/)[^\s<>"'\u0060]+|\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b|&#[0-9]+;|&#x[0-9a-fA-F]+;|&[a-zA-Z]+;|[0-9]/gi;
+    const pattern = /(?:https?:\/\/|ftp:\/\/|www\.|t\.me\/)[^\s<>"'\u0060]+|\b[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\b|&#[0-9]+;|&#x[0-9a-fA-F]+;|&[a-zA-Z]+;|[0-9\u0660-\u0669]/gi;
     return String(input).replace(pattern, (match) => {
       if (match.length > 1 || match.startsWith('&')) {
         const urlTrailingMatch = match.match(/^((?:https?:\/\/|ftp:\/\/|www\.|t\.me\/)[^\s<>"'\u0060]+?)([.,،؛!?)\]]+)$/i);
@@ -1817,11 +1851,7 @@ body.auth-locked.auth-light {
         }
         return match;
       }
-      const code = match.charCodeAt(0);
-      if (code >= 48 && code <= 57) {
-        return PERSIAN_DIGITS[code - 48];
-      }
-      return match;
+      return digitCharToPersian(match);
     });
   }
 
@@ -1838,7 +1868,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.0.19';
+  const APP_VERSION = '1.0.20';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -2084,6 +2114,7 @@ body.auth-locked.auth-light {
     'هنر',
     'تیزهوشان',
     'ماده 28',
+    'دانشگاه فرهنگیان (تربیت معلم)',
   ];
 
   // ماتریس دروس رشته ادبیات و علوم انسانی (صفحه ۴)
@@ -2307,7 +2338,7 @@ body.auth-locked.auth-light {
       const baseDay = DAYS_OF_WEEK[dayIndex];
       const cycle = Math.floor(i / 7) + 1; // ۱ برای روزهای اول تا هفتم، ۲ برای روزهای هشتم تا چهاردهم
       const dayKey = cycle === 1 ? baseDay.key : (baseDay.key + '_2');
-      const dayLabel = baseDay.label;
+      const dayLabel = cycle === 1 ? baseDay.label : `${baseDay.label} (هفته ${toPersianDigits(cycle)})`;
 
       result.push({
         key: dayKey,
@@ -2622,6 +2653,7 @@ body.auth-locked.auth-light {
     if (!src || typeof src !== 'object') return {};
     const s = { ...src };
     const getFirst = (keys) => getFirstDefinedProp(s, keys);
+    const out = {};
 
     // ۱. نام و نام خانوادگی
     const rawFullName = getFirst([
@@ -2633,16 +2665,22 @@ body.auth-locked.auth-light {
     const rawFirstName = getFirst(['firstName', 'first_name', 'fname', 'نام_کوچک', 'نام کوچک', 'نام']);
     const rawLastName = getFirst(['lastName', 'last_name', 'family', 'familyName', 'family_name', 'lname', 'نام_خانوادگی', 'نام خانوادگی', 'فامیلی']);
 
-    let fullName = String(rawFullName ?? '').trim();
-    let firstName = String(rawFirstName ?? '').trim();
-    let lastName = String(rawLastName ?? '').trim();
+    if (rawFullName !== undefined || rawFirstName !== undefined || rawLastName !== undefined) {
+      let fullName = String(rawFullName ?? '').trim();
+      let firstName = String(rawFirstName ?? '').trim();
+      let lastName = String(rawLastName ?? '').trim();
 
-    if (!fullName && (firstName || lastName)) {
-      fullName = `${firstName} ${lastName}`.trim();
-    } else if (fullName && (!firstName && !lastName)) {
-      const parts = fullName.split(/\s+/);
-      firstName = parts[0] || '';
-      lastName = parts.slice(1).join(' ') || '';
+      if (!fullName && (firstName || lastName)) {
+        fullName = `${firstName} ${lastName}`.trim();
+      } else if (fullName && (!firstName && !lastName)) {
+        const parts = fullName.split(/\s+/);
+        firstName = parts[0] || '';
+        lastName = parts.slice(1).join(' ') || '';
+      }
+
+      out.fullName = fullName;
+      out.firstName = firstName;
+      out.lastName = lastName;
     }
 
     // ۲. نام مدرسه
@@ -2650,38 +2688,47 @@ body.auth-locked.auth-light {
       'schoolName', 'school_name', 'school', 'schoolTitle', 'school_title',
       'مدرسه', 'نام_مدرسه', 'نام مدرسه', 'دبیرستان'
     ]);
-    const schoolName = String(rawSchoolName ?? '').trim();
+    if (rawSchoolName !== undefined) {
+      out.schoolName = String(rawSchoolName).trim();
+    }
 
-    // ۳. رشته تحصیلی
+    // ۳. رشته تحصیلی (با نرمال‌سازی حروف عربی و نیم‌فاصله)
     const rawField = getFirst([
       'fieldOfStudy', 'field_of_study', 'field', 'major', 'studyField', 'study_field', 'branch', 'reshteh',
       'رشته', 'رشته_تحصیلی', 'رشته تحصیلی'
     ]);
-    let fieldOfStudy = String(rawField ?? '').trim();
-
-    if (fieldOfStudy) {
-      if (/تجربی/i.test(fieldOfStudy) && !/علوم/i.test(fieldOfStudy)) fieldOfStudy = 'علوم تجربی';
-      else if (/ریاضی/i.test(fieldOfStudy)) fieldOfStudy = 'ریاضی و فیزیک';
-      else if (/انسانی/i.test(fieldOfStudy) && !/ادبیات/i.test(fieldOfStudy)) fieldOfStudy = 'ادبیات و علوم انسانی';
-      else if (/فرهنگیان|تربیت\s*معلم/i.test(fieldOfStudy) && !/دانشگاه/i.test(fieldOfStudy)) fieldOfStudy = 'دانشگاه فرهنگیان (تربیت معلم)';
-      else if (/تیزهوشان|سمپاد/i.test(fieldOfStudy)) fieldOfStudy = 'تیزهوشان';
-      else if (/ماده\s*[2۲][8۸]/i.test(fieldOfStudy)) fieldOfStudy = 'ماده 28';
-    } else if (rawField === undefined) {
-      fieldOfStudy = 'علوم تجربی';
+    if (rawField !== undefined) {
+      let fieldOfStudy = normalizePersianText(String(rawField));
+      if (fieldOfStudy) {
+        if (/تجربی/.test(fieldOfStudy)) fieldOfStudy = 'علوم تجربی';
+        else if (/ریاضی/.test(fieldOfStudy)) fieldOfStudy = 'ریاضی و فیزیک';
+        else if (/انسانی/.test(fieldOfStudy)) fieldOfStudy = 'ادبیات و علوم انسانی';
+        else if (/معارف/.test(fieldOfStudy)) fieldOfStudy = 'علوم و معارف اسلامی';
+        else if (/زبان/.test(fieldOfStudy)) fieldOfStudy = 'منحصرا زبان';
+        else if (/(?:^|\s)هنر(?:\s|$)/.test(fieldOfStudy)) fieldOfStudy = 'هنر';
+        else if (/تیزهوشان|سمپاد/i.test(fieldOfStudy)) fieldOfStudy = 'تیزهوشان';
+        else if (/ماده\s*[2۲][8۸]/i.test(fieldOfStudy)) fieldOfStudy = 'ماده 28';
+        else if (/فرهنگیان|تربیت\s*معلم/.test(fieldOfStudy)) fieldOfStudy = 'دانشگاه فرهنگیان (تربیت معلم)';
+      }
+      out.fieldOfStudy = fieldOfStudy;
     }
 
-    // ۴. مشاور و مشاور ناظر (با مقادیر پیش‌فرض سازمانی در صورت عدم وجود کلید)
+    // ۴. مشاور و مشاور ناظر (مقادیر پیش‌فرض سازمانی در صورت نبود کلید از defaults.student خوانده می‌شوند)
     const rawCounselor = getFirst([
       'counselorName', 'counselor_name', 'counselor', 'advisor', 'consultant', 'moshaver',
       'مشاور', 'نام_مشاور', 'نام مشاور', 'مشاور_تحصیلی'
     ]);
-    const counselorName = rawCounselor !== undefined ? String(rawCounselor).trim() : 'دکتر فروتن کیا';
+    if (rawCounselor !== undefined) {
+      out.counselorName = String(rawCounselor).trim();
+    }
 
     const rawSupervisor = getFirst([
       'supervisorCounselor', 'supervisor_counselor', 'supervisor', 'mentor', 'nazer',
       'مشاور_ناظر', 'مشاور ناظر', 'ناظر', 'سرپرست'
     ]);
-    const supervisorCounselor = rawSupervisor !== undefined ? String(rawSupervisor).trim() : 'دکتر شهروز فروتن کیا';
+    if (rawSupervisor !== undefined) {
+      out.supervisorCounselor = String(rawSupervisor).trim();
+    }
 
     // ۵. تلفن همراه
     const rawPhone = getFirst([
@@ -2689,28 +2736,36 @@ body.auth-locked.auth-light {
       'tel', 'cell', 'contact', 'تلفن', 'شماره_تماس', 'شماره تماس', 'موبایل',
       'شماره_موبایل', 'شماره همراه'
     ]);
-    const phone = String(rawPhone ?? '').trim();
+    if (rawPhone !== undefined) {
+      out.phone = String(rawPhone).trim();
+    }
 
-    // ۶. آزمون آزمایشی (با مقدار پیش‌فرض سازمانی در صورت عدم وجود کلید)
+    // ۶. آزمون آزمایشی
     const rawExams = getFirst([
       'exams', 'exam', 'targetExam', 'target_exam', 'tests', 'azmoon',
       'آزمون', 'نام_آزمون', 'آزمون_هدف', 'آزمون آزمایشی'
     ]);
-    const exams = rawExams !== undefined ? String(rawExams).trim() : 'قلم‌چی و ماز';
+    if (rawExams !== undefined) {
+      out.exams = String(rawExams).trim();
+    }
 
-    // ۷. هفته مطالعاتی (با مقدار پیش‌فرض سازمانی در صورت عدم وجود کلید)
+    // ۷. هفته مطالعاتی
     const rawWeeks = getFirst([
       'weeksPassed', 'weeks_passed', 'week', 'weekNumber', 'week_number', 'currentWeek', 'current_week',
       'هفته', 'هفته_مطالعاتی', 'هفته مطالعاتی', 'شماره_هفته'
     ]);
-    let weeksPassed = rawWeeks !== undefined ? String(rawWeeks).trim() : '1';
+    if (rawWeeks !== undefined) {
+      out.weeksPassed = String(rawWeeks).trim();
+    }
 
     // ۸. بازه زمانی برنامه
     const rawTimeframe = getFirst([
       'timeframe', 'time_frame', 'dateRange', 'date_range', 'period', 'dates', 'date', 'baze',
       'بازه', 'بازه_زمانی', 'بازه زمانی', 'تاریخ', 'تاریخ_برنامه'
     ]);
-    const timeframe = String(rawTimeframe ?? '').trim();
+    if (rawTimeframe !== undefined) {
+      out.timeframe = String(rawTimeframe).trim();
+    }
 
     // ۹. یادداشت‌ها و استراتژی مشاور
     const rawExtraNotes = getFirst([
@@ -2718,22 +2773,11 @@ body.auth-locked.auth-light {
       'counselorNotes', 'counselor_notes', 'comments', 'توضیحات', 'یادداشت',
       'استراتژی', 'نکات_مشاور', 'نکات مهم'
     ]);
-    const extraNotes = String(rawExtraNotes ?? '').trim();
+    if (rawExtraNotes !== undefined) {
+      out.extraNotes = String(rawExtraNotes).trim();
+    }
 
-    return {
-      fullName,
-      firstName,
-      lastName,
-      schoolName,
-      fieldOfStudy,
-      counselorName,
-      supervisorCounselor,
-      phone,
-      exams,
-      weeksPassed,
-      timeframe,
-      extraNotes,
-    };
+    return out;
   }
 
   // سازگاری کامل جدول برنامه‌ریزی هفتگی با فرمت‌های قدیمی
@@ -2827,7 +2871,7 @@ body.auth-locked.auth-light {
     while (cleanBlocks.length < rowCount) {
       cleanBlocks.push(createEmptyBlock());
     }
-    while (cleanBlocks.length > rowCount) {
+    while (cleanBlocks.length > 9) {
       cleanBlocks.pop();
     }
 
@@ -3499,13 +3543,19 @@ body.auth-locked.auth-light {
     }
 
     const planner = state.planner || {};
-    const rowCount = planner.rowCount;
-    if (rowCount < 3 || rowCount > 9) {
+    const rowCountRaw = planner.rowCount;
+    const rowCount = (rowCountRaw === '' || rowCountRaw === null || rowCountRaw === undefined || typeof rowCountRaw === 'boolean')
+      ? NaN
+      : Number(rowCountRaw);
+    if (!Number.isInteger(rowCount) || rowCount < 3 || rowCount > 9) {
       errors.push('تعداد پارت‌های مطالعه در روز باید بین ۳ تا ۹ پارت باشد.');
     }
 
-    const dayCount = planner.dayCount || 7;
-    if (dayCount < 2 || dayCount > 14) {
+    const dayCountRaw = planner.dayCount;
+    const dayCount = (dayCountRaw === '' || dayCountRaw === null || dayCountRaw === undefined || typeof dayCountRaw === 'boolean')
+      ? NaN
+      : Number(dayCountRaw);
+    if (!Number.isInteger(dayCount) || dayCount < 2 || dayCount > 14) {
       errors.push('تعداد روزهای برنامه باید بین ۲ تا ۱۴ روز باشد.');
     }
 
@@ -3523,19 +3573,28 @@ body.auth-locked.auth-light {
     cachedMeasuredHeights = {};
     try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
     const count = Math.min(9, Math.max(3, parseInt(newCount, 10) || 6));
+    if (!state || !state.planner) return;
+    if (!Array.isArray(state.planner.blocks)) {
+      state.planner.blocks = [];
+    }
     state.planner.rowCount = count;
     while (state.planner.blocks.length < count) {
       state.planner.blocks.push(createEmptyBlock());
     }
-    while (state.planner.blocks.length > count) {
-      state.planner.blocks.pop();
-    }
+    state.planner.blocks.forEach(block => {
+      ALL_PLANNER_DAY_KEYS.forEach(key => {
+        if (!block[key]) {
+          block[key] = { topic: '', tests: '' };
+        }
+      });
+    });
     resetPlannerCopying();
   }
 
   function setPlannerDayCount(state, newDayCount) {
     cachedMeasuredHeights = {};
     try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
+    if (!state || !state.planner) return;
     const count = Math.min(14, Math.max(2, parseInt(newDayCount, 10) || 7));
     state.planner.dayCount = count;
     if (Array.isArray(state.planner.blocks)) {
@@ -3548,7 +3607,6 @@ body.auth-locked.auth-light {
       });
     }
     resetPlannerCopying();
-    saveCurrentToLocalStorage(state);
   }
 
   function setPlannerStartDay(state, dayKey) {
@@ -3583,16 +3641,14 @@ body.auth-locked.auth-light {
     }
 
     state.planner.startDay = dayKey;
-    saveCurrentToLocalStorage(state);
   }
 
   function setPlannerNightRoutine(state, enabled) {
-    if (state.planner) {
+    if (state && state.planner) {
       cachedMeasuredHeights = {};
       try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
       state.planner.hasNightRoutine = Boolean(enabled);
       resetPlannerCopying();
-      saveCurrentToLocalStorage(state);
     }
   }
 
@@ -4089,6 +4145,9 @@ body.auth-locked.auth-light {
 
     if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
       const handleResizeOrOrientation = () => {
+        if (typeof document !== 'undefined' && document.body && document.body.classList.contains('is-printing')) {
+          return;
+        }
         const isDesktop = typeof window.innerWidth === 'number' && window.innerWidth >= 1024;
         if (isDesktop) {
           const editor = document.getElementById('editor-panel-wrapper');
@@ -4114,6 +4173,14 @@ body.auth-locked.auth-light {
       window.addEventListener('resize', handleResizeOrOrientation);
       window.addEventListener('orientationchange', () => {
         setTimeout(handleResizeOrOrientation, 100);
+      });
+      window.addEventListener('beforeprint', () => {
+        if (typeof document !== 'undefined' && document.body && document.body.classList.contains('is-printing')) {
+          return;
+        }
+        if (previewIsDirty || pendingPatchPages.size > 0) {
+          renderPreviewPages();
+        }
       });
 
       // ذخیره فوری در هنگام خروج، تغییر تب یا معلق شدن مرورگر (پشتیبانی کامل موبایل)
@@ -4157,13 +4224,25 @@ body.auth-locked.auth-light {
         }
       });
 
-      // خروج از حالت کپی با فشردن کلید Escape (Escape key listener to exit copy mode)
+      // خروج از حالت کپی با فشردن کلید Escape و بازگردانی جای‌گذاری با Ctrl+Z / Cmd+Z
       window.addEventListener('keydown', (e) => {
         // رهگیری میانبر چاپ مرورگر (Ctrl+P / Cmd+P) و هدایت مستقیم به handlePrintPdf
         if ((e.ctrlKey || e.metaKey) && !e.altKey && (e.key === 'p' || e.key === 'P' || e.code === 'KeyP')) {
           e.preventDefault();
           handlePrintPdf();
           return;
+        }
+
+        // بازگردانی محتوای جای‌گذاری‌شده با میانبر Ctrl+Z / Cmd+Z
+        if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && (e.key === 'z' || e.key === 'Z' || e.code === 'KeyZ')) {
+          const hasOpenModal = document.querySelector('#app-confirm-modal-overlay');
+          const activeEl = document.activeElement;
+          const isInputFocused = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || activeEl.isContentEditable);
+          if (!hasOpenModal && !isInputFocused && lastPastedUndoAction && !isCopyMode && !isMultiSelectMode) {
+            e.preventDefault();
+            undoPastedContent();
+            return;
+          }
         }
 
         if (e.key === 'Escape') {
@@ -4197,16 +4276,6 @@ body.auth-locked.auth-light {
           hasPushedCopyHistory = false;
           resetPlannerCopying();
           showToast('حالت کپی لغو شد.', 'info', 2000);
-        }
-
-        // بازگردانی محتوای کپی‌شده با میانبر Ctrl+Z / Cmd+Z
-        if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z') && !e.shiftKey) {
-          const activeEl = document.activeElement;
-          const isInputFocused = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA');
-          if (!isInputFocused && lastPastedUndoAction && !isCopyMode) {
-            e.preventDefault();
-            undoPastedContent();
-          }
         }
       });
     }
@@ -4313,6 +4382,9 @@ body.auth-locked.auth-light {
   }
 
   function setZoom(val) {
+    if (typeof document !== 'undefined' && document.body && document.body.classList.contains('is-printing')) {
+      return;
+    }
     currentZoom = Math.round(val * 100) / 100;
     const container = document.getElementById('pdf-pages-wrapper');
     const parent = document.getElementById('pdf-preview-container');
@@ -4802,7 +4874,7 @@ body.auth-locked.auth-light {
     const baseKey = String(dayKey).replace(/_2$/, '');
     const baseDay = DAYS_OF_WEEK.find(d => d.key === baseKey);
     if (!baseDay) return String(dayKey);
-    return baseDay.label;
+    return isWeek2 ? `${baseDay.label} (هفته ۲)` : baseDay.label;
   }
 
   function refreshPlannerEditorPreservingScroll() {
@@ -5830,9 +5902,10 @@ body.auth-locked.auth-light {
         <tr class="${theme.rowBg} divide-x divide-x-reverse divide-slate-200 transition-colors">
           <td class="text-center font-bold bg-slate-100 py-2 px-1 align-middle" style="width: ${dayColWidth}px; min-width: ${dayColWidth}px; max-width: ${dayColWidth}px;">
             <div class="flex flex-col items-center gap-1.5">
-              <span class="day-badge-pill inline-block px-3.5 py-1.5 rounded-xl ${theme.badge} font-bold text-xs shadow-xs tracking-wide">
-                ${d.label}
+              <span class="day-badge-pill inline-block px-3.5 py-1.5 rounded-xl ${theme.badge} font-bold text-xs shadow-xs tracking-wide" title="${sanitizeHtml(d.label)}">
+                ${d.baseLabel || d.label}
               </span>
+              ${d.cycle > 1 ? `<span class="text-[9.5px] font-bold text-slate-700 bg-white/90 border border-slate-300 px-1.5 py-0.5 rounded-md leading-none whitespace-nowrap">هفته ${toPersianDigits(d.cycle)}</span>` : ''}
               <div class="planner-day-actions-slot flex items-center justify-center w-full" data-day="${d.key}" data-day-label="${d.label}">
                 ${renderDayActionsSlotHtml(d.key, d.label, allDaySelected)}
               </div>
@@ -6609,8 +6682,7 @@ body.auth-locked.auth-light {
     const text = appState.student.extraNotes || '';
     const rawLines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     const pages = partitionStudentNotes(text, (pIdx) => getStudentPageBudget(pIdx));
-    const domPages = (typeof document !== 'undefined') ? document.querySelectorAll('#pdf-pages-wrapper .page-student') : null;
-    const pageCount = (domPages && domPages.length > 0) ? domPages.length : pages.length;
+    const pageCount = pages.length;
     const notesTextarea = document.getElementById('dossier-extra-notes-textarea');
     if (notesTextarea && document.activeElement !== notesTextarea && notesTextarea.value !== text) {
       notesTextarea.value = text;
@@ -6677,6 +6749,7 @@ body.auth-locked.auth-light {
     const gradeData = progress[gradeKey] || {};
     const isFarhangian = gradeKey === 'farhangian';
     const farhangianClass = isFarhangian ? 'is-farhangian' : '';
+    const colCount = Math.max(1, subjects.length);
     const tableMinW = isFarhangian ? 'min-w-[540px]' : 'min-w-[880px]';
 
     return `
@@ -6689,7 +6762,7 @@ body.auth-locked.auth-light {
           </div>
         </div>
         <div class="overflow-x-auto">
-          <table class="tajrobi-editor-table ${farhangianClass} w-full ${tableMinW} text-center text-xs divide-y divide-slate-200">
+          <table style="--report-subject-cols: ${colCount};" class="tajrobi-editor-table ${farhangianClass} w-full ${tableMinW} text-center text-xs divide-y divide-slate-200">
             <thead class="bg-slate-50 text-slate-800 font-bold">
               <tr class="divide-x divide-x-reverse divide-slate-200">
                 <th class="py-2 px-2 w-24 min-w-[84px] bg-slate-100 text-slate-900 text-right pr-3 text-xs whitespace-nowrap font-bold">مرحله / درس</th>
@@ -6841,6 +6914,7 @@ body.auth-locked.auth-light {
     const gradeData = progress[gradeKey] || {};
     const isFarhangian = gradeKey === 'farhangian';
     const farhangianClass = isFarhangian ? 'is-farhangian' : '';
+    const colCount = Math.max(1, subjects.length);
     const tableMinW = isFarhangian ? 'min-w-[540px]' : 'min-w-[1040px]';
 
     return `
@@ -6853,7 +6927,7 @@ body.auth-locked.auth-light {
           </div>
         </div>
         <div class="overflow-x-auto">
-          <table class="riyazi-editor-table ${farhangianClass} w-full ${tableMinW} text-center text-xs divide-y divide-slate-200">
+          <table style="--report-subject-cols: ${colCount};" class="riyazi-editor-table ${farhangianClass} w-full ${tableMinW} text-center text-xs divide-y divide-slate-200">
             <thead class="bg-slate-50 text-slate-800 font-bold">
               <tr class="divide-x divide-x-reverse divide-slate-200">
                 <th class="py-2 px-2 w-24 min-w-[84px] bg-slate-100 text-slate-900 text-right pr-3 text-xs whitespace-nowrap font-bold">مرحله / درس</th>
@@ -7069,6 +7143,7 @@ body.auth-locked.auth-light {
     const gradeData = progress[gradeKey] || {};
     const isFarhangian = gradeKey === 'farhangian';
     const farhangianClass = isFarhangian ? 'is-farhangian' : '';
+    const colCount = Math.max(1, subjects.length);
     const tableMinW = isFarhangian ? 'min-w-[540px]' : 'min-w-[1040px]';
 
     return `
@@ -7081,7 +7156,7 @@ body.auth-locked.auth-light {
           </div>
         </div>
         <div class="overflow-x-auto">
-          <table class="humanities-editor-table ${farhangianClass} w-full ${tableMinW} text-center text-xs divide-y divide-slate-200">
+          <table style="--report-subject-cols: ${colCount};" class="humanities-editor-table ${farhangianClass} w-full ${tableMinW} text-center text-xs divide-y divide-slate-200">
             <thead class="bg-slate-50 text-slate-800 font-bold">
               <tr class="divide-x divide-x-reverse divide-slate-200">
                 <th class="py-2 px-2 w-24 min-w-[84px] bg-slate-100 text-slate-900 text-right pr-3 text-xs whitespace-nowrap font-bold">مرحله / درس</th>
@@ -7288,7 +7363,9 @@ body.auth-locked.auth-light {
   }
 
   let isAdjustingPlannerDom = false;
-  function checkAndFixPlannerDomOverflow(pass = 0) {
+  let measuredPlannerBodyBudget = 684;
+  let lastMeasuredPlannerHeaderH = 0;
+  function checkAndFixPlannerDomOverflow(pass = 0, accumulatedSplits = null, budgetOverride = null) {
     if (isAdjustingPlannerDom) return false;
     if (typeof document === 'undefined') return false;
     const container = document.getElementById('pdf-pages-wrapper');
@@ -7304,13 +7381,27 @@ body.auth-locked.auth-light {
     }
     if (plannerPages[0].offsetHeight === 0) return false;
 
+    if (pass === 0 && typeof budgetOverride !== 'number') {
+      const firstWrapper = plannerPages[0].querySelector('.planner-table-wrapper');
+      const firstHeader = firstWrapper && firstWrapper.previousElementSibling;
+      const firstHeaderH = firstHeader ? (firstHeader.offsetHeight || 0) : 0;
+      if (firstHeaderH > 0 && lastMeasuredPlannerHeaderH > 0 && firstHeaderH < lastMeasuredPlannerHeaderH - 4) {
+        measuredPlannerBodyBudget = 684;
+        lastMeasuredPlannerHeaderH = firstHeaderH;
+      }
+    }
+
     const rowCount = (appState.planner && appState.planner.rowCount) || 6;
     if (!cachedMeasuredHeights[rowCount]) {
       cachedMeasuredHeights[rowCount] = {};
     }
 
+    let effectiveBodyBudget = (typeof budgetOverride === 'number' && budgetOverride > 0)
+      ? budgetOverride
+      : measuredPlannerBodyBudget;
     let anyMeasurementChanged = false;
-    const splitBeforeDays = new Set();
+    let anyOverflowDetected = false;
+    const splitBeforeDays = new Set(accumulatedSplits || []);
 
     // ۱. اندازه‌گیری دقیق ارتفاع تمام سطرها مستقیماً بر اساس رندر واقعی مرورگر و ثبت در کش (بدون حدس و دستکاری با perRowInc)
     plannerPages.forEach(page => {
@@ -7343,6 +7434,26 @@ body.auth-locked.auth-light {
         const tableWrapperH = tableWrapper ? Math.max(tableWrapper.offsetHeight || 0, tableWrapper.scrollHeight || 0) : 0;
 
         if (page.scrollHeight > 794 || tbodyH > 684 || tableWrapperH > 720) {
+          anyOverflowDetected = true;
+          if (tbodyH > 0) {
+            let tightenedBudget = effectiveBodyBudget;
+            if (page.scrollHeight > 794) {
+              tightenedBudget = Math.min(tightenedBudget, Math.max(200, tbodyH - (page.scrollHeight - 794) - 4));
+            }
+            if (tableWrapperH > 720) {
+              tightenedBudget = Math.min(tightenedBudget, Math.max(200, tbodyH - (tableWrapperH - 720) - 4));
+            }
+            if (tbodyH > 684) {
+              tightenedBudget = Math.min(tightenedBudget, 684);
+            }
+            effectiveBodyBudget = Math.max(200, tightenedBudget);
+            measuredPlannerBodyBudget = Math.min(measuredPlannerBodyBudget, effectiveBodyBudget);
+            const headerEl = tableWrapper && tableWrapper.previousElementSibling;
+            const headerH = headerEl ? (headerEl.offsetHeight || 0) : 0;
+            if (headerH > 0) {
+              lastMeasuredPlannerHeaderH = Math.max(lastMeasuredPlannerHeaderH, headerH);
+            }
+          }
           const lastTr = pageRows[pageRows.length - 1];
           const lastDayKey = lastTr.getAttribute('data-day');
           if (lastDayKey) {
@@ -7354,12 +7465,15 @@ body.auth-locked.auth-light {
 
     // ۲. بررسی بازگرداندن روز بعدی به صفحه جاری (Pull-Back) در صورت وجود فضای خالی واقعی در پایین صفحه
     let canPullBackAnyDay = false;
-    if (plannerPages.length > 1) {
+    const pullBackBudget = Math.min(676, effectiveBodyBudget - 8);
+    if (!anyOverflowDetected && plannerPages.length > 1 && pullBackBudget > 0) {
       for (let i = 0; i < plannerPages.length - 1; i++) {
         const pCurrent = plannerPages[i];
         const pNext = plannerPages[i + 1];
         const nextFirstRow = pNext.querySelector('tbody tr[data-day]');
         if (!nextFirstRow) continue;
+        const nextDayKey = nextFirstRow.getAttribute('data-day');
+        if (nextDayKey && splitBeforeDays.has(nextDayKey)) continue;
         const nextRowH = nextFirstRow.offsetHeight || 0;
         if (nextRowH <= 0) continue;
 
@@ -7368,8 +7482,8 @@ body.auth-locked.auth-light {
         if (currentTbodyH <= 0) continue;
 
         const currentRows = pCurrent.querySelectorAll('tbody tr[data-day]');
-        // سقف ارتفاع مفید سطرهای جدول ۶۸۴ پیکسل است و هر صفحه حداکثر می‌تواند ۷ روز داشته باشد
-        if (currentRows.length < 7 && currentTbodyH + nextRowH <= 676) {
+        // سقف ارتفاع مفید سطرهای جدول بر اساس ظرفیت واقعی صفحه و حداکثر ۷ روز در هر صفحه
+        if (currentRows.length < 7 && currentTbodyH + nextRowH <= pullBackBudget) {
           canPullBackAnyDay = true;
           break;
         }
@@ -7384,7 +7498,13 @@ body.auth-locked.auth-light {
       const startDayKey = (appState.planner && appState.planner.startDay) || 'sat';
       const dayCount = (appState.planner && appState.planner.dayCount) || 7;
       const orderedDays = getOrderedDays(startDayKey, dayCount);
-      const partitions = partitionPlannerDays(orderedDays, appState.planner, rowCount, splitBeforeDays.size > 0 ? splitBeforeDays : null);
+      const partitions = partitionPlannerDays(
+        orderedDays,
+        appState.planner,
+        rowCount,
+        splitBeforeDays.size > 0 ? splitBeforeDays : null,
+        effectiveBodyBudget
+      );
 
       const currentDayDistribution = plannerPages.map(p => 
         Array.from(p.querySelectorAll('tbody tr[data-day]')).map(tr => tr.getAttribute('data-day')).join(',')
@@ -7414,8 +7534,8 @@ body.auth-locked.auth-light {
           isAdjustingPlannerDom = false;
         }
 
-        if (pass < 2) {
-          checkAndFixPlannerDomOverflow(pass + 1);
+        if (pass < 3) {
+          checkAndFixPlannerDomOverflow(pass + 1, splitBeforeDays, effectiveBodyBudget);
         }
         setZoom(currentZoom);
         return true;
@@ -7909,13 +8029,12 @@ body.auth-locked.auth-light {
     return Math.max(88, Math.ceil(maxCellHeight + 9));
   }
 
-  function partitionPlannerDays(orderedDays, planner, rowCount, splitBeforeDays = null) {
+  function partitionPlannerDays(orderedDays, planner, rowCount, splitBeforeDays = null, maxPageHeight = measuredPlannerBodyBudget) {
     const pages = [];
     let currentPage = [];
     let currentHeight = 0;
     // حداکثر ۷ روز در هر صفحه افقی A4 جهت حفظ تقارن و عدم سرریز عمودی
     const maxDaysPerPage = 7;
-    const maxPageHeight = 684;
 
     for (const day of orderedDays) {
       const rowH = estimateDayRowHeight(day.key, planner, rowCount);
@@ -8029,9 +8148,12 @@ body.auth-locked.auth-light {
                   <tr class="${theme.rowBg} divide-x divide-x-reverse divide-slate-200" data-day="${d.key}">
                     <!-- ستون اول: روزهای هفته به ترتیب اصلی با نشان رنگی اختصاصی -->
                     <td class="text-center font-bold text-slate-800 bg-slate-100/90 py-1.5 px-2 align-middle">
-                      <span class="day-badge-pill inline-block px-3.5 py-1.5 rounded-xl ${theme.badge} font-bold text-xs shadow-xs tracking-wide">
-                        ${d.label}
-                      </span>
+                      <div class="flex flex-col items-center justify-center gap-1">
+                        <span class="day-badge-pill inline-block px-3.5 py-1.5 rounded-xl ${theme.badge} font-bold text-xs shadow-xs tracking-wide" title="${sanitizeHtml(d.label)}">
+                          ${d.baseLabel || d.label}
+                        </span>
+                        ${d.cycle > 1 ? `<span class="text-[9.5px] font-bold text-slate-700 bg-white/90 border border-slate-300 px-1.5 py-0.5 rounded-md leading-none whitespace-nowrap">هفته ${toPersianDigits(d.cycle)}</span>` : ''}
+                      </div>
                     </td>
                     <!-- ستون‌های پارت‌های ۱ تا N با ابعاد منعطف و گسترش خودکار ارتفاع متناسب با نیاز محتوا -->
                     ${Array.from({ length: rowCount }).map((_, r) => {
@@ -8099,16 +8221,50 @@ body.auth-locked.auth-light {
     return baseH + (lines - 1) * lineH;
   }
 
+  function clampSurrogateSplit(str, splitIdx) {
+    if (!str || splitIdx <= 0 || splitIdx >= str.length) return splitIdx;
+    const prevCode = str.charCodeAt(splitIdx - 1);
+    const nextCode = str.charCodeAt(splitIdx);
+    if (prevCode >= 0xD800 && prevCode <= 0xDBFF && nextCode >= 0xDC00 && nextCode <= 0xDFFF) {
+      return splitIdx > 1 ? splitIdx - 1 : Math.min(str.length, splitIdx + 1);
+    }
+    return splitIdx;
+  }
+
   function splitTextAtWordBoundaries(text, maxChars = 350) {
     if (!text || text.length <= maxChars) return [text];
+    const safeMaxChars = Math.max(1, maxChars);
     const words = text.split(/\s+/);
     const chunks = [];
     let current = '';
 
     for (const w of words) {
-      if (!current) {
+      if (!w) continue;
+      if (w.length > safeMaxChars) {
+        if (current) {
+          chunks.push(current);
+          current = '';
+        }
+        let idx = 0;
+        while (idx < w.length) {
+          let end = Math.min(w.length, idx + safeMaxChars);
+          if (end < w.length) {
+            end = clampSurrogateSplit(w, end);
+            if (end <= idx) {
+              end = Math.min(w.length, idx + 2);
+            }
+          }
+          const piece = w.slice(idx, end);
+          idx = end;
+          if (idx < w.length) {
+            chunks.push(piece);
+          } else {
+            current = piece;
+          }
+        }
+      } else if (!current) {
         current = w;
-      } else if (current.length + 1 + w.length <= maxChars) {
+      } else if (current.length + 1 + w.length <= safeMaxChars) {
         current += ' ' + w;
       } else {
         chunks.push(current);
@@ -8116,7 +8272,7 @@ body.auth-locked.auth-light {
       }
     }
     if (current) chunks.push(current);
-    return chunks;
+    return chunks.length > 0 ? chunks : [text];
   }
 
   function splitNoteToFitBudget(text, budget) {
@@ -8129,16 +8285,16 @@ body.auth-locked.auth-light {
     }
     targetChars = Math.max(20, Math.min(targetChars, text.length - 20));
 
-    let spaceIdx = text.lastIndexOf(' ', targetChars);
-    if (spaceIdx <= 0 || spaceIdx < targetChars * 0.4) {
-      spaceIdx = text.indexOf(' ', targetChars);
+    let splitIdx = text.lastIndexOf(' ', targetChars);
+    if (splitIdx <= 0 || splitIdx < targetChars * 0.4) {
+      splitIdx = clampSurrogateSplit(text, targetChars);
     }
-    if (spaceIdx <= 0 || spaceIdx >= text.length - 10) {
-      spaceIdx = Math.floor(text.length / 2);
+    if (splitIdx <= 0 || splitIdx >= text.length) {
+      splitIdx = clampSurrogateSplit(text, Math.floor(text.length / 2));
     }
 
-    const part1 = text.slice(0, spaceIdx).trim();
-    const part2 = text.slice(spaceIdx).trim();
+    const part1 = text.slice(0, splitIdx).trim();
+    const part2 = text.slice(splitIdx).trim();
     if (!part1) return { part1: text, part2: '' };
     return { part1, part2 };
   }
@@ -8225,11 +8381,11 @@ body.auth-locked.auth-light {
       const limit = getBudget(pageIndex);
 
       // اگر اولین یادداشت باقیمانده به تنهایی از بودجه صفحه بیشتر باشد، شکستن آن در لایه نمایشی انجام می‌شود
-      if (estimatePageNotesHeight([notes[startIndex]]) > limit && notes[startIndex].length > 40) {
+      let splitGuard = 0;
+      while (splitGuard++ < 10 && estimatePageNotesHeight([notes[startIndex]]) > limit && notes[startIndex].length > 40) {
         const splitResult = splitNoteToFitBudget(notes[startIndex], limit);
-        if (splitResult.part1 && splitResult.part2) {
-          notes.splice(startIndex, 1, splitResult.part1, splitResult.part2);
-        }
+        if (!splitResult.part1 || !splitResult.part2) break;
+        notes.splice(startIndex, 1, splitResult.part1, splitResult.part2);
       }
 
       const remaining = notes.slice(startIndex);
@@ -9513,16 +9669,17 @@ body.auth-locked.auth-light {
       return;
     }
 
-    // ۱. اطمینان از تازه‌سازی و رندر کامل تمام ۴ صفحه در DOM
-    renderPreviewPages();
-
-    // ۲. ذخیره وضعیت زوم و نمای موبایل فعلی
+    // ۱. ذخیره وضعیت فعلی زوم، نمای موبایل و استایل‌های پنل پیش از تغییر به حالت چاپ
     const prevZoom = currentZoom;
     const prevMobileView = mobileView;
     const pagesWrapper = document.getElementById('pdf-pages-wrapper');
     const previewWrapper = document.getElementById('preview-panel-wrapper');
+    const editorWrapper = document.getElementById('editor-panel-wrapper');
+    const parentContainer = document.getElementById('pdf-preview-container');
+    const prevPreviewDisplay = previewWrapper ? previewWrapper.style.display : '';
+    const prevEditorDisplay = editorWrapper ? editorWrapper.style.display : '';
 
-    // ۳. تغییر عنوان سند جهت نام‌گذاری پیشنهادی خودکار در هنگام Save as PDF
+    // ۲. تغییر عنوان سند جهت نام‌گذاری پیشنهادی خودکار در هنگام Save as PDF
     // فرمت استاندارد: [نام دانش‌آموز] [شماره هفته به عدد لاتین] (مثال: محمد پورهنگ 4.pdf)
     const studentName = getStudentFullName(appState.student) || 'برنامه مطالعاتی';
     const rawWeek = (appState.student.weeksPassed || '').trim();
@@ -9535,64 +9692,151 @@ body.auth-locked.auth-light {
       document.title = pdfName;
     }
 
-    // ۴. اعمال کلاس آماده‌سازی چاپ و حذف موقت ترنسفورم‌ها
+    showToast('در حال باز کردن پنجره چاپ و ذخیره PDF...', 'info');
+
+    // ۳. فعال‌سازی حالت چاپ (نمایان شدن پنل پیش‌نمایش و حذف ترنسفورم‌ها) پیش از رندر و اندازه‌گیری سرریز
     document.body.classList.add('is-printing');
     if (pagesWrapper) {
       pagesWrapper.style.transform = 'none';
       pagesWrapper.style.position = '';
+      pagesWrapper.style.top = '';
+      pagesWrapper.style.left = '';
+      pagesWrapper.style.transformOrigin = '';
       pagesWrapper.style.width = '';
       pagesWrapper.style.height = '';
     }
-    const parentContainer = document.getElementById('pdf-preview-container');
     if (parentContainer) {
       parentContainer.style.width = '';
       parentContainer.style.height = '';
       parentContainer.style.position = '';
+      parentContainer.style.margin = '';
     }
     if (previewWrapper) {
       previewWrapper.style.display = 'block';
     }
-    if (typeof window !== 'undefined' && typeof window.innerWidth === 'number' && window.innerWidth < 1024) {
-      setMobileView('preview');
-    }
 
-    showToast('در حال باز کردن پنجره چاپ و ذخیره PDF...', 'info');
+    // ۴. رندر کامل و محاسبه دقیق سرریز DOM روی ابعاد واقعی و بدون مقیاس A4
+    renderPreviewPages();
 
     // ۵. تابع پاک‌سازی و بازگردانی وضعیت برنامه پس از پایان چاپ
     let cleanedUp = false;
-    const cleanup = () => {
-      if (cleanedUp) return;
-      cleanedUp = true;
-      document.body.classList.remove('is-printing');
-      document.title = originalTitle;
-      setZoom(prevZoom);
-      if (typeof window !== 'undefined' && typeof window.innerWidth === 'number' && window.innerWidth < 1024) {
-        setMobileView(prevMobileView);
-      } else if (previewWrapper) {
-        previewWrapper.style.display = '';
+    let fallbackTimer = null;
+    let armInteractionTimer = null;
+    let printMql = null;
+    let interactionArmed = false;
+
+    const onPrintMediaChange = (e) => {
+      if (!e.matches) {
+        cleanup();
       }
     };
 
-    // ۶. فراخوانی پنجره استاندارد پرینت با مهلت کافی جهت محاسبه لی‌آوت توسط مرورگر
+    const onUserInteraction = () => {
+      if (!interactionArmed) return;
+      if (printMql && printMql.matches) return;
+      cleanup();
+    };
+
+    const scheduleFallbackCleanup = (delayMs) => {
+      if (fallbackTimer) clearTimeout(fallbackTimer);
+      fallbackTimer = setTimeout(() => {
+        fallbackTimer = null;
+        if (cleanedUp) return;
+        if (printMql && printMql.matches) {
+          scheduleFallbackCleanup(5000);
+          return;
+        }
+        cleanup();
+      }, delayMs);
+    };
+
+    const cleanup = () => {
+      if (cleanedUp) return;
+      cleanedUp = true;
+      if (fallbackTimer) {
+        clearTimeout(fallbackTimer);
+        fallbackTimer = null;
+      }
+      if (armInteractionTimer) {
+        clearTimeout(armInteractionTimer);
+        armInteractionTimer = null;
+      }
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('afterprint', cleanup);
+        if (printMql) {
+          if (typeof printMql.removeEventListener === 'function') {
+            printMql.removeEventListener('change', onPrintMediaChange);
+          } else if (typeof printMql.removeListener === 'function') {
+            printMql.removeListener(onPrintMediaChange);
+          }
+        }
+      }
+      if (typeof document !== 'undefined') {
+        document.removeEventListener('pointerdown', onUserInteraction, true);
+        document.removeEventListener('keydown', onUserInteraction, true);
+      }
+
+      document.body.classList.remove('is-printing');
+      document.title = originalTitle;
+
+      const isMobileNow = typeof window !== 'undefined' && typeof window.innerWidth === 'number' && window.innerWidth < 1024;
+      if (isMobileNow) {
+        if (previewWrapper) {
+          previewWrapper.style.display = prevPreviewDisplay || (prevMobileView === 'editor' ? 'none' : 'flex');
+        }
+        if (editorWrapper) {
+          editorWrapper.style.display = prevEditorDisplay || (prevMobileView === 'editor' ? 'flex' : 'none');
+        }
+      } else {
+        if (previewWrapper) {
+          previewWrapper.style.display = '';
+        }
+        if (editorWrapper) {
+          editorWrapper.style.display = '';
+        }
+      }
+      setZoom(prevZoom);
+    };
+
+    // ۶. فراخوانی پنجره استاندارد پرینت با مهلت کافی جهت محاسبه لی‌آوت و فونت‌ها توسط مرورگر
     setTimeout(() => {
+      if (cleanedUp) return;
+
+      checkAndFixAllDomOverflow();
+
       if (typeof window !== 'undefined') {
         window.addEventListener('afterprint', cleanup, { once: true });
-        if ('onafterprint' in window) {
-          window.onafterprint = () => {
-            cleanup();
-            window.onafterprint = null;
-          };
+        if (typeof window.matchMedia === 'function') {
+          try {
+            printMql = window.matchMedia('print');
+            if (printMql) {
+              if (typeof printMql.addEventListener === 'function') {
+                printMql.addEventListener('change', onPrintMediaChange);
+              } else if (typeof printMql.addListener === 'function') {
+                printMql.addListener(onPrintMediaChange);
+              }
+            }
+          } catch (e) {}
         }
+      }
+      if (typeof document !== 'undefined' && typeof document.addEventListener === 'function') {
+        document.addEventListener('pointerdown', onUserInteraction, true);
+        document.addEventListener('keydown', onUserInteraction, true);
       }
 
       try {
         window.print();
       } catch (err) {
         console.error('Error during window.print:', err);
+        cleanup();
+        return;
       }
 
-      // اطمینان از پاک‌سازی در صورت عدم پشتیبانی مرورگر از onafterprint
-      setTimeout(cleanup, 1200);
+      // در مرورگرهای بدون پشتیبانی کامل از afterprint، اولین تعامل کاربر پس از بسته شدن دیالوگ چاپ یا مهلت ایمنی طولانی پاک‌سازی را انجام می‌دهد
+      armInteractionTimer = setTimeout(() => {
+        interactionArmed = true;
+      }, 500);
+      scheduleFallbackCleanup(60000);
     }, 350);
   }
 
@@ -9748,36 +9992,40 @@ body.auth-locked.auth-light {
 
     let deferredPrompt = null;
     const pwaInstallBtn = document.getElementById('btn-pwa-install');
+    const setPwaInstallVisible = (visible) => {
+      if (!pwaInstallBtn) return;
+      pwaInstallBtn.classList.toggle('hidden', !visible);
+      pwaInstallBtn.classList.toggle('flex', Boolean(visible));
+    };
 
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      if (pwaInstallBtn) {
-        pwaInstallBtn.classList.remove('hidden');
-      }
+      setPwaInstallVisible(true);
     });
 
     if (pwaInstallBtn) {
       pwaInstallBtn.addEventListener('click', async () => {
         if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        const choiceResult = await deferredPrompt.userChoice;
-        if (choiceResult && choiceResult.outcome === 'accepted') {
-          console.log('[PWA] User accepted the install prompt');
-        } else {
-          console.log('[PWA] User dismissed the install prompt');
+        try {
+          deferredPrompt.prompt();
+          const choiceResult = await deferredPrompt.userChoice;
+          if (choiceResult && choiceResult.outcome === 'accepted') {
+            console.log('[PWA] User accepted the install prompt');
+          } else {
+            console.log('[PWA] User dismissed the install prompt');
+          }
+        } finally {
+          deferredPrompt = null;
+          setPwaInstallVisible(false);
         }
-        deferredPrompt = null;
-        pwaInstallBtn.classList.add('hidden');
       });
     }
 
     window.addEventListener('appinstalled', () => {
       console.log('[PWA] Study Planner installed successfully');
       deferredPrompt = null;
-      if (pwaInstallBtn) {
-        pwaInstallBtn.classList.add('hidden');
-      }
+      setPwaInstallVisible(false);
     });
   }
 
