@@ -1636,7 +1636,7 @@ body.auth-locked.auth-light {
         <div>
           <div class="flex items-center gap-1.5 sm:gap-2">
             <h1 class="text-sm sm:text-base font-bold text-white tracking-wide">سامانه برنامه‌ریزی</h1>
-            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۰.۲۳</span>
+            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۰.۲۵</span>
           </div>
           <p class="text-[10px] sm:text-xs text-slate-400 font-medium hidden sm:block">آکادمی مشاوره دکتر فروتن کیا</p>
         </div>
@@ -1867,7 +1867,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.0.23';
+  const APP_VERSION = '1.0.25';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -3568,6 +3568,7 @@ body.auth-locked.auth-light {
   // ==========================================
   function setPlannerRowCount(state, newCount) {
     cachedMeasuredHeights = {};
+    resetPlannerBudgets();
     try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
     const count = Math.min(9, Math.max(3, parseInt(newCount, 10) || 6));
     if (!state || !state.planner) return;
@@ -3590,6 +3591,7 @@ body.auth-locked.auth-light {
 
   function setPlannerDayCount(state, newDayCount) {
     cachedMeasuredHeights = {};
+    resetPlannerBudgets();
     try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
     if (!state || !state.planner) return;
     const count = Math.min(14, Math.max(2, parseInt(newDayCount, 10) || 7));
@@ -3608,6 +3610,7 @@ body.auth-locked.auth-light {
 
   function setPlannerStartDay(state, dayKey) {
     cachedMeasuredHeights = {};
+    resetPlannerBudgets();
     try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
     resetPlannerCopying();
 
@@ -3643,6 +3646,7 @@ body.auth-locked.auth-light {
   function setPlannerNightRoutine(state, enabled) {
     if (state && state.planner) {
       cachedMeasuredHeights = {};
+      resetPlannerBudgets();
       try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
       state.planner.hasNightRoutine = Boolean(enabled);
       resetPlannerCopying();
@@ -3770,6 +3774,13 @@ body.auth-locked.auth-light {
     return Math.max(0.24, Math.min(0.68, fit));
   }
 
+  function syncVisibleEditorRowHeights() {
+    syncPlannerDayRowHeights();
+    syncAllTajrobiRowHeights();
+    syncAllRiyaziRowHeights();
+    syncAllHumanitiesRowHeights();
+  }
+
   function setMobileView(view) {
     mobileView = view;
     if (typeof sessionStorage !== 'undefined') {
@@ -3798,7 +3809,9 @@ body.auth-locked.auth-light {
         }
 
         if (typeof requestAnimationFrame === 'function') {
-          requestAnimationFrame(syncPlannerDayRowHeights);
+          requestAnimationFrame(syncVisibleEditorRowHeights);
+        } else {
+          syncVisibleEditorRowHeights();
         }
       } else {
         editor.style.display = 'none';
@@ -3846,6 +3859,11 @@ body.auth-locked.auth-light {
     } else {
       editor.style.display = '';
       preview.style.display = '';
+      if (typeof requestAnimationFrame === 'function') {
+        requestAnimationFrame(syncVisibleEditorRowHeights);
+      } else {
+        syncVisibleEditorRowHeights();
+      }
     }
   }
 
@@ -4033,7 +4051,8 @@ body.auth-locked.auth-light {
       }
 
       bindGlobalEvents();
-      switchTab('cover');
+      activeTab = 'cover';
+      updateEditorTabButtons('cover');
       renderAll();
 
       if (hadCorruptData && corruptStorageBackupInfo) {
@@ -4155,6 +4174,11 @@ body.auth-locked.auth-light {
           const preview = document.getElementById('preview-panel-wrapper');
           if (editor) editor.style.display = '';
           if (preview) preview.style.display = '';
+          if (typeof requestAnimationFrame === 'function') {
+            requestAnimationFrame(syncVisibleEditorRowHeights);
+          } else {
+            syncVisibleEditorRowHeights();
+          }
           if (previewIsDirty || pendingPatchPages.size > 0) {
             renderPreviewPages();
             previewIsDirty = false;
@@ -4212,6 +4236,7 @@ body.auth-locked.auth-light {
           if (remoteUpdated && remoteUpdated === localUpdated) return;
 
           resetPlannerCopying();
+          resetPlannerBudgets();
           resetStudentBudgets();
           resetReportBudgets();
           cachedMeasuredHeights = {};
@@ -4307,8 +4332,8 @@ body.auth-locked.auth-light {
       return;
     }
 
-    const clampedZoom = Math.min(1.4, Math.max(0.20, Math.round(newZoom * 100) / 100));
-    if (Math.abs(clampedZoom - currentZoom) < 0.001) return;
+    const clampedZoom = Math.min(1.4, Math.max(0.20, Math.round(newZoom * 10000) / 10000));
+    if (Math.abs(clampedZoom - currentZoom) < 0.0001) return;
 
     // موقعیت نقطه کانونی نسبت به کانتینر اسکرول و برگه
     const scRect = previewScroll.getBoundingClientRect();
@@ -4386,7 +4411,7 @@ body.auth-locked.auth-light {
     if (typeof document !== 'undefined' && document.body && document.body.classList.contains('is-printing')) {
       return;
     }
-    currentZoom = Math.round(val * 100) / 100;
+    currentZoom = Math.round(val * 10000) / 10000;
     const container = document.getElementById('pdf-pages-wrapper');
     const parent = document.getElementById('pdf-preview-container');
     const isMobile = typeof window !== 'undefined' && typeof window.innerWidth === 'number' && window.innerWidth < 1024;
@@ -4470,7 +4495,7 @@ body.auth-locked.auth-light {
         if (pinchStartDist > 10) {
           isZoomManuallyLocked = true;
           const scale = curDist / pinchStartDist;
-          const targetZoom = Math.min(1.4, Math.max(0.20, Math.round(pinchStartZoom * scale * 100) / 100));
+          const targetZoom = Math.min(1.4, Math.max(0.20, Math.round(pinchStartZoom * scale * 10000) / 10000));
           const mid = getMidpoint(e.touches);
 
           // اعمال مقیاس جدید و حفظ دقیق نقطه اولیه زیر مکان انگشتان (Zoom + Pan همزمان بدون لغزش)
@@ -4538,15 +4563,27 @@ body.auth-locked.auth-light {
 
     // پشتیبانی تکمیلی از زوم با ژست‌های حرکتی ترک‌پد (Touchpad gestures / Ctrl + Wheel) متمرکز بر مکان کرسر
     let wheelZoomTimer = null;
+    let wheelDeltaAccum = 0;
     previewScroll.addEventListener('wheel', (e) => {
       if (e.ctrlKey) {
         e.preventDefault();
         isZoomManuallyLocked = true;
-        const delta = -e.deltaY * 0.002;
-        zoomAtPoint(e.clientX, e.clientY, currentZoom + delta);
+        const normalizedDeltaY = e.deltaMode === 1 ? e.deltaY * 16 : (e.deltaMode === 2 ? e.deltaY * 100 : e.deltaY);
+        wheelDeltaAccum += -normalizedDeltaY * 0.0025;
+        const rawTarget = currentZoom + wheelDeltaAccum;
+        const nextZoom = Math.min(1.4, Math.max(0.20, Math.round(rawTarget * 10000) / 10000));
+
+        if (rawTarget <= 0.20 || rawTarget >= 1.4) {
+          wheelDeltaAccum = 0;
+        }
+        if (Math.abs(nextZoom - currentZoom) >= 0.0001) {
+          wheelDeltaAccum = 0;
+          zoomAtPoint(e.clientX, e.clientY, nextZoom);
+        }
 
         if (wheelZoomTimer) clearTimeout(wheelZoomTimer);
         wheelZoomTimer = setTimeout(() => {
+          wheelDeltaAccum = 0;
           if (pagesWrapper) pagesWrapper.style.transition = '';
           previewScroll.style.scrollBehavior = '';
         }, 150);
@@ -4565,9 +4602,7 @@ body.auth-locked.auth-light {
     }, { passive: false });
   }
 
-  function switchTab(tabName) {
-    flushPendingSave();
-    activeTab = tabName;
+  function updateEditorTabButtons(tabName) {
     const tabThemeClasses = {
       cover: ['bg-blue-600', 'text-white', 'shadow-xs', 'font-bold'],
       planner: ['bg-purple-600', 'text-white', 'shadow-xs', 'font-bold'],
@@ -4594,6 +4629,12 @@ body.auth-locked.auth-light {
         btn.classList.add('text-slate-600', 'hover:bg-slate-200');
       }
     });
+  }
+
+  function switchTab(tabName) {
+    flushPendingSave();
+    activeTab = tabName;
+    updateEditorTabButtons(tabName);
     if (tabName !== 'planner' && (isCopyMode || isMultiSelectMode)) {
       resetPlannerCopying();
     }
@@ -4665,6 +4706,7 @@ body.auth-locked.auth-light {
   }
 
   function renderAll() {
+    resetPlannerBudgets();
     resetStudentBudgets();
     resetReportBudgets();
     resetPlannerCopying();
@@ -5054,6 +5096,7 @@ body.auth-locked.auth-light {
 
     // ریست کردن فرآیند کپی پس از جای‌گذاری و حفظ امکان بازگردانی محتوا
     resetPlannerCopying(true);
+    resetPlannerBudgets();
     syncPlannerDayRowHeights();
     patchPreviewPage('planner');
     debouncedSaveToLocalStorage(appState);
@@ -5215,7 +5258,7 @@ body.auth-locked.auth-light {
   }
 
   function updateCardInputLockStates() {
-    const isLocked = isCopyMode;
+    const isLocked = Boolean(isCopyMode || isMultiSelectMode);
     const tableContainer = document.getElementById('planner-editor-table-scroll');
     if (tableContainer) {
       if (isLocked) {
@@ -5494,6 +5537,7 @@ body.auth-locked.auth-light {
     });
 
     updateClipboardBar();
+    resetPlannerBudgets();
     syncPlannerDayRowHeights();
     patchPreviewPage('planner');
     debouncedSaveToLocalStorage(appState);
@@ -5614,6 +5658,7 @@ body.auth-locked.auth-light {
     if (cachedMeasuredHeights[appState.planner.rowCount]) {
       delete cachedMeasuredHeights[appState.planner.rowCount][dayKey];
     }
+    resetPlannerBudgets();
 
     const topicInp = document.querySelector(`.planner-input-topic[data-row="${r}"][data-day="${dayKey}"]`);
     const testsInp = document.querySelector(`.planner-input-tests[data-row="${r}"][data-day="${dayKey}"]`);
@@ -5664,6 +5709,7 @@ body.auth-locked.auth-light {
         if (cachedMeasuredHeights[appState.planner.rowCount]) {
           delete cachedMeasuredHeights[appState.planner.rowCount][dayKey];
         }
+        resetPlannerBudgets();
         document.querySelectorAll('.planner-input-topic[data-day="' + dayKey + '"]').forEach(inp => { inp.value = ''; autoResizePlannerInput(inp); });
         document.querySelectorAll('.planner-input-tests[data-day="' + dayKey + '"]').forEach(inp => { inp.value = ''; autoResizePlannerInput(inp); });
         syncPlannerDayRowHeights();
@@ -5712,6 +5758,7 @@ body.auth-locked.auth-light {
           });
         }
         cachedMeasuredHeights = {};
+        resetPlannerBudgets();
         document.querySelectorAll('.planner-input-topic[data-row="' + partIdx + '"]').forEach(inp => { inp.value = ''; autoResizePlannerInput(inp); });
         document.querySelectorAll('.planner-input-tests[data-row="' + partIdx + '"]').forEach(inp => { inp.value = ''; autoResizePlannerInput(inp); });
         syncPlannerDayRowHeights();
@@ -5846,7 +5893,7 @@ body.auth-locked.auth-light {
           <div id="planner-clipboard-bar-container">
             ${renderPlannerClipboardBarHtml()}
           </div>
-          <div id="planner-editor-table-scroll" class="overflow-x-auto pb-4 custom-scrollbar rounded-xl border border-slate-300 shadow-sm bg-white ${isMultiSelectMode ? 'mode-interactive-locked' : ''}">
+          <div id="planner-editor-table-scroll" class="overflow-x-auto pb-4 custom-scrollbar rounded-xl border border-slate-300 shadow-sm bg-white ${(isCopyMode || isMultiSelectMode) ? 'mode-interactive-locked' : ''}">
             <table class="text-right border-collapse" style="width: ${tableWidth}px; min-width: ${tableWidth}px; table-layout: fixed;">
               <colgroup>
                 <col style="width: ${dayColWidth}px; min-width: ${dayColWidth}px; max-width: ${dayColWidth}px;" />
@@ -5927,11 +5974,9 @@ body.auth-locked.auth-light {
               : defaultCardClasses;
             const topicPlaceholder = 'مبحث / کتاب...';
             const partLabelText = isNight ? 'روتین شبانه' : ('پارت ' + toPersianDigits(r + 1));
-            const isLocked = isMultiSelectMode;
+            const isLocked = Boolean(isCopyMode || isMultiSelectMode);
             const lockAttrs = isLocked ? 'tabindex="-1" readonly' : '';
             const lockClass = isLocked ? 'pointer-events-none' : '';
-            const isLastCard = (dIdx === orderedDays.length - 1) && (r === rowCount - 1);
-            const testsEnterHint = isLastCard ? 'done' : 'next';
 
             return `
               <td class="p-1.5 align-middle h-full" style="width: ${partColWidth}px; min-width: ${partColWidth}px; max-width: ${partColWidth}px;">
@@ -5964,7 +6009,7 @@ body.auth-locked.auth-light {
                       data-row="${r}" 
                       data-day="${d.key}" 
                       data-field="tests" 
-                      enterkeyhint="${testsEnterHint}"
+                      enterkeyhint="enter"
                       ${lockAttrs}
                       aria-label="${d.label} - ${partLabelText} - تست"
                       placeholder="توضیحات..." 
@@ -6186,44 +6231,47 @@ body.auth-locked.auth-light {
             return;
           }
 
-          // درون فیلد تست: Enter به مبحث پارت بعدی می‌رود؛ Shift+Enter به مبحث همین پارت برمی‌گردد
+          // درون تکست‌اریای تست: Enter یا Shift+Enter خط جدید ایجاد کرده و کادر را عمودی گسترش می‌دهد.
+          // با Ctrl+Enter یا Alt+Enter به مبحث پارت بعدی می‌رود؛ با Ctrl+Shift+Enter یا Alt+Shift+Enter به مبحث همین پارت برمی‌گردد.
           if (testsInput) {
-            e.preventDefault();
-            if (e.shiftKey) {
-              const card = testsInput.closest('.planner-editor-card');
-              const targetTopic = card?.querySelector('.planner-input-topic');
-              if (targetTopic) {
-                targetTopic.focus();
-                targetTopic.select?.();
-                targetTopic.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
-              }
-              return;
-            }
-
-            const currentDay = testsInput.getAttribute('data-day');
-            const currentRow = parseInt(testsInput.getAttribute('data-row'), 10);
-            const rowCount = appState.planner.rowCount;
-            const orderedDays = getOrderedDays(appState.planner.startDay, appState.planner.dayCount);
-            const currentDayIdx = orderedDays.findIndex(d => d.key === currentDay);
-
-            let nextDay = currentDay;
-            let nextRow = currentRow + 1;
-
-            if (nextRow >= rowCount) {
-              if (currentDayIdx !== -1 && currentDayIdx + 1 < orderedDays.length) {
-                nextDay = orderedDays[currentDayIdx + 1].key;
-                nextRow = 0;
-              } else {
-                testsInput.blur();
+            if (e.ctrlKey || e.altKey) {
+              e.preventDefault();
+              if (e.shiftKey) {
+                const card = testsInput.closest('.planner-editor-card');
+                const targetTopic = card?.querySelector('.planner-input-topic');
+                if (targetTopic) {
+                  targetTopic.focus();
+                  targetTopic.select?.();
+                  targetTopic.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+                }
                 return;
               }
-            }
 
-            const nextTopic = document.querySelector('.planner-input-topic[data-day="' + nextDay + '"][data-row="' + nextRow + '"]');
-            if (nextTopic) {
-              nextTopic.focus();
-              nextTopic.select?.();
-              nextTopic.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+              const currentDay = testsInput.getAttribute('data-day');
+              const currentRow = parseInt(testsInput.getAttribute('data-row'), 10);
+              const rowCount = appState.planner.rowCount;
+              const orderedDays = getOrderedDays(appState.planner.startDay, appState.planner.dayCount);
+              const currentDayIdx = orderedDays.findIndex(d => d.key === currentDay);
+
+              let nextDay = currentDay;
+              let nextRow = currentRow + 1;
+
+              if (nextRow >= rowCount) {
+                if (currentDayIdx !== -1 && currentDayIdx + 1 < orderedDays.length) {
+                  nextDay = orderedDays[currentDayIdx + 1].key;
+                  nextRow = 0;
+                } else {
+                  testsInput.blur();
+                  return;
+                }
+              }
+
+              const nextTopic = document.querySelector('.planner-input-topic[data-day="' + nextDay + '"][data-row="' + nextRow + '"]');
+              if (nextTopic) {
+                nextTopic.focus();
+                nextTopic.select?.();
+                nextTopic.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+              }
             }
             return;
           }
@@ -6292,6 +6340,7 @@ body.auth-locked.auth-light {
         if (cachedMeasuredHeights[appState.planner.rowCount]) {
           delete cachedMeasuredHeights[appState.planner.rowCount][day];
         }
+        resetPlannerBudgets();
         requestPagePatch('planner');
         debouncedSaveToLocalStorage(appState);
       });
@@ -6318,6 +6367,7 @@ body.auth-locked.auth-light {
         if (cachedMeasuredHeights[appState.planner.rowCount]) {
           delete cachedMeasuredHeights[appState.planner.rowCount][day];
         }
+        resetPlannerBudgets();
         requestPagePatch('planner');
         debouncedSaveToLocalStorage(appState);
       });
@@ -6617,6 +6667,7 @@ body.auth-locked.auth-light {
           <div>
             <label class="block font-bold text-emerald-900 mb-1">رشته تحصیلی <span class="text-rose-500">*</span>:</label>
             <select data-prop="fieldOfStudy" class="student-field w-full p-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-emerald-50/20 font-bold">
+              <option value="" ${!currentField ? 'selected' : ''}>انتخاب رشته تحصیلی...</option>
               ${fieldOptions.map(field => `
                 <option value="${sanitizeHtml(field)}" ${currentField === field ? 'selected' : ''}>${sanitizeHtml(field)}</option>
               `).join('')}
@@ -6682,19 +6733,19 @@ body.auth-locked.auth-light {
     const counter = document.getElementById('dossier-notes-counter');
     if (!counter || !appState || !appState.student) return;
     const text = appState.student.extraNotes || '';
-    const rawLines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     const pages = partitionStudentNotes(text, (pIdx) => getStudentPageBudget(pIdx));
     const pageCount = pages.length;
+    const totalRenderedCards = pages.reduce((sum, pageNotes) => sum + (Array.isArray(pageNotes) ? pageNotes.length : 0), 0);
     const notesTextarea = document.getElementById('dossier-extra-notes-textarea');
     if (notesTextarea && document.activeElement !== notesTextarea && notesTextarea.value !== text) {
       notesTextarea.value = text;
     }
-    if (rawLines.length === 0) {
+    if (totalRenderedCards === 0) {
       counter.textContent = 'بدون نکته';
       counter.className = 'text-[11px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200';
     } else {
       const pageInfo = pageCount > 1 ? ` (${toPersianDigits(pageCount)} صفحه A4)` : '';
-      counter.textContent = `${toPersianDigits(rawLines.length)} نکته ثبت شده${pageInfo}`;
+      counter.textContent = `${toPersianDigits(totalRenderedCards)} نکته ثبت شده${pageInfo}`;
       counter.className = 'text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200';
     }
   }
@@ -6726,6 +6777,7 @@ body.auth-locked.auth-light {
         if (prop === 'extraNotes') {
           requestPagePatch('student');
         } else {
+          resetPlannerBudgets();
           requestPagePatch('student');
           requestPagePatch('cover');
           requestPagePatch('planner');
@@ -7367,6 +7419,11 @@ body.auth-locked.auth-light {
   let isAdjustingPlannerDom = false;
   let measuredPlannerBodyBudget = 684;
   let lastMeasuredPlannerHeaderH = 0;
+
+  function resetPlannerBudgets() {
+    measuredPlannerBodyBudget = 684;
+    lastMeasuredPlannerHeaderH = 0;
+  }
   function checkAndFixPlannerDomOverflow(pass = 0, accumulatedSplits = null, budgetOverride = null) {
     if (isAdjustingPlannerDom) return false;
     if (typeof document === 'undefined') return false;
@@ -7586,20 +7643,28 @@ body.auth-locked.auth-light {
     }
     if (studentPages[0].offsetHeight === 0) return false;
 
-    let anyOverflow = false;
+    const pages = partitionStudentNotes((appState.student && appState.student.extraNotes) || '', (pIdx) => getStudentPageBudget(pIdx));
+    let anyBudgetChanged = false;
     for (let i = 0; i < studentPages.length; i++) {
       const page = studentPages[i];
+      const pageNotes = pages[i] || [];
+      const canSplitOrMove = pageNotes.length > 1 || (pageNotes.length === 1 && pageNotes[0].length > 40);
       // بررسی سرریز بر اساس DOM واقعی مرورگر (ارتفاع استاندارد برگه A4 برابر ۷۹۴ پیکسل است)
-      if (page.scrollHeight > 794) {
+      if (page.scrollHeight > 794 && canSplitOrMove) {
         const overflow = page.scrollHeight - 794;
-        anyOverflow = true;
         const currentBudget = getStudentPageBudget(i);
-        const minBudget = i === 0 ? 100 : 150;
-        setStudentPageBudget(i, Math.max(minBudget, currentBudget - Math.max(25, overflow + 15)));
+        const estHeight = estimatePageNotesHeight(pageNotes);
+        const baseBudget = estHeight > 0 ? Math.min(currentBudget, estHeight) : currentBudget;
+        const minBudget = 44;
+        const nextBudget = Math.max(minBudget, baseBudget - Math.max(25, overflow + 15));
+        if (nextBudget < currentBudget) {
+          setStudentPageBudget(i, nextBudget);
+          anyBudgetChanged = true;
+        }
       }
     }
 
-    if (anyOverflow) {
+    if (anyBudgetChanged) {
       isAdjustingStudentDom = true;
       try {
         const existingPages = Array.from(container.querySelectorAll('.page-student'));
@@ -7675,6 +7740,7 @@ body.auth-locked.auth-light {
 
     const streamPages = getActiveStreamReportPages(appState);
     const isHum = Boolean(streamPages);
+    const generalPages = isHum ? null : partitionReportBooks((appState.report && appState.report.books) || [], generalReportBodyBudget);
     const prevBudget = isHum ? humanitiesPageBudget : generalReportBodyBudget;
     let anyOverflow = false;
 
@@ -7687,7 +7753,7 @@ body.auth-locked.auth-light {
         if (page.scrollHeight > 794 && blockCount > 1) {
           const overflow = page.scrollHeight - 794;
           const baseBudget = Math.min(humanitiesPageBudget, pageMeta.estHeight);
-          const nextBudget = Math.max(260, baseBudget - Math.max(30, overflow + 20));
+          const nextBudget = Math.max(100, baseBudget - Math.max(30, overflow + 20));
           if (nextBudget < humanitiesPageBudget) {
             humanitiesPageBudget = nextBudget;
             anyOverflow = true;
@@ -7695,7 +7761,10 @@ body.auth-locked.auth-light {
         }
       } else if (page.scrollHeight > 794 && tableRows.length > 1) {
         const overflow = page.scrollHeight - 794;
-        const nextBudget = Math.max(180, generalReportBodyBudget - Math.max(30, overflow + 20));
+        const pageBooks = (generalPages && generalPages[i]) || [];
+        const estHeight = estimateGeneralReportPageHeight(pageBooks);
+        const baseBudget = estHeight > 0 ? Math.min(generalReportBodyBudget, estHeight) : generalReportBodyBudget;
+        const nextBudget = Math.max(40, baseBudget - Math.max(30, overflow + 20));
         if (nextBudget < generalReportBodyBudget) {
           generalReportBodyBudget = nextBudget;
           anyOverflow = true;
@@ -8212,7 +8281,7 @@ body.auth-locked.auth-light {
                             </div>
                             <!-- سطر ۲ درون سلول: نمایش فشرده و استاندارد بخش تست بدون اشغال فضای اضافی -->
                             <div class="planner-test-bar">
-                              ${hasTests ? `<span class="planner-test-badge ${testBadgeClass} px-1.5 py-0.5 rounded w-full ${testFontSizeClass} shadow-2xs" title="${sanitizeHtml(toPersianDigits(item.tests))}">${sanitizeHtml(toPersianDigits(item.tests))}</span>` : `<span class="planner-test-badge text-slate-300 font-bold w-full ${testFontSizeClass}">-</span>`}
+                              ${hasTests ? `<span class="planner-test-badge ${testBadgeClass} px-1.5 py-0.5 rounded w-full ${testFontSizeClass} shadow-2xs" title="${sanitizeHtml(toPersianDigits(item.tests))}"><span class="w-full text-center">${sanitizeHtml(toPersianDigits(item.tests)).replace(/\r?\n/g, '<br>')}</span></span>` : `<span class="planner-test-badge text-slate-300 font-bold w-full ${testFontSizeClass}">-</span>`}
                             </div>
                           </div>
                         </td>
@@ -8636,6 +8705,31 @@ body.auth-locked.auth-light {
   // -------------------------------------------------------------
   // صفحه ۴ پیش‌نمایش: گزارش وضعیت مطالعه
   // -------------------------------------------------------------
+  function estimateReportBookRowHeight(b) {
+    const calcLines = (txt, cpl) => {
+      if (!txt) return 1;
+      const parts = String(txt).split(/\r?\n/);
+      let count = 0;
+      for (const p of parts) {
+        count += Math.max(1, Math.ceil(p.length / cpl));
+      }
+      return Math.max(1, count);
+    };
+
+    const maxLines = Math.max(
+      1,
+      calcLines(b && b.name, 28),
+      calcLines(b && b.topicsCovered, 34),
+      calcLines(b && b.notes, 28)
+    );
+    return 22 + maxLines * 18;
+  }
+
+  function estimateGeneralReportPageHeight(pageBooks) {
+    if (!Array.isArray(pageBooks) || pageBooks.length === 0) return 0;
+    return pageBooks.reduce((sum, b) => sum + estimateReportBookRowHeight(b), 0);
+  }
+
   function partitionReportBooks(books, maxBodyHeight = 650) {
     if (!Array.isArray(books) || books.length === 0) return [[]];
     const pages = [];
@@ -8643,23 +8737,7 @@ body.auth-locked.auth-light {
     let currentH = 0;
 
     for (const b of books) {
-      const calcLines = (txt, cpl) => {
-        if (!txt) return 1;
-        const parts = String(txt).split(/\r?\n/);
-        let count = 0;
-        for (const p of parts) {
-          count += Math.max(1, Math.ceil(p.length / cpl));
-        }
-        return Math.max(1, count);
-      };
-
-      const maxLines = Math.max(
-        1,
-        calcLines(b.name, 28),
-        calcLines(b.topicsCovered, 34),
-        calcLines(b.notes, 28)
-      );
-      const rowH = 22 + maxLines * 18;
+      const rowH = estimateReportBookRowHeight(b);
       if (current.length > 0 && currentH + rowH > maxBodyHeight) {
         pages.push(current);
         current = [b];
@@ -9379,6 +9457,7 @@ body.auth-locked.auth-light {
       onConfirm: () => {
         cancelPendingSave();
         cachedMeasuredHeights = {};
+        resetPlannerBudgets();
         resetStudentBudgets();
         resetReportBudgets();
         try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
@@ -9403,6 +9482,7 @@ body.auth-locked.auth-light {
       onConfirm: () => {
         cancelPendingSave();
         cachedMeasuredHeights = {};
+        resetPlannerBudgets();
         resetStudentBudgets();
         resetReportBudgets();
         try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
@@ -9556,6 +9636,7 @@ body.auth-locked.auth-light {
 
         cancelPendingSave();
         cachedMeasuredHeights = {};
+        resetPlannerBudgets();
         resetStudentBudgets();
         resetReportBudgets();
         try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
@@ -9771,6 +9852,7 @@ body.auth-locked.auth-light {
       getState: () => appState,
       setState: (s) => {
         cachedMeasuredHeights = {};
+        resetPlannerBudgets();
         resetStudentBudgets();
         resetReportBudgets();
         try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
@@ -9798,6 +9880,7 @@ body.auth-locked.auth-light {
       checkAndFixReportDomOverflow: (pass) => checkAndFixReportDomOverflow(pass),
       checkAndFixAllDomOverflow: () => checkAndFixAllDomOverflow(),
       updateDossierNotesCounter: () => updateDossierNotesCounter(),
+      resetPlannerBudgets: () => resetPlannerBudgets(),
       resetStudentBudgets: () => resetStudentBudgets(),
       resetReportBudgets: () => resetReportBudgets(),
       getStudentBudgets: () => ({
@@ -9868,7 +9951,12 @@ body.auth-locked.auth-light {
       getSelectedParts: () => Array.from(selectedParts),
       isMultiSelectMode: () => isMultiSelectMode,
       setMultiSelectMode: (v) => {
-        isMultiSelectMode = Boolean(v);
+        const next = Boolean(v);
+        if (!next) {
+          resetPlannerCopying();
+          return;
+        }
+        isMultiSelectMode = true;
         selectedParts.clear();
         lastSelectedCoord = null;
         updatePlannerInteractionModeVisuals();
