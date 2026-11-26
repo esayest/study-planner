@@ -2,7 +2,7 @@
 
 **نام پدیدآورنده / Author:** محمد شکیبا (Mohammad Shakiba)  
 **عنوان پروژه / Project:** سامانه هوشمند برنامه‌ریزی تحصیلی آکادمی دکتر فروتن کیا (Dr. Forootan Kia Study Planner)  
-**نسخه / Version:** 1.0.22  
+**نسخه / Version:** 1.0.23  
 **نقش / Role:** طراح، معمار سیستم و توسعه‌دهنده اختصاصی (Lead Designer & Developer)  
 
 ---

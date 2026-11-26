@@ -449,6 +449,14 @@ body, input, textarea, select, button, table, .a4-page {
 .planner-input-tests {
   text-align: center !important;
   text-align: -webkit-center !important;
+  resize: none !important;
+  overflow: hidden !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  white-space: pre-wrap !important;
+  box-sizing: border-box !important;
+  min-height: 24px !important;
+  line-height: 1.4 !important;
 }
 
 .planner-test-bar {
@@ -586,15 +594,6 @@ body, input, textarea, select, button, table, .a4-page {
 .planner-input-topic {
   padding-top: 5px !important;
   padding-bottom: 5px !important;
-}
-
-/* سنتر نوری برچسب تست در سلول‌های فرم ادیتور */
-.editor-test-label {
-  display: inline-flex !important;
-  align-items: center !important;
-  padding: 0 !important;
-  line-height: 1 !important;
-  box-sizing: border-box !important;
 }
 
 /* سنتر نوری برچسب‌ها و مقادیر کارت‌های مشخصات پرونده دانش‌آموز (صفحه ۳) */
@@ -1637,7 +1636,7 @@ body.auth-locked.auth-light {
         <div>
           <div class="flex items-center gap-1.5 sm:gap-2">
             <h1 class="text-sm sm:text-base font-bold text-white tracking-wide">سامانه برنامه‌ریزی</h1>
-            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۰.۲۲</span>
+            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۰.۲۳</span>
           </div>
           <p class="text-[10px] sm:text-xs text-slate-400 font-medium hidden sm:block">آکادمی مشاوره دکتر فروتن کیا</p>
         </div>
@@ -1868,7 +1867,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.0.22';
+  const APP_VERSION = '1.0.23';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -3796,6 +3795,10 @@ body.auth-locked.auth-light {
         if (tabEditor && tabPreview) {
           tabEditor.className = 'flex-1 py-2 px-3 rounded-lg bg-blue-600 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-xs transition';
           tabPreview.className = 'flex-1 py-2 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs flex items-center justify-center gap-1.5 transition';
+        }
+
+        if (typeof requestAnimationFrame === 'function') {
+          requestAnimationFrame(syncPlannerDayRowHeights);
         }
       } else {
         editor.style.display = 'none';
@@ -5955,10 +5958,9 @@ body.auth-locked.auth-light {
                       class="planner-input-topic ${lockClass} w-full text-xs text-center px-2.5 py-1.5 rounded-lg border border-slate-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-400 focus:outline-none transition bg-white font-medium shadow-2xs placeholder:text-slate-400 resize-none overflow-hidden block leading-normal" 
                     >${sanitizeHtml(item.topic || '')}</textarea>
                   </div>
-                  <div class="flex items-center gap-1.5 bg-white/95 px-2 py-1 rounded-lg border border-slate-200/90 shadow-2xs">
-                    <span class="editor-test-label text-slate-500 font-bold text-[10.5px] shrink-0">تست:</span>
-                    <input 
-                      type="text" 
+                  <div>
+                    <textarea 
+                      rows="1" 
                       data-row="${r}" 
                       data-day="${d.key}" 
                       data-field="tests" 
@@ -5966,10 +5968,9 @@ body.auth-locked.auth-light {
                       ${lockAttrs}
                       aria-label="${d.label} - ${partLabelText} - تست"
                       placeholder="توضیحات..." 
-                      value="${sanitizeHtml(item.tests || '')}" 
-                      style="text-align: center !important; -webkit-appearance: none;" 
-                      class="planner-input-tests ${lockClass} flex-1 min-w-0 text-xs text-center py-0.5 px-1.5 rounded-md border border-slate-300 focus:border-amber-500 focus:ring-1 focus:ring-amber-400 focus:outline-none transition font-bold bg-amber-50 text-amber-950 placeholder:text-slate-300" 
-                    />
+                      style="text-align: center !important; -webkit-appearance: none; resize: none;" 
+                      class="planner-input-tests ${lockClass} w-full text-xs text-center py-1 px-2 rounded-lg border border-slate-300 focus:border-amber-500 focus:ring-1 focus:ring-amber-400 focus:outline-none transition font-bold bg-amber-50 text-amber-950 shadow-2xs placeholder:text-slate-300 resize-none overflow-hidden block leading-normal" 
+                    >${sanitizeHtml(item.tests || '')}</textarea>
                   </div>
                 </div>
               </td>
@@ -5991,9 +5992,12 @@ body.auth-locked.auth-light {
   }
 
   function autoResizePlannerInput(el) {
-    if (!el || !el.classList.contains('planner-input-topic')) return;
+    if (!el) return;
+    const isTests = el.classList.contains('planner-input-tests');
+    const isTopic = el.classList.contains('planner-input-topic');
+    if (!isTopic && !isTests) return;
     el.style.height = 'auto';
-    const minH = 32;
+    const minH = isTests ? 24 : 32;
     const targetH = Math.max(minH, el.scrollHeight);
     el.style.height = targetH + 'px';
   }
@@ -6001,7 +6005,7 @@ body.auth-locked.auth-light {
   function autoResizeAllPlannerInputs() {
     const table = document.getElementById('planner-editor-table-scroll');
     if (!table) return;
-    table.querySelectorAll('.planner-input-topic').forEach(el => {
+    table.querySelectorAll('.planner-input-topic, .planner-input-tests').forEach(el => {
       autoResizePlannerInput(el);
     });
   }
