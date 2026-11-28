@@ -2226,7 +2226,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.1.4';
+  const APP_VERSION = '1.1.5';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -11312,7 +11312,6 @@ body.auth-locked.auth-light {
       const cardBorder = isCurrent ? 'border-indigo-500 ring-2 ring-indigo-100 bg-indigo-50/30' : 'border-slate-200 bg-white hover:border-indigo-300';
       const weekText = item.weeks_passed ? `هفته ${toPersianDigits(item.weeks_passed)}` : 'بدون هفته';
       const fieldText = item.field_of_study ? toPersianDigits(item.field_of_study) : 'رشته نامشخص';
-      const timeText = formatRelativeUpdateTime(item.updated_at);
 
       return `
         <div class="rounded-xl border ${cardBorder} p-2.5 sm:p-3 transition shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-2.5">
@@ -11324,7 +11323,6 @@ body.auth-locked.auth-light {
             <div class="flex items-center flex-wrap gap-1.5 sm:gap-2 text-[11px] text-slate-600">
               <span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">${sanitizeHtml(fieldText)}</span>
               <span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-medium">${sanitizeHtml(weekText)}</span>
-              ${timeText ? `<span class="text-slate-400 text-[10px] shrink-0">• ${sanitizeHtml(timeText)}</span>` : ''}
             </div>
           </div>
           <div class="flex items-center gap-1.5 shrink-0 text-[11px] justify-end sm:justify-start pt-0.5 sm:pt-0">
