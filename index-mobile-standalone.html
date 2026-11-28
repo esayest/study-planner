@@ -875,9 +875,10 @@ body, input, textarea, select, button, table, .a4-page {
   box-sizing: border-box !important;
 }
 
-/* سنتر نوری دکمه‌های کپی و حذف روزانه */
+/* سنتر نوری دکمه‌های کپی، حذف و مخفی‌سازی روزانه */
 .btn-copy-day,
-.btn-clear-day {
+.btn-clear-day,
+.btn-toggle-hide-day {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -1228,12 +1229,14 @@ html, body {
   }
   /* نوار ذخیره و وضعیت دانش‌آموز در حالت تمام‌صفحه */
   body.pc-editor-fullscreen:not(.is-printing):not(.auth-locked) #active-student-bar {
-    padding: 0.625rem 2rem !important;
+    padding: 0.5rem 1rem !important;
+    min-height: 48px !important;
     background-color: #f8fafc !important;
     border-bottom: 1px solid #e2e8f0 !important;
+    box-sizing: border-box !important;
   }
   body.pc-editor-fullscreen:not(.is-printing):not(.auth-locked) #active-student-bar .active-student-bar-inner {
-    max-width: 58rem !important;
+    max-width: 56rem !important;
     margin-left: auto !important;
     margin-right: auto !important;
   }
@@ -1336,12 +1339,46 @@ html, body {
 .btn-clear-single-part,
 .btn-paste-part,
 .btn-toggle-select-part,
-.btn-toggle-select-day {
+.btn-toggle-select-day,
+.btn-toggle-hide-day {
   display: inline-flex !important;
   align-items: center !important;
   line-height: normal !important;
   box-sizing: border-box !important;
   overflow: visible !important;
+}
+
+/* وضعیت روز تعطیل / مخفی‌شده در جدول ویرایشگر برنامه هفتگی */
+.planner-day-row-hidden td {
+  background-color: #f1f5f9 !important;
+  color: #64748b !important;
+}
+.planner-day-row-hidden .day-badge-pill {
+  background-color: #cbd5e1 !important;
+  color: #475569 !important;
+  border-color: #94a3b8 !important;
+  box-shadow: none !important;
+}
+.planner-day-row-hidden .planner-editor-card {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  opacity: 0.65;
+  transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+.planner-day-row-hidden:hover .planner-editor-card,
+.planner-day-row-hidden .planner-editor-card:focus-within {
+  opacity: 0.95;
+  background-color: #ffffff !important;
+}
+.planner-day-row-hidden .planner-input-topic,
+.planner-day-row-hidden .planner-input-tests {
+  background-color: #f8fafc !important;
+  color: #64748b !important;
+}
+.planner-day-row-hidden .planner-input-topic:focus,
+.planner-day-row-hidden .planner-input-tests:focus {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
 }
 
 .btn-copy-single-part span,
@@ -2322,7 +2359,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.1.16';
+  const APP_VERSION = '1.1.25';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -3479,6 +3516,9 @@ body.auth-locked.auth-light {
     const dayCount = Math.max(2, Math.min(14, parseInt(p.dayCount || p.day_count || p.daysCount || p.totalDays, 10) || 7));
     const rowCount = Math.max(3, Math.min(9, parseInt(p.rowCount || p.row_count || p.partCount || cleanBlocks.length, 10) || 6));
     const hasNightRoutine = Boolean(p.hasNightRoutine ?? p.nightRoutine ?? p.routine ?? false);
+    const hiddenDays = Array.isArray(p.hiddenDays)
+      ? p.hiddenDays.filter(k => typeof k === 'string' && ALL_PLANNER_DAY_KEYS.includes(k))
+      : [];
 
     while (cleanBlocks.length < rowCount) {
       cleanBlocks.push(createEmptyBlock());
@@ -3492,6 +3532,7 @@ body.auth-locked.auth-light {
       dayCount,
       rowCount,
       hasNightRoutine,
+      hiddenDays,
       blocks: cleanBlocks,
     };
   }
@@ -3593,6 +3634,11 @@ body.auth-locked.auth-light {
     0: (data) => {
       const next = isPlainObject(data) ? JSON.parse(JSON.stringify(data)) : {};
       next.meta = isPlainObject(next.meta) ? { ...next.meta, schemaVersion: 1 } : { schemaVersion: 1 };
+
+      // اطمینان از آرایه بودن روزهای تعطیل در برنامه هفتگی
+      if (isPlainObject(next.planner) && !Array.isArray(next.planner.hiddenDays)) {
+        next.planner.hiddenDays = [];
+      }
 
       // ۱. استانداردسازی نام دانش‌آموز (تفکیک نام و نام خانوادگی <-> نام کامل)
       if (isPlainObject(next.student)) {
@@ -3721,6 +3767,7 @@ body.auth-locked.auth-light {
         startDay: 'sat', // روز شروع در جدول برنامه‌ریزی
         dayCount: 7, // تعداد روزهای برنامه (بین ۲ تا ۱۴ روز - پیش‌فرض: ۷ روز)
         hasNightRoutine: false, // تبدیل پارت آخر به روتین شبانه
+        hiddenDays: [], // روزهای تعطیل / مخفی‌شده از پیش‌نمایش
         blocks: blocks,
       },
       report: {
@@ -3785,6 +3832,7 @@ body.auth-locked.auth-light {
             "startDay": "sun",
             "dayCount": 7,
             "hasNightRoutine": true,
+            "hiddenDays": [],
             "blocks": [
                 {
                     "sat": {
@@ -6374,6 +6422,10 @@ body.auth-locked.auth-light {
 
   function renderDayActionsSlotHtml(dayKey, dayLabel, allDaySelected) {
     const isSel = Boolean(allDaySelected);
+    const hiddenDays = Array.isArray(appState && appState.planner && appState.planner.hiddenDays)
+      ? appState.planner.hiddenDays
+      : [];
+    const isHidden = hiddenDays.includes(dayKey);
     return `
       <div class="flex flex-col items-center gap-1 w-full px-1">
         <button
@@ -6397,6 +6449,24 @@ body.auth-locked.auth-light {
           title="پاک‌سازی کامل روز ${dayLabel}"
         >
           پاکسازی
+        </button>
+        <button
+          type="button"
+          class="btn-toggle-hide-day w-full py-0.5 px-1.5 rounded-md border text-[10px] font-bold text-center inline-flex items-center justify-center gap-1 shadow-2xs transition active:scale-95 cursor-pointer ${
+            isHidden
+              ? 'bg-slate-200 hover:bg-slate-300 text-slate-700 border-slate-400'
+              : 'bg-white hover:bg-slate-100 text-slate-600 border-slate-300'
+          }"
+          data-day="${dayKey}"
+          data-day-label="${dayLabel}"
+          title="${isHidden ? 'روز تعطیل است (مخفی در پیش‌نمایش). برای نمایش مجدد کلیک کنید' : 'مخفی‌سازی روز ' + dayLabel + ' در پیش‌نمایش PDF (روز تعطیل)'}"
+          aria-label="${isHidden ? 'نمایش مجدد روز ' + dayLabel : 'مخفی‌سازی روز ' + dayLabel}"
+        >
+          ${isHidden
+            ? `<svg class="w-3.5 h-3.5 shrink-0 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>`
+            : `<svg class="w-3.5 h-3.5 shrink-0 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>`
+          }
+          <span class="text-[9.5px] leading-none">${isHidden ? 'روز تعطیل' : 'نمایش'}</span>
         </button>
       </div>
     `;
@@ -6725,6 +6795,67 @@ body.auth-locked.auth-light {
     });
   }
 
+  // مخفی‌سازی / نمایش روز در جدول برنامه و پیش‌نمایش PDF (روز تعطیل)
+  function toggleDayVisibility(dayKey, dayLabel) {
+    if (!dayKey) return;
+    if (!appState.planner) {
+      appState.planner = {};
+    }
+    if (!Array.isArray(appState.planner.hiddenDays)) {
+      appState.planner.hiddenDays = [];
+    }
+
+    const idx = appState.planner.hiddenDays.indexOf(dayKey);
+    const isNowHidden = (idx === -1);
+    const formattedDayLabel = getDayLabel(dayKey) || dayLabel || dayKey;
+
+    if (isNowHidden) {
+      appState.planner.hiddenDays.push(dayKey);
+    } else {
+      appState.planner.hiddenDays.splice(idx, 1);
+    }
+
+    // به‌روزرسانی سطر در جدول ویرایشگر (Page 2 setup)
+    const row = document.querySelector('#planner-editor-table-scroll tr[data-day="' + dayKey + '"]');
+    if (row) {
+      row.classList.toggle('planner-day-row-hidden', isNowHidden);
+      const badge = row.querySelector('.day-badge-pill');
+      if (badge) {
+        const theme = getDayTheme({ key: dayKey });
+        if (isNowHidden) {
+          badge.className = 'day-badge-pill inline-block px-3.5 py-1.5 rounded-xl bg-slate-300 text-slate-600 border border-slate-400 font-bold text-xs shadow-none tracking-wide';
+        } else {
+          badge.className = 'day-badge-pill inline-block px-3.5 py-1.5 rounded-xl ' + theme.badge + ' font-bold text-xs shadow-xs tracking-wide';
+        }
+      }
+    }
+
+    // به‌روزرسانی اسلات دکمه‌های اکشن روز
+    const slot = document.querySelector('.planner-day-actions-slot[data-day="' + dayKey + '"]');
+    if (slot) {
+      const rowCount = appState.planner.rowCount || 6;
+      let count = 0;
+      if (isCopyMode) {
+        for (let r = 0; r < rowCount; r++) {
+          if (selectedParts.has(makePartKey(dayKey, r))) count++;
+        }
+      }
+      const allSelected = isCopyMode && count === rowCount;
+      slot.innerHTML = renderDayActionsSlotHtml(dayKey, formattedDayLabel, allSelected);
+    }
+
+    // ریست بودجه و به‌روزرسانی آنی پیش‌نمایش PDF
+    resetPlannerBudgets();
+    patchPreviewPage('planner');
+    debouncedSaveToLocalStorage(appState);
+
+    if (isNowHidden) {
+      showToast('روز «' + formattedDayLabel + '» از پیش‌نمایش PDF حذف و به عنوان روز تعطیل مشخص شد.', 'info');
+    } else {
+      showToast('روز «' + formattedDayLabel + '» مجدداً به برنامه و پیش‌نمایش PDF بازگردانده شد.', 'success');
+    }
+  }
+
   function handleClearPartColumn(partIdx, partTitle) {
     const formattedTitle = partTitle || ('پارت ' + toPersianDigits(partIdx + 1));
     const orderedDays = getOrderedDays(appState.planner.startDay, appState.planner.dayCount);
@@ -6943,6 +7074,12 @@ body.auth-locked.auth-light {
 
     orderedDays.forEach((d, dIdx) => {
       const theme = getDayTheme(d);
+      const hiddenDays = Array.isArray(appState && appState.planner && appState.planner.hiddenDays) ? appState.planner.hiddenDays : [];
+      const isDayHidden = hiddenDays.includes(d.key);
+      const rowHiddenClass = isDayHidden ? 'planner-day-row-hidden' : '';
+      const dayBadgeClass = isDayHidden
+        ? 'bg-slate-300 text-slate-600 border border-slate-400 font-bold text-xs shadow-none tracking-wide'
+        : `${theme.badge} font-bold text-xs shadow-xs tracking-wide`;
       let daySelectedCount = 0;
       if (isCopyMode) {
         for (let r = 0; r < rowCount; r++) {
@@ -6952,10 +7089,10 @@ body.auth-locked.auth-light {
       const allDaySelected = isCopyMode && daySelectedCount === rowCount;
 
       html += `
-        <tr class="${theme.rowBg} divide-x divide-x-reverse divide-slate-200 transition-colors">
+        <tr class="${theme.rowBg} ${rowHiddenClass} divide-x divide-x-reverse divide-slate-200 transition-colors" data-day="${d.key}">
           <td class="text-center font-bold bg-slate-100 py-2 px-1 align-middle" style="width: ${dayColWidth}px; min-width: ${dayColWidth}px; max-width: ${dayColWidth}px;">
             <div class="flex flex-col items-center gap-1.5">
-              <span class="day-badge-pill inline-block px-3.5 py-1.5 rounded-xl ${theme.badge} font-bold text-xs shadow-xs tracking-wide" title="${sanitizeHtml(d.label)}">
+              <span class="day-badge-pill inline-block px-3.5 py-1.5 rounded-xl ${dayBadgeClass}" title="${sanitizeHtml(d.label)}">
                 ${d.baseLabel || d.label}
               </span>
               ${d.cycle > 1 ? `<span class="text-[9.5px] font-bold text-slate-700 bg-white/90 border border-slate-300 px-1.5 py-0.5 rounded-md leading-none whitespace-nowrap">هفته ${toPersianDigits(d.cycle)}</span>` : ''}
@@ -7182,6 +7319,16 @@ body.auth-locked.auth-light {
           const dayKey = clearDayBtn.getAttribute('data-day');
           const dayLabel = clearDayBtn.getAttribute('data-day-label') || dayKey;
           handleClearDay(dayKey, dayLabel);
+          return;
+        }
+
+        // دکمه مخفی‌سازی / نمایش روز در پیش‌نمایش PDF (تعطیلی روز)
+        const toggleHideBtn = e.target.closest('.btn-toggle-hide-day');
+        if (toggleHideBtn) {
+          e.stopPropagation();
+          const dayKey = toggleHideBtn.getAttribute('data-day');
+          const dayLabel = toggleHideBtn.getAttribute('data-day-label') || dayKey;
+          toggleDayVisibility(dayKey, dayLabel);
           return;
         }
 
@@ -8545,8 +8692,11 @@ body.auth-locked.auth-light {
       const startDayKey = (appState.planner && appState.planner.startDay) || 'sat';
       const dayCount = (appState.planner && appState.planner.dayCount) || 7;
       const orderedDays = getOrderedDays(startDayKey, dayCount);
+      const hiddenDays = Array.isArray(appState.planner && appState.planner.hiddenDays) ? appState.planner.hiddenDays : [];
+      const visibleDays = orderedDays.filter(d => !hiddenDays.includes(d.key));
+      const daysToRender = visibleDays.length > 0 ? visibleDays : orderedDays;
       const partitions = partitionPlannerDays(
-        orderedDays,
+        daysToRender,
         appState.planner,
         rowCount,
         splitBeforeDays.size > 0 ? splitBeforeDays : null,
@@ -9329,7 +9479,10 @@ body.auth-locked.auth-light {
     const startDayKey = (state.planner && state.planner.startDay) || 'sat';
     const dayCount = (state.planner && state.planner.dayCount) || 7;
     const orderedDays = getOrderedDays(startDayKey, dayCount);
-    const pagePartitions = partitionPlannerDays(orderedDays, state.planner, rowCount);
+    const hiddenDays = Array.isArray(state.planner && state.planner.hiddenDays) ? state.planner.hiddenDays : [];
+    const visibleDays = orderedDays.filter(d => !hiddenDays.includes(d.key));
+    const daysToRender = visibleDays.length > 0 ? visibleDays : orderedDays;
+    const pagePartitions = partitionPlannerDays(daysToRender, state.planner, rowCount);
 
     return pagePartitions.map((pageDays, pageIndex) => {
       return renderSinglePlannerPageHtml(pageDays, pageIndex, pagePartitions.length, state);
@@ -11022,6 +11175,8 @@ body.auth-locked.auth-light {
         updatePlannerInteractionModeVisuals();
       },
       clearDay: (dayKey, dayLabel) => handleClearDay(dayKey, dayLabel),
+      toggleDayVisibility: (dayKey, dayLabel) => toggleDayVisibility(dayKey, dayLabel),
+      isDayHidden: (dayKey) => Array.isArray(appState.planner && appState.planner.hiddenDays) && appState.planner.hiddenDays.includes(dayKey),
       clearPartColumn: (r, title) => handleClearPartColumn(r, title),
       clearSinglePart: (dayKey, r) => handleClearSinglePart(dayKey, r),
       isPcEditorFullscreen: () => isPcEditorFullscreen(),
