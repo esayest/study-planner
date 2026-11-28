@@ -2184,7 +2184,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.1.11';
+  const APP_VERSION = '1.1.12';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -10453,7 +10453,7 @@ body.auth-locked.auth-light {
     }
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       try {
         const text = (event.target.result || '').replace(/^\uFEFF/, '').trim();
         if (!text) {
@@ -10522,21 +10522,23 @@ body.auth-locked.auth-light {
         appState = normalizeState(data, truncations);
         renderAll();
         saveCurrentToLocalStorage(appState);
-        if (activeStudentId && currentAuthSession) {
-          setCloudDirtyFlag(true);
-          flushCloudSync({ silent: true });
-        } else {
-          updateActiveStudentBarUI();
-        }
-
         if (truncations.length > 0) {
-          showToast(formatTruncationWarning(truncations, true), 'warning', 4500);
+          showToast(formatTruncationWarning(truncations, true), 'warning');
         }
         const val = validateState(appState);
         if (!val.isValid) {
           showToast('برنامه بارگذاری شد، اما توجه: ' + val.errors[0], 'warning');
+        }
+
+        // همگام‌سازی ابری هوشمند: اگر نام در سرور نباشد ایجاد می‌شود و اگر باشد به‌روزرسانی و باز می‌شود
+        if (currentAuthSession && currentAuthSession.user) {
+          await syncImportedJsonWithServer(appState);
         } else {
-          showToast('برنامه با موفقیت از فایل بارگذاری و اعمال شد.', 'success');
+          setActiveStudentTracking(null);
+          updateActiveStudentBarUI();
+          if (val.isValid) {
+            showToast('برنامه با موفقیت از فایل بارگذاری و اعمال شد.', 'success');
+          }
         }
       } catch (err) {
         showToast('خطا در بارگذاری فایل: ' + err.message, 'error');
@@ -10868,7 +10870,8 @@ body.auth-locked.auth-light {
       openStudentsModal: () => openStudentsModal(),
       createNewStudent: (opts) => createNewCloudStudent(opts),
       openStudentById: (id) => openStudentById(id),
-      flushCloudSync: (opts) => flushCloudSync(opts)
+      flushCloudSync: (opts) => flushCloudSync(opts),
+      syncImportedJsonWithServer: (s) => syncImportedJsonWithServer(s)
     };
   }
 
@@ -11424,6 +11427,93 @@ body.auth-locked.auth-light {
     } catch (err) {
       const isDupErr = err && (err.code === '23505' || String(err.message || '').includes('duplicate key'));
       showToast(isDupErr ? 'دانش‌آموزی با این نام از قبل در لیست شما وجود دارد.' : ('خطا در ایجاد دانش‌آموز جدید: ' + (err.message || err)), 'error');
+      return null;
+    }
+  }
+
+  async function syncImportedJsonWithServer(importedState) {
+    const sb = initSupabaseClient();
+    if (!sb || !currentAuthSession || !currentAuthSession.user) {
+      setActiveStudentTracking(null);
+      updateActiveStudentBarUI();
+      return null;
+    }
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      setCloudDirtyFlag(true);
+      updateActiveStudentBarUI();
+      showToast('برنامه بارگذاری شد؛ به دلیل آفلاین بودن، ذخیره در سرور پس از اتصال انجام خواهد شد.', 'info');
+      return null;
+    }
+
+    try {
+      // اگر تغییراتی روی دانش‌آموز قبلی در صف بوده ابتدا ذخیره شود
+      await flushCloudSync({ silent: true });
+
+      // اطمینان از تازه‌بودن لیست دانش‌آموزان
+      if (studentsListCache.length === 0) {
+        await fetchStudentsList();
+      }
+
+      const clean = normalizeState(importedState);
+      const studentName = getStudentFullName(clean.student) || 'دانش‌آموز بدون نام';
+      const ownerId = currentAuthSession.user.id;
+      const isCounselor = !currentUserProfile || currentUserProfile.role === 'counselor';
+
+      // بررسی وجود دانش‌آموز با این نام در سرور
+      const dupStudent = findDuplicateStudentByName(studentName, { counselorId: isCounselor ? ownerId : null });
+
+      if (dupStudent) {
+        // ۱. دانش‌آموز با این نام از قبل در سرور وجود دارد: به‌روزرسانی برنامه و باز کردن آن
+        const updatePayload = buildStudentRowPayload(clean);
+        updatePayload.updated_at = new Date().toISOString();
+        const { data, error } = await sb
+          .from('students')
+          .update(updatePayload)
+          .eq('id', dupStudent.id)
+          .select('id, counselor_id, full_name, field_of_study, weeks_passed, school_name, plan_data, updated_at, counselor:profiles(username, display_name)')
+          .single();
+
+        if (error || !data) throw error || new Error('خطا در به‌روزرسانی پرونده دانش‌آموز در سرور');
+
+        studentsListCache = [data, ...studentsListCache.filter(s => s.id !== data.id)];
+        setActiveStudentTracking(data.id, data.counselor_id);
+        setCloudDirtyFlag(false);
+        appState = normalizeState(data.plan_data);
+        saveCurrentToLocalStorage(appState);
+        renderAll();
+        updateActiveStudentBarUI();
+        renderStudentsModalList();
+        populateStudentsCounselorFilter();
+        showToast(`برنامه «${data.full_name || studentName}» در سایت به‌روزرسانی و بارگذاری شد.`, 'success');
+        return data;
+      } else {
+        // ۲. دانش‌آموز با این نام در سرور وجود ندارد: ایجاد پرونده جدید در سرور با محتوای JSON
+        const insertPayload = buildStudentRowPayload(clean, ownerId);
+        const { data, error } = await sb
+          .from('students')
+          .insert(insertPayload)
+          .select('id, counselor_id, full_name, field_of_study, weeks_passed, school_name, plan_data, updated_at, counselor:profiles(username, display_name)')
+          .single();
+
+        if (error || !data) throw error || new Error('خطا در ایجاد پرونده جدید در سرور');
+
+        studentsListCache = [data, ...studentsListCache.filter(s => s.id !== data.id)];
+        setActiveStudentTracking(data.id, data.counselor_id);
+        setCloudDirtyFlag(false);
+        appState = normalizeState(data.plan_data);
+        saveCurrentToLocalStorage(appState);
+        renderAll();
+        updateActiveStudentBarUI();
+        renderStudentsModalList();
+        populateStudentsCounselorFilter();
+        showToast(`پرونده جدید «${data.full_name || studentName}» در سایت ایجاد و بارگذاری شد.`, 'success');
+        return data;
+      }
+    } catch (err) {
+      console.warn('[Sync Imported JSON]', err);
+      setCloudDirtyFlag(true);
+      updateActiveStudentBarUI();
+      showToast('برنامه در مرورگر اعمال شد؛ خطا در ذخیره سرور: ' + (err.message || err), 'warning');
       return null;
     }
   }
