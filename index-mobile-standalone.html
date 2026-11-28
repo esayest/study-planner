@@ -1061,7 +1061,7 @@ body, input, textarea, select, button, table, .a4-page {
 }
 
 #toast-container {
-  bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+  bottom: max(1.25rem, env(safe-area-inset-bottom, 1.25rem));
 }
 @media (min-width: 640px) {
   #toast-container {
@@ -2195,7 +2195,7 @@ body.auth-locked.auth-light {
   <input type="file" id="file-input-json" accept=".json,application/json" class="hidden">
 
   <!-- کانتینر اعلان‌های Toast -->
-  <div id="toast-container" class="fixed bottom-4 sm:bottom-6 inset-x-3 sm:inset-x-auto sm:left-6 z-[100] flex flex-col items-center sm:items-start gap-2 max-w-md sm:max-w-sm pointer-events-none no-print mx-auto sm:mx-0"></div>
+  <div id="toast-container" class="fixed bottom-5 sm:bottom-6 inset-x-0 sm:inset-x-auto sm:left-6 z-[100] flex flex-col items-center sm:items-start gap-2 pointer-events-none no-print px-4 sm:px-0 sm:max-w-sm"></div>
 
   <!-- اسکریپت اصلی اجرایی (سازگار ۱۰۰٪ با باز کردن محلی بدون مشکل CORS) -->
   <script id="custom-app-bundle">
@@ -2284,7 +2284,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.1.10';
+  const APP_VERSION = '1.1.11';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -2432,35 +2432,37 @@ body.auth-locked.auth-light {
 
     const toast = document.createElement('div');
     toast.dir = 'rtl';
-    toast.className = `toast toast-${type} toast-animate-in animate-slide-in flex items-center gap-2.5 sm:gap-3 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl shadow-lg text-xs sm:text-sm font-bold sm:font-medium text-white transition-all duration-200 pointer-events-auto cursor-pointer select-none w-full sm:w-auto max-w-[calc(100vw-1.5rem)] sm:max-w-sm backdrop-blur-md`;
+    toast.className = `toast toast-${type} toast-animate-in animate-slide-in inline-flex items-center gap-2.5 sm:gap-3 px-3.5 py-2.5 sm:px-4 sm:py-2.5 rounded-2xl shadow-xl shadow-black/25 text-xs sm:text-sm font-semibold text-white transition-all duration-200 pointer-events-auto cursor-pointer select-none w-auto max-w-[calc(100vw-2rem)] sm:max-w-sm backdrop-blur-md border border-white/15`;
 
-    let bgClass = 'bg-slate-900/95 border border-slate-700/80 shadow-slate-950/20';
+    let bgClass = 'bg-slate-900/95 border-slate-700/80 shadow-slate-950/30';
     let iconSvg = '';
 
     switch (type) {
       case 'success':
-        bgClass = 'bg-emerald-800/95 border border-emerald-600/80 shadow-emerald-950/25';
-        iconSvg = '<svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
+        bgClass = 'bg-emerald-800/95 border-emerald-500/40 shadow-emerald-950/25';
+        iconSvg = '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>';
         break;
       case 'error':
-        bgClass = 'bg-rose-800/95 border border-rose-600/80 shadow-rose-950/25';
-        iconSvg = '<svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>';
+        bgClass = 'bg-rose-800/95 border-rose-500/40 shadow-rose-950/25';
+        iconSvg = '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12"/></svg>';
         break;
       case 'warning':
-        bgClass = 'bg-amber-700/95 border border-amber-500/80 shadow-amber-950/25';
-        iconSvg = '<svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
+        bgClass = 'bg-amber-700/95 border-amber-400/40 shadow-amber-950/25';
+        iconSvg = '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
         break;
       default:
-        bgClass = 'bg-slate-800/95 border border-slate-700/80 shadow-slate-950/25';
-        iconSvg = '<svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+        bgClass = 'bg-slate-900/95 border-slate-700/60 shadow-slate-950/30';
+        iconSvg = '<svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
     }
 
     toast.className += ` ${bgClass}`;
     toast.innerHTML = `
-      ${iconSvg}
-      <span class="toast-message flex-1 text-right text-xs sm:text-sm leading-snug break-words"></span>
-      <button class="opacity-70 hover:opacity-100 transition-opacity mr-1.5 p-1 shrink-0 rounded hover:bg-white/10 active:bg-white/20" aria-label="بستن">
-        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      <span class="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+        ${iconSvg}
+      </span>
+      <span class="toast-message flex-1 text-right text-xs sm:text-sm font-semibold leading-snug break-words"></span>
+      <button class="w-6 h-6 rounded-full hover:bg-white/20 active:bg-white/30 flex items-center justify-center shrink-0 transition opacity-75 hover:opacity-100 text-white mr-1" aria-label="بستن">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     `;
 
