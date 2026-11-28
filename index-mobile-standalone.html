@@ -1858,6 +1858,7 @@ body.auth-locked.auth-light {
 #admin-counselors-modal > div {
   margin-top: auto !important;
   margin-bottom: auto !important;
+  height: 86dvh;
   max-height: calc(100dvh - 1rem) !important;
   max-height: calc(100vh - 1rem);
   width: 100% !important;
@@ -1866,6 +1867,7 @@ body.auth-locked.auth-light {
 @media (min-width: 640px) {
   #students-manager-modal > div,
   #admin-counselors-modal > div {
+    height: auto;
     max-height: 88vh !important;
   }
 }
@@ -1875,6 +1877,15 @@ body.auth-locked.auth-light {
   overscroll-behavior: contain !important;
   -webkit-overflow-scrolling: touch;
   word-break: break-word;
+}
+#students-modal-list::-webkit-scrollbar,
+#admin-counselors-list::-webkit-scrollbar {
+  width: 4px;
+}
+#students-modal-list::-webkit-scrollbar-thumb,
+#admin-counselors-list::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 9999px;
 }
   </style>
 </head>
@@ -2154,34 +2165,36 @@ body.auth-locked.auth-light {
   <!-- مودال لیست و مدیریت دانش‌آموزان مشاور -->
   <div id="students-manager-modal" class="hidden fixed inset-0 z-[70] bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-2 sm:p-5 overflow-y-auto overscroll-contain no-print" dir="rtl">
     <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-2xl my-auto max-h-[calc(100dvh-1rem)] sm:max-h-[88vh] flex flex-col overflow-hidden text-right">
-      <div class="px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-slate-200 flex items-center justify-between gap-2 bg-slate-50 shrink-0">
+      <div class="px-3 sm:px-4 py-2 sm:py-2.5 border-b border-slate-200 flex items-center justify-between gap-2 bg-slate-50 shrink-0">
         <div>
-          <h3 class="text-sm font-bold text-slate-900">لیست دانش‌آموزان من</h3>
+          <h3 class="text-xs sm:text-sm font-bold text-slate-900">لیست دانش‌آموزان من</h3>
         </div>
-        <button type="button" id="btn-close-students-modal" class="w-8 h-8 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center text-lg font-bold cursor-pointer" aria-label="بستن">&times;</button>
+        <button type="button" id="btn-close-students-modal" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center text-lg font-bold cursor-pointer" aria-label="بستن">&times;</button>
       </div>
 
-      <div class="p-2.5 sm:p-4 border-b border-slate-200 space-y-2 sm:space-y-2.5 bg-white shrink-0">
-        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-          <button type="button" id="btn-create-new-student" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer">
+      <div class="p-2 sm:p-3.5 border-b border-slate-200 space-y-1.5 sm:space-y-2.5 bg-white shrink-0">
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <button type="button" id="btn-create-new-student" class="flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center justify-center gap-1 shadow-xs cursor-pointer active:scale-95">
             <span>+ دانش‌آموز جدید</span>
           </button>
-          <button type="button" id="btn-save-current-as-student" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer">
-            <span>ذخیره برنامه فعلی</span>
+          <button type="button" id="btn-save-current-as-student" class="flex-1 sm:flex-initial px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center justify-center gap-1 shadow-xs cursor-pointer active:scale-95">
+            <span class="sm:hidden">ذخیره فعلی</span>
+            <span class="hidden sm:inline">ذخیره برنامه فعلی</span>
           </button>
-          <button type="button" id="btn-refresh-students" class="px-2.5 py-1.5 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-300 transition cursor-pointer mr-auto">
-            بروزرسانی
+          <button type="button" id="btn-refresh-students" class="w-8 sm:w-auto px-2 sm:px-2.5 py-1.5 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-300 transition cursor-pointer flex items-center justify-center shrink-0 sm:mr-auto active:scale-95" title="بروزرسانی">
+            <svg class="w-3.5 h-3.5 text-slate-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            <span class="hidden sm:inline mr-1">بروزرسانی</span>
           </button>
         </div>
         <div class="flex flex-col sm:flex-row gap-1.5 sm:gap-2">
-          <input type="text" id="students-search-input" placeholder="جستجو بر اساس نام دانش‌آموز یا رشته..." class="flex-1 px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <input type="text" id="students-search-input" placeholder="جستجو بر اساس نام دانش‌آموز..." class="flex-1 px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-slate-50/50 focus:bg-white transition">
           <select id="students-counselor-filter" class="hidden px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 text-xs bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
             <option value="">همه مشاوران</option>
           </select>
         </div>
       </div>
 
-      <div id="students-modal-list" class="flex-1 min-h-0 overflow-y-auto p-2.5 sm:p-4 space-y-2 sm:space-y-2.5 bg-slate-50/60 overscroll-contain">
+      <div id="students-modal-list" class="flex-1 min-h-0 overflow-y-auto p-2 sm:p-3 space-y-1.5 sm:space-y-2 bg-slate-50/60 overscroll-contain">
         <!-- رندر خودکار -->
       </div>
     </div>
@@ -2190,27 +2203,27 @@ body.auth-locked.auth-light {
   <!-- مودال مدیریت مشاوران (ویژه مدیر ارشد) -->
   <div id="admin-counselors-modal" class="hidden fixed inset-0 z-[75] bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-2 sm:p-5 overflow-y-auto overscroll-contain no-print" dir="rtl">
     <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-2xl my-auto max-h-[calc(100dvh-1rem)] sm:max-h-[88vh] flex flex-col overflow-hidden text-right">
-      <div class="px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-slate-200 flex items-center justify-between gap-2 bg-purple-50/70 shrink-0">
+      <div class="px-3 sm:px-4 py-2 sm:py-2.5 border-b border-slate-200 flex items-center justify-between gap-2 bg-purple-50/70 shrink-0">
         <div>
-          <h3 class="text-sm font-bold text-purple-950">مدیریت مشاوران و دسترسی‌ها</h3>
+          <h3 class="text-xs sm:text-sm font-bold text-purple-950">مدیریت مشاوران و دسترسی‌ها</h3>
         </div>
-        <button type="button" id="btn-close-admin-modal" class="w-8 h-8 rounded-lg hover:bg-purple-100 text-purple-700 flex items-center justify-center text-lg font-bold cursor-pointer" aria-label="بستن">&times;</button>
+        <button type="button" id="btn-close-admin-modal" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg hover:bg-purple-100 text-purple-700 flex items-center justify-center text-lg font-bold cursor-pointer" aria-label="بستن">&times;</button>
       </div>
 
-      <form id="admin-create-counselor-form" class="p-2.5 sm:p-4 border-b border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-white shrink-0">
-        <input type="text" id="new-counselor-username" required placeholder="نام کاربری انگلیسی" dir="ltr" class="px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left placeholder:text-right">
-        <input type="text" id="new-counselor-display" required placeholder="نام نمایشی" class="px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none">
-        <input type="password" id="new-counselor-password" required minlength="6" placeholder="رمز عبور (حداقل ۶ کاراکتر)" dir="ltr" class="px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left placeholder:text-right">
+      <form id="admin-create-counselor-form" class="p-2 sm:p-3.5 border-b border-slate-200 grid grid-cols-2 gap-1.5 sm:gap-2 text-xs bg-white shrink-0">
+        <input type="text" id="new-counselor-username" required placeholder="نام کاربری (لاتین)" dir="ltr" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left placeholder:text-right text-xs">
+        <input type="text" id="new-counselor-display" required placeholder="نام نمایشی" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-xs">
+        <input type="password" id="new-counselor-password" required minlength="6" placeholder="رمز عبور (حداقل ۶)" dir="ltr" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left placeholder:text-right text-xs">
         <div class="flex gap-1.5 sm:gap-2">
-          <select id="new-counselor-role" class="flex-1 px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
+          <select id="new-counselor-role" class="flex-1 min-w-0 px-2 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-purple-500 focus:outline-none text-xs">
             <option value="counselor">مشاور</option>
-            <option value="admin">مدیر ارشد</option>
+            <option value="admin">مدیر</option>
           </select>
-          <button type="submit" id="btn-submit-new-counselor" class="px-3.5 py-1.5 sm:py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition cursor-pointer shrink-0">افزودن</button>
+          <button type="submit" id="btn-submit-new-counselor" class="px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition cursor-pointer shrink-0 text-xs shadow-xs active:scale-95">افزودن</button>
         </div>
       </form>
 
-      <div id="admin-counselors-list" class="flex-1 min-h-0 overflow-y-auto p-2.5 sm:p-4 space-y-2 bg-slate-50/60 overscroll-contain">
+      <div id="admin-counselors-list" class="flex-1 min-h-0 overflow-y-auto p-2 sm:p-3 space-y-1.5 sm:space-y-2 bg-slate-50/60 overscroll-contain">
         <!-- رندر خودکار -->
       </div>
     </div>
@@ -2309,7 +2322,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.1.14';
+  const APP_VERSION = '1.1.15';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -11417,19 +11430,19 @@ body.auth-locked.auth-light {
       const weekText = item.weeks_passed ? `هفته ${toPersianDigits(item.weeks_passed)}` : 'بدون هفته';
 
       return `
-        <div class="rounded-xl border ${cardBorder} p-2.5 sm:p-3 transition shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-2.5">
-          <div class="min-w-0 flex-1 space-y-1">
-            <div class="flex items-center flex-wrap gap-1.5">
+        <div class="rounded-xl border ${cardBorder} p-2 sm:p-2.5 transition shadow-2xs flex items-center justify-between gap-2">
+          <div class="min-w-0 flex-1">
+            <div class="flex items-center gap-1.5 flex-wrap">
               <strong class="text-xs sm:text-sm font-bold text-slate-900 truncate">${sanitizeHtml(item.full_name || 'دانش‌آموز بدون نام')}</strong>
-              ${isCurrent ? '<span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-bold shrink-0">فعال</span>' : ''}
+              ${isCurrent ? '<span class="text-[10px] px-1.5 sm:px-2 py-0.5 rounded-full bg-indigo-600 text-white font-bold shrink-0">فعال</span>' : ''}
             </div>
-            <div class="flex items-center flex-wrap gap-1.5 sm:gap-2 text-[11px] text-slate-600">
-              <span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-medium">${sanitizeHtml(weekText)}</span>
+            <div class="flex items-center gap-1.5 text-[11px] text-slate-600 mt-0.5">
+              <span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-medium text-[10px] sm:text-[11px]">${sanitizeHtml(weekText)}</span>
             </div>
           </div>
-          <div class="flex items-center gap-1.5 shrink-0 text-[11px] justify-end sm:justify-start pt-0.5 sm:pt-0">
-            <button type="button" data-student-action="open" data-student-id="${sanitizeHtml(item.id)}" class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition cursor-pointer">باز کردن</button>
-            <button type="button" data-student-action="delete" data-student-id="${sanitizeHtml(item.id)}" class="px-2 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold transition cursor-pointer" title="حذف دانش‌آموز">حذف</button>
+          <div class="flex items-center gap-1 sm:gap-1.5 shrink-0 text-xs">
+            <button type="button" data-student-action="open" data-student-id="${sanitizeHtml(item.id)}" class="px-2.5 sm:px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition cursor-pointer shadow-xs active:scale-95">باز کردن</button>
+            <button type="button" data-student-action="delete" data-student-id="${sanitizeHtml(item.id)}" class="px-2 sm:px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition cursor-pointer active:scale-95" title="حذف دانش‌آموز">حذف</button>
           </div>
         </div>
       `;
@@ -11712,25 +11725,32 @@ body.auth-locked.auth-light {
       listEl.innerHTML = counselors.map(c => {
         const isSelf = currentUserProfile && currentUserProfile.username === c.username;
         const roleBadge = c.role === 'admin'
-          ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-bold">مدیر ارشد</span>'
-          : '<span class="text-[10px] px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 font-bold">مشاور</span>';
+          ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-bold shrink-0">مدیر ارشد</span>'
+          : '<span class="text-[10px] px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 font-bold shrink-0">مشاور</span>';
         const statusBadge = c.status === 'active'
-          ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-medium">فعال</span>'
-          : '<span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-medium">در انتظار ورود اول</span>';
+          ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-medium shrink-0">فعال</span>'
+          : '<span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-medium shrink-0">در انتظار ورود</span>';
         return `
-          <div class="bg-white rounded-xl border border-slate-200 p-2.5 sm:p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-            <div class="min-w-0 space-y-1 flex-1">
-              <div class="flex items-center flex-wrap gap-1.5">
-                <strong class="text-slate-900 font-bold">${sanitizeHtml(c.display_name)}</strong>
-                <code class="text-[11px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 break-all" dir="ltr">${sanitizeHtml(c.username)}</code>
+          <div class="bg-white rounded-xl border border-slate-200 p-2 sm:p-2.5 transition shadow-2xs space-y-1.5">
+            <div class="flex items-center justify-between gap-2">
+              <div class="min-w-0 flex-1 flex items-center gap-1.5 flex-wrap">
+                <strong class="text-xs sm:text-sm text-slate-900 font-bold truncate">${sanitizeHtml(c.display_name)}</strong>
+                <code class="text-[10px] sm:text-[11px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 font-mono" dir="ltr">@${sanitizeHtml(c.username)}</code>
                 ${roleBadge}
+              </div>
+              <div class="flex items-center gap-1 sm:gap-1.5 shrink-0">
+                <button type="button" data-admin-action="reset-pass" data-username="${sanitizeHtml(c.username)}" class="px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold text-[11px] sm:text-xs cursor-pointer transition active:scale-95">تغییر رمز</button>
+                ${isSelf ? '' : `<button type="button" data-admin-action="delete-user" data-username="${sanitizeHtml(c.username)}" class="px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold text-[11px] sm:text-xs cursor-pointer transition active:scale-95">حذف</button>`}
+              </div>
+            </div>
+            <div class="flex items-center justify-between gap-2 text-[10px] sm:text-[11px] text-slate-500 border-t border-slate-100 pt-1">
+              <div class="flex items-center gap-1">
+                <span class="inline-block w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                <span>${toPersianDigits(c.student_count || 0)} پرونده دانش‌آموز</span>
+              </div>
+              <div>
                 ${statusBadge}
               </div>
-              <div class="text-[11px] text-slate-500">${toPersianDigits(c.student_count || 0)} پرونده دانش‌آموز</div>
-            </div>
-            <div class="flex items-center gap-1.5 shrink-0 justify-end sm:justify-start pt-0.5 sm:pt-0">
-              <button type="button" data-admin-action="reset-pass" data-username="${sanitizeHtml(c.username)}" class="px-2.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold cursor-pointer">تغییر رمز</button>
-              ${isSelf ? '' : `<button type="button" data-admin-action="delete-user" data-username="${sanitizeHtml(c.username)}" class="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold cursor-pointer">حذف</button>`}
             </div>
           </div>
         `;
