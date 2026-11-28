@@ -2184,7 +2184,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.1.9';
+  const APP_VERSION = '1.1.10';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -2397,9 +2397,9 @@ body.auth-locked.auth-light {
       container.appendChild(toast);
     }
 
-    const autoHideMs = (typeof duration === 'number' && duration > 0)
-      ? duration
-      : (type === 'error' ? 3000 : (type === 'warning' ? 2500 : 1800));
+    // زمان ماندگاری یکپارچه و استاندارد برای تمامی پیام‌های اعلان (۴۰۰۰ میلی‌ثانیه / ۴ ثانیه)
+    const STANDARD_TOAST_DURATION = 4000;
+    const autoHideMs = STANDARD_TOAST_DURATION;
 
     autoHideTimer = setTimeout(dismiss, autoHideMs);
   }
@@ -2533,7 +2533,7 @@ body.auth-locked.auth-light {
     const msg = isPaste
       ? `متن جای‌گذاری‌شده در «${cleanLabel}» بیش از حد مجاز (حداکثر ${toPersianDigits(maxLen)} کاراکتر) بود و کوتاه شد.`
       : `حداکثر طول مجاز برای «${cleanLabel}» (${toPersianDigits(maxLen)} کاراکتر) تکمیل شده است.`;
-    showToast(msg, 'warning', 3200);
+    showToast(msg, 'warning');
   }
 
   function getInputMaxLengthInfo(target) {
@@ -3993,7 +3993,7 @@ body.auth-locked.auth-light {
         if (now - lastQuotaWarningTime > 15000) {
           lastQuotaWarningTime = now;
           if (typeof showToast === 'function') {
-            showToast('خطای ذخیره‌سازی: حافظه محلی مرورگر پر است! لطفاً از بخش «خروجی JSON» برنامه را ذخیره کنید.', 'error', 8000);
+            showToast('خطای ذخیره‌سازی: حافظه محلی مرورگر پر است! لطفاً از بخش «خروجی JSON» برنامه را ذخیره کنید.', 'error');
           }
         }
         return false;
@@ -5011,7 +5011,7 @@ body.auth-locked.auth-light {
           appState = normalizeState(remoteData);
           renderEditorPanel(true);
           renderPreviewPages();
-          showToast('برنامه با تغییرات اعمال‌شده در تب دیگر همگام شد.', 'info', 3000);
+          showToast('برنامه با تغییرات اعمال‌شده در تب دیگر همگام شد.', 'info');
         } catch (err) {
           console.warn('خطا در همگام‌سازی بین تب‌ها:', err);
         }
@@ -5045,7 +5045,7 @@ body.auth-locked.auth-light {
           if (isCopyMode || isMultiSelectMode) {
             e.preventDefault();
             resetPlannerCopying();
-            showToast('حالت کپی لغو شد.', 'info', 2000);
+            showToast('حالت کپی لغو شد.', 'info');
             return;
           }
 
@@ -5074,7 +5074,7 @@ body.auth-locked.auth-light {
         if (isCopyMode || isMultiSelectMode) {
           hasPushedCopyHistory = false;
           resetPlannerCopying();
-          showToast('حالت کپی لغو شد.', 'info', 2000);
+          showToast('حالت کپی لغو شد.', 'info');
         }
       });
     }
@@ -6415,7 +6415,7 @@ body.auth-locked.auth-light {
         e.preventDefault();
         e.stopPropagation();
         resetPlannerCopying();
-        showToast('حالت کپی لغو شد.', 'info', 2000);
+        showToast('حالت کپی لغو شد.', 'info');
       });
     }
     const btnUndo = bar.querySelector('#btn-clipboard-undo');
@@ -10558,7 +10558,7 @@ body.auth-locked.auth-light {
       return;
     }
     if (Array.isArray(val.warnings) && val.warnings.length > 0) {
-      showToast(val.warnings[0], 'warning', 4500);
+      showToast(val.warnings[0], 'warning');
     }
 
     // ۱. ذخیره وضعیت فعلی زوم، نمای موبایل و استایل‌های پنل پیش از تغییر به حالت چاپ
@@ -11114,14 +11114,14 @@ body.auth-locked.auth-light {
 
     isCloudSyncInFlight = true;
     updateActiveStudentBarUI();
-    showToast('در حال ذخیره برنامه...', 'info', 1800);
+    showToast('در حال ذخیره برنامه...', 'info');
     try {
       const payload = buildStudentRowPayload(appState);
       const ownerId = activeStudentCounselorId || (currentAuthSession && currentAuthSession.user ? currentAuthSession.user.id : null);
       const dupStudent = findDuplicateStudentByName(payload.full_name, { excludeStudentId: activeStudentId, counselorId: ownerId });
       if (dupStudent) {
         setCloudDirtyFlag(true);
-        showToast(`دانش‌آموزی با نام «${payload.full_name}» از قبل در لیست شما وجود دارد.`, 'warning', 4500);
+        showToast(`دانش‌آموزی با نام «${payload.full_name}» از قبل در لیست شما وجود دارد.`, 'warning');
         return { ok: false, duplicateName: true };
       }
       payload.updated_at = new Date().toISOString();
@@ -11143,13 +11143,13 @@ body.auth-locked.auth-light {
       if (idx >= 0) {
         studentsListCache[idx] = { ...studentsListCache[idx], ...data };
       }
-      showToast('برنامه با موفقیت در سایت ذخیره شد.', 'success', 2500);
+      showToast('برنامه با موفقیت در سایت ذخیره شد.', 'success');
       return { ok: true, data };
     } catch (err) {
       console.warn('[Cloud Sync]', err);
       setCloudDirtyFlag(true);
       if (err && (err.code === '23505' || String(err.message || '').includes('duplicate key'))) {
-        showToast('دانش‌آموزی با این نام از قبل در لیست شما وجود دارد.', 'warning', 4500);
+        showToast('دانش‌آموزی با این نام از قبل در لیست شما وجود دارد.', 'warning');
       } else if (!silent) {
         showToast('خطا در همگام‌سازی با سرور: تغییرات به‌صورت محلی ذخیره شدند.', 'warning');
       }
@@ -11395,7 +11395,7 @@ body.auth-locked.auth-light {
         const msg = insertPayload.full_name === 'دانش‌آموز بدون نام'
           ? 'یک پرونده «دانش‌آموز بدون نام» از قبل در لیست شما وجود دارد؛ ابتدا نام آن را ثبت کنید.'
           : `دانش‌آموزی با نام «${insertPayload.full_name}» از قبل در لیست شما وجود دارد.`;
-        showToast(msg, 'error', 4500);
+        showToast(msg, 'error');
         return null;
       }
 
