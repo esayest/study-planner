@@ -2,16 +2,17 @@
  * Service Worker for Study Planner PWA
  * آکادمی دکتر شهروز فروتن کیا
  * طراح و توسعه‌دهنده: محمد شکیبا (Mohammad Shakiba)
- * نسخه: 1.0.26 
+ * نسخه: 1.1.0
  */
 
-const CACHE_NAME = 'study-planner-pwa-v1.0.26';
+const CACHE_NAME = 'study-planner-pwa-v1.1.0';
 
 const PRECACHE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
   './js/tailwindcss.js',
+  './js/supabase.min.js',
   './assets/Study Planner App Icon.png',
   './assets/academy-logo-transparent.png',
   './assets/academy-logo-dark-transparent.png',
@@ -81,10 +82,11 @@ self.addEventListener('activate', (event) => {
 
 // استراتژی پاسخ‌دهی به درخواست‌ها
 self.addEventListener('fetch', (event) => {
-  // فقط درخواست‌های GET با پروتکل http/https را مدیریت کن
+  // فقط درخواست‌های GET با پروتکل http/https و هم‌مبدأ را مدیریت کن
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
   if (!url.protocol.startsWith('http')) return;
+  if (url.origin !== self.location.origin) return;
 
   // برای درخواست‌های ناوبری صفحه اصلی (HTML)، استراتژی Network-First جهت دریافت آنی تغییرات جدید
   if (event.request.mode === 'navigate') {
@@ -97,9 +99,21 @@ self.addEventListener('fetch', (event) => {
           });
         }
         return networkResponse;
-      }).catch(() => {
-        return caches.match(event.request).then((cached) => {
-          return cached || caches.match('./index.html') || caches.match('./');
+      }).catch(async () => {
+        const cached =
+          (await caches.match(event.request)) ||
+          (await caches.match(event.request, { ignoreSearch: true })) ||
+          (await caches.match('./index.html')) ||
+          (await caches.match('./'));
+
+        if (cached) {
+          return cached;
+        }
+
+        return new Response('در حالت آفلاین، نسخه ذخیره‌شده صفحه در دسترس نیست.', {
+          status: 503,
+          statusText: 'Service Unavailable',
+          headers: { 'Content-Type': 'text/plain; charset=utf-8' }
         });
       })
     );
@@ -135,6 +149,16 @@ self.addEventListener('fetch', (event) => {
         });
 
         return networkResponse;
+      }).catch(async () => {
+        const fallback = await caches.match(event.request, { ignoreSearch: true });
+        if (fallback) {
+          return fallback;
+        }
+
+        return new Response('', {
+          status: 503,
+          statusText: 'Service Unavailable'
+        });
       });
     })
   );

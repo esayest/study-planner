@@ -21,6 +21,8 @@
 
   <!-- فریم‌ورک Tailwind CSS -->
   <script src="js/tailwindcss.js"></script>
+  <!-- کلاینت Supabase -->
+  <script src="js/supabase.min.js"></script>
   <script>
     if (window.tailwind) {
       tailwind.config = {
@@ -1112,6 +1114,58 @@ html, body {
 }
 
 /* ==========================================================================
+   پشتیبانی از حالت Window Controls Overlay (PWA دسکتاپ) برای جلوگیری از هم‌پوشانی دکمه‌های هدر با کنترل‌های سیستم‌عامل
+   ========================================================================== */
+@media (display-mode: window-controls-overlay) {
+  #app-header {
+    -webkit-app-region: drag;
+    app-region: drag;
+    padding-top: max(0.5rem, env(titlebar-area-y, 0px));
+    padding-left: max(0.75rem, env(titlebar-area-x, 0px));
+    padding-right: max(0.75rem, calc(100% - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100%)));
+    min-height: calc(env(titlebar-area-y, 0px) + env(titlebar-area-height, 0px));
+  }
+
+  #app-header button,
+  #app-header a,
+  #app-header input,
+  #app-header select,
+  #app-header [role="button"],
+  #app-header #mobile-view-toggle-bar {
+    -webkit-app-region: no-drag;
+    app-region: no-drag;
+  }
+
+  body.auth-locked #auth-login-overlay {
+    padding-top: max(1rem, calc(env(titlebar-area-y, 0px) + env(titlebar-area-height, 0px) + 0.5rem));
+  }
+}
+
+@media (display-mode: window-controls-overlay) and (min-width: 640px) {
+  #app-header {
+    padding-top: max(0.625rem, env(titlebar-area-y, 0px));
+    padding-left: max(1rem, env(titlebar-area-x, 0px));
+    padding-right: max(1rem, calc(100% - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100%)));
+  }
+}
+
+@media (display-mode: window-controls-overlay) and (min-width: 1024px) {
+  body.pc-editor-fullscreen:not(.is-printing):not(.auth-locked) #editor-nav-tabs {
+    -webkit-app-region: drag;
+    app-region: drag;
+    padding-top: max(0.5rem, env(titlebar-area-y, 0px));
+    padding-left: max(0.5rem, env(titlebar-area-x, 0px));
+    padding-right: max(0.5rem, calc(100% - env(titlebar-area-x, 0px) - env(titlebar-area-width, 100%)));
+    min-height: calc(env(titlebar-area-y, 0px) + env(titlebar-area-height, 0px));
+  }
+
+  body.pc-editor-fullscreen:not(.is-printing):not(.auth-locked) #editor-nav-tabs button {
+    -webkit-app-region: no-drag;
+    app-region: no-drag;
+  }
+}
+
+/* ==========================================================================
    دکمه‌های کپی، جای‌گذاری و انتخاب پارت‌های برنامه هفتگی
    ========================================================================== */
 .btn-copy-single-part,
@@ -1692,14 +1746,27 @@ body.auth-locked.auth-light {
         <div>
           <div class="flex items-center gap-1.5 sm:gap-2">
             <h1 class="text-sm sm:text-base font-bold text-white tracking-wide">سامانه برنامه‌ریزی</h1>
-            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۰.۲۶</span>
+            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۱.۰</span>
           </div>
           <p class="text-[10px] sm:text-xs text-slate-400 font-medium hidden sm:block">آکادمی مشاوره دکتر فروتن کیا</p>
         </div>
       </div>
 
       <!-- ابزارهای سریع عملیاتی -->
-      <div class="flex items-center gap-1.5 sm:gap-2 text-xs overflow-x-auto no-scrollbar py-0.5">
+      <div class="flex items-center gap-1.5 sm:gap-2 text-xs overflow-x-auto no-scrollbar py-0.5 min-w-0">
+        <!-- لیست دانش‌آموزان من -->
+        <button type="button" id="btn-students-drawer" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition flex items-center gap-1 sm:gap-1.5 border border-indigo-400/50 shadow-xs shrink-0" title="مدیریت و انتخاب دانش‌آموزان">
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <span>دانش‌آموزان</span>
+          <span id="students-count-badge" class="hidden text-[10px] px-1.5 py-0.2 rounded-full bg-white/20 text-white leading-tight">۰</span>
+        </button>
+
+        <!-- مدیریت مشاوران (فقط مدیر ارشد) -->
+        <button type="button" id="btn-admin-counselors" class="hidden px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-purple-700 hover:bg-purple-600 text-white font-bold transition items-center gap-1 sm:gap-1.5 border border-purple-400/50 shrink-0" title="مدیریت حساب‌های مشاوران">
+          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <span class="hidden sm:inline">مشاوران</span>
+        </button>
+
         <!-- پلن جدید -->
         <button type="button" id="btn-new-plan" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition flex items-center gap-1 sm:gap-1.5 border border-slate-700 shrink-0" title="ایجاد برنامه خام جدید">
           <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
@@ -1793,6 +1860,20 @@ body.auth-locked.auth-light {
         </button>
       </div>
 
+      <!-- نوار وضعیت دانش‌آموز فعال و همگام‌سازی ابری -->
+      <div id="active-student-bar" class="bg-slate-50 border-b border-slate-200 px-3 py-1.5 flex items-center justify-between gap-2 text-[11px] shrink-0">
+        <div class="flex items-center gap-1.5 min-w-0">
+          <span class="w-2 h-2 rounded-full bg-indigo-500 shrink-0" id="cloud-sync-dot"></span>
+          <span class="text-slate-500 font-medium shrink-0">پرونده:</span>
+          <strong id="active-student-name-label" class="text-slate-900 font-bold truncate">پیش‌نویس محلی</strong>
+          <span id="cloud-sync-status-label" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-200/80 text-slate-600 font-semibold shrink-0">آفلاین / محلی</span>
+        </div>
+        <div class="flex items-center gap-1 shrink-0">
+          <button type="button" id="btn-save-student-cloud" class="px-2 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition shadow-2xs cursor-pointer">ذخیره در لیست</button>
+          <button type="button" id="btn-switch-student" class="px-2 py-1 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold transition cursor-pointer">تغییر دانش‌آموز</button>
+        </div>
+      </div>
+
       <!-- محتوای فرم پویا -->
       <div id="editor-content-panel" class="flex-1 min-h-0 overflow-y-auto p-4 sm:p-5 pb-28 sm:pb-16 space-y-6">
         <!-- رندر خودکار توسط جاوااسکریپت -->
@@ -1846,6 +1927,73 @@ body.auth-locked.auth-light {
     </section>
 
   </main>
+
+  <!-- مودال لیست و مدیریت دانش‌آموزان مشاور -->
+  <div id="students-manager-modal" class="hidden fixed inset-0 z-[70] bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 no-print" dir="rtl">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden text-right">
+      <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between gap-2 bg-slate-50">
+        <div>
+          <h3 class="text-sm font-bold text-slate-900">لیست دانش‌آموزان من</h3>
+          <p id="students-modal-subtitle" class="text-[11px] text-slate-500 mt-0.5">انتخاب، ایجاد و ویرایش مستقیم برنامه‌ها در سرور</p>
+        </div>
+        <button type="button" id="btn-close-students-modal" class="w-8 h-8 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center text-lg font-bold cursor-pointer" aria-label="بستن">&times;</button>
+      </div>
+
+      <div class="p-3 sm:p-4 border-b border-slate-200 space-y-2.5 bg-white">
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" id="btn-create-new-student" class="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer">
+            <span>+ دانش‌آموز جدید</span>
+          </button>
+          <button type="button" id="btn-save-current-as-student" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer">
+            <span>ذخیره برنامه فعلی به‌عنوان دانش‌آموز</span>
+          </button>
+          <button type="button" id="btn-refresh-students" class="px-2.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-300 transition cursor-pointer mr-auto">
+            بروزرسانی
+          </button>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-2">
+          <input type="text" id="students-search-input" placeholder="جستجو بر اساس نام دانش‌آموز، رشته یا مدرسه..." class="flex-1 px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <select id="students-counselor-filter" class="hidden px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <option value="">همه مشاوران</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="students-modal-list" class="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-2.5 bg-slate-50/60">
+        <!-- رندر خودکار -->
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال مدیریت مشاوران (ویژه مدیر ارشد) -->
+  <div id="admin-counselors-modal" class="hidden fixed inset-0 z-[75] bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 no-print" dir="rtl">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden text-right">
+      <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between gap-2 bg-purple-50/70">
+        <div>
+          <h3 class="text-sm font-bold text-purple-950">مدیریت مشاوران و دسترسی‌ها</h3>
+          <p class="text-[11px] text-purple-700 mt-0.5">ایجاد مشاور جدید، بازنشانی رمز عبور و مشاهده وضعیت حساب‌ها</p>
+        </div>
+        <button type="button" id="btn-close-admin-modal" class="w-8 h-8 rounded-lg hover:bg-purple-100 text-purple-700 flex items-center justify-center text-lg font-bold cursor-pointer" aria-label="بستن">&times;</button>
+      </div>
+
+      <form id="admin-create-counselor-form" class="p-3 sm:p-4 border-b border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-white">
+        <input type="text" id="new-counselor-username" required placeholder="نام کاربری انگلیسی (مثال: rahimi)" dir="ltr" class="px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left">
+        <input type="text" id="new-counselor-display" required placeholder="نام نمایشی (مثال: مشاور رحیمی)" class="px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+        <input type="password" id="new-counselor-password" required minlength="6" placeholder="رمز عبور (حداقل ۶ کاراکتر)" dir="ltr" class="px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left">
+        <div class="flex gap-2">
+          <select id="new-counselor-role" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
+            <option value="counselor">مشاور</option>
+            <option value="admin">مدیر ارشد</option>
+          </select>
+          <button type="submit" id="btn-submit-new-counselor" class="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition cursor-pointer shrink-0">افزودن</button>
+        </div>
+      </form>
+
+      <div id="admin-counselors-list" class="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-2 bg-slate-50/60">
+        <!-- رندر خودکار -->
+      </div>
+    </div>
+  </div>
 
   <!-- ورودی فایل JSON -->
   <input type="file" id="file-input-json" accept=".json,application/json" class="hidden">
@@ -1940,7 +2088,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.0.26';
+  const APP_VERSION = '1.1.0';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -2159,6 +2307,150 @@ body.auth-locked.auth-light {
     autoHideTimer = setTimeout(dismiss, autoHideMs);
   }
 
+  // محدودیت‌های مجاز طول متن در فیلدها (Single Source of Truth)
+  const FIELD_MAX_LENGTHS = Object.freeze({
+    student: Object.freeze({
+      fullName: 100,
+      firstName: 50,
+      lastName: 50,
+      schoolName: 100,
+      counselorName: 100,
+      supervisorCounselor: 100,
+      fieldOfStudy: 100,
+      phone: 30,
+      timeframe: 100,
+      exams: 100,
+      weeksPassed: 50,
+      extraNotes: 15000,
+    }),
+    planner: Object.freeze({
+      topic: 500,
+      tests: 200,
+    }),
+    report: Object.freeze({
+      bookName: 200,
+      bookTopicsCovered: 1000,
+      bookNotes: 500,
+      progressCell: 50,
+    }),
+  });
+
+  const FIELD_LENGTH_LABELS = Object.freeze({
+    fullName: 'نام و نام خانوادگی',
+    firstName: 'نام',
+    lastName: 'نام خانوادگی',
+    schoolName: 'نام مدرسه',
+    counselorName: 'نام مشاور',
+    supervisorCounselor: 'مشاور ناظر',
+    fieldOfStudy: 'رشته تحصیلی',
+    phone: 'شماره تماس',
+    timeframe: 'بازه زمانی',
+    exams: 'آزمون‌های آزمایشی',
+    weeksPassed: 'هفته',
+    extraNotes: 'توضیحات تکمیلی و نکات مهم',
+    topic: 'مبحث / کتاب',
+    tests: 'توضیحات / تست',
+    bookName: 'نام کتاب / منبع',
+    bookTopicsCovered: 'مباحث خوانده‌شده',
+    bookNotes: 'یادداشت کتاب',
+    progressCell: 'وضعیت / مرور جدول گزارش',
+  });
+
+  const STUDENT_STRING_LIMITS = [
+    ['fullName', FIELD_MAX_LENGTHS.student.fullName, FIELD_LENGTH_LABELS.fullName],
+    ['firstName', FIELD_MAX_LENGTHS.student.firstName, FIELD_LENGTH_LABELS.firstName],
+    ['lastName', FIELD_MAX_LENGTHS.student.lastName, FIELD_LENGTH_LABELS.lastName],
+    ['schoolName', FIELD_MAX_LENGTHS.student.schoolName, FIELD_LENGTH_LABELS.schoolName],
+    ['counselorName', FIELD_MAX_LENGTHS.student.counselorName, FIELD_LENGTH_LABELS.counselorName],
+    ['supervisorCounselor', FIELD_MAX_LENGTHS.student.supervisorCounselor, FIELD_LENGTH_LABELS.supervisorCounselor],
+    ['fieldOfStudy', FIELD_MAX_LENGTHS.student.fieldOfStudy, FIELD_LENGTH_LABELS.fieldOfStudy],
+    ['phone', FIELD_MAX_LENGTHS.student.phone, FIELD_LENGTH_LABELS.phone],
+    ['timeframe', FIELD_MAX_LENGTHS.student.timeframe, FIELD_LENGTH_LABELS.timeframe],
+    ['exams', FIELD_MAX_LENGTHS.student.exams, FIELD_LENGTH_LABELS.exams],
+    ['weeksPassed', FIELD_MAX_LENGTHS.student.weeksPassed, FIELD_LENGTH_LABELS.weeksPassed],
+    ['extraNotes', FIELD_MAX_LENGTHS.student.extraNotes, FIELD_LENGTH_LABELS.extraNotes],
+  ];
+
+  const PROGRESS_GRADE_KEYS = ['grade10', 'grade11', 'grade12', 'farhangian'];
+  const PROGRESS_ROW_FIELDS = ['status', 'r1', 'r2', 'r3'];
+
+  function truncateWithWarning(value, maxLen, fieldLabel, truncations = null) {
+    if (value === undefined || value === null) return '';
+    const str = String(value);
+    if (str.length > maxLen) {
+      if (Array.isArray(truncations)) {
+        truncations.push({
+          label: fieldLabel || 'این فیلد',
+          maxLen,
+          actualLen: str.length,
+        });
+      }
+      return str.slice(0, maxLen);
+    }
+    return str;
+  }
+
+  function formatTruncationWarning(items, wasTruncated = true) {
+    if (!Array.isArray(items) || items.length === 0) return '';
+    const unique = [];
+    const seen = new Set();
+    items.forEach(item => {
+      const label = (item && item.label) ? String(item.label) : 'فیلد';
+      if (!seen.has(label)) {
+        seen.add(label);
+        unique.push({ label, maxLen: item && item.maxLen ? item.maxLen : 0 });
+      }
+    });
+
+    if (unique.length === 1) {
+      const only = unique[0];
+      return wasTruncated
+        ? `توجه: متن فیلد «${only.label}» بیش از حد مجاز (حداکثر ${toPersianDigits(only.maxLen)} کاراکتر) بود و کوتاه شد.`
+        : `توجه: متن فیلد «${only.label}» بیش از حد مجاز (حداکثر ${toPersianDigits(only.maxLen)} کاراکتر) است و در ذخیره‌سازی یا خروجی کوتاه خواهد شد.`;
+    }
+
+    const previewNames = unique.slice(0, 3).map(u => `«${u.label}»`).join('، ');
+    const moreText = unique.length > 3 ? ` و ${toPersianDigits(unique.length - 3)} مورد دیگر` : '';
+    return wasTruncated
+      ? `توجه: متن ${toPersianDigits(items.length)} فیلد (${previewNames}${moreText}) بیش از حد مجاز بود و کوتاه شد.`
+      : `توجه: متن ${toPersianDigits(items.length)} فیلد (${previewNames}${moreText}) بیش از حد مجاز است و در ذخیره‌سازی یا خروجی کوتاه خواهد شد.`;
+  }
+
+  let lastFieldWarnKey = '';
+  let lastFieldWarnEl = null;
+  let lastFieldWarnAt = 0;
+  let lastPasteCheckEl = null;
+  let lastPasteCheckAt = 0;
+
+  function showFieldLengthToast(label, maxLen, isPaste = false, element = null) {
+    const now = Date.now();
+    const key = `${label || ''}|${maxLen}|${isPaste ? 'paste' : 'type'}`;
+    if (key === lastFieldWarnKey && (!element || element === lastFieldWarnEl) && (now - lastFieldWarnAt) < 2500) {
+      return;
+    }
+    lastFieldWarnKey = key;
+    lastFieldWarnEl = element || null;
+    lastFieldWarnAt = now;
+
+    const cleanLabel = label || 'این فیلد';
+    const msg = isPaste
+      ? `متن جای‌گذاری‌شده در «${cleanLabel}» بیش از حد مجاز (حداکثر ${toPersianDigits(maxLen)} کاراکتر) بود و کوتاه شد.`
+      : `حداکثر طول مجاز برای «${cleanLabel}» (${toPersianDigits(maxLen)} کاراکتر) تکمیل شده است.`;
+    showToast(msg, 'warning', 3200);
+  }
+
+  function getInputMaxLengthInfo(target) {
+    if (!target || typeof target.getAttribute !== 'function') return null;
+    const tag = target.tagName;
+    if (tag !== 'INPUT' && tag !== 'TEXTAREA') return null;
+    const rawMax = target.getAttribute('maxlength');
+    if (rawMax === null || rawMax === '') return null;
+    const maxLen = parseInt(rawMax, 10);
+    if (!Number.isFinite(maxLen) || maxLen <= 0) return null;
+    const label = target.getAttribute('data-maxlength-label') || target.getAttribute('aria-label') || 'این فیلد';
+    return { maxLen, label };
+  }
+
   // روزهای هفته به ترتیب اصلی و استاندارد (شنبه تا جمعه)
   const DAYS_OF_WEEK = [
     { key: 'sat', label: 'شنبه' },
@@ -2185,7 +2477,7 @@ body.auth-locked.auth-light {
     'منحصرا زبان',
     'هنر',
     'تیزهوشان',
-    'ماده 28',
+    'ماده ۲۸',
   ];
 
   // ماتریس دروس رشته ادبیات و علوم انسانی (صفحه ۴)
@@ -2778,7 +3070,7 @@ body.auth-locked.auth-light {
         else if (/زبان/.test(fieldOfStudy)) fieldOfStudy = 'منحصرا زبان';
         else if (/(?:^|\s)هنر(?:\s|$)/.test(fieldOfStudy)) fieldOfStudy = 'هنر';
         else if (/تیزهوشان|سمپاد/i.test(fieldOfStudy)) fieldOfStudy = 'تیزهوشان';
-        else if (/ماده\s*[2۲][8۸]/i.test(fieldOfStudy)) fieldOfStudy = 'ماده 28';
+        else if (/ماده\s*[2۲٢][8۸٨]/i.test(fieldOfStudy)) fieldOfStudy = 'ماده ۲۸';
       }
       out.fieldOfStudy = fieldOfStudy;
     }
@@ -2851,7 +3143,7 @@ body.auth-locked.auth-light {
   }
 
   // سازگاری کامل جدول برنامه‌ریزی هفتگی با فرمت‌های قدیمی
-  function normalizeLegacyPlanner(rawPlanner, defaults) {
+  function normalizeLegacyPlanner(rawPlanner, defaults, truncations = null) {
     if (!rawPlanner || typeof rawPlanner !== 'object') {
       return defaults.planner;
     }
@@ -2900,19 +3192,32 @@ body.auth-locked.auth-light {
           const str = val.trim();
           const testMatch = str.match(/([0-9۰-۹\u06F0-\u06F9\u0660-\u0669]+\s*تست|تست\s*[0-9۰-۹\u06F0-\u06F9\u0660-\u0669]+)/);
           if (testMatch) {
+            const matchIdx = testMatch.index ?? str.indexOf(testMatch[0]);
+            let rawBefore = str.slice(0, matchIdx);
+            let rawAfter = str.slice(matchIdx + testMatch[0].length);
+            if (/\(\s*$/.test(rawBefore) && /^\s*\)/.test(rawAfter)) {
+              rawBefore = rawBefore.replace(/\(\s*$/, '');
+              rawAfter = rawAfter.replace(/^\s*\)/, '');
+            }
+            const before = rawBefore.replace(/[\s\-–—,،]+$/, '').trim();
+            const after = rawAfter.replace(/^[\s\-–—,،]+/, '').trim();
+            const topic = [before, after].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
             row[day] = {
-              topic: str.replace(testMatch[0], '').replace(/[-–—,،]/g, '').trim(),
-              tests: testMatch[0].trim()
+              topic: truncateWithWarning(topic, FIELD_MAX_LENGTHS.planner.topic, FIELD_LENGTH_LABELS.topic, truncations),
+              tests: truncateWithWarning(testMatch[0].trim(), FIELD_MAX_LENGTHS.planner.tests, FIELD_LENGTH_LABELS.tests, truncations),
             };
           } else {
-            row[day] = { topic: str, tests: '' };
+            row[day] = {
+              topic: truncateWithWarning(str, FIELD_MAX_LENGTHS.planner.topic, FIELD_LENGTH_LABELS.topic, truncations),
+              tests: '',
+            };
           }
         } else if (val && typeof val === 'object') {
           const topic = val.topic ?? val.lesson ?? val.subject ?? val.title ?? val.name ?? val.dars ?? val.mabhas ?? '';
           const tests = val.tests ?? val.count ?? val.test ?? val.testCount ?? val.test_count ?? val.tedad ?? '';
           row[day] = {
-            topic: String(topic ?? '').slice(0, 500),
-            tests: String(tests ?? '').slice(0, 200),
+            topic: truncateWithWarning(topic ?? '', FIELD_MAX_LENGTHS.planner.topic, FIELD_LENGTH_LABELS.topic, truncations),
+            tests: truncateWithWarning(tests ?? '', FIELD_MAX_LENGTHS.planner.tests, FIELD_LENGTH_LABELS.tests, truncations),
           };
         } else {
           row[day] = { topic: '', tests: '' };
@@ -2972,9 +3277,9 @@ body.auth-locked.auth-light {
         if (b && typeof b === 'object') {
           return {
             id: String(b.id || `book_${idx + 1}`).trim(),
-            name: String(b.name ?? b.title ?? b.bookName ?? b.subject ?? b.ketab ?? '').slice(0, 200),
-            topicsCovered: String(b.topicsCovered ?? b.topics ?? b.chapters ?? b.mabahes ?? '').slice(0, 1000),
-            notes: String(b.notes ?? b.description ?? b.desc ?? b.tozihat ?? '').slice(0, 500),
+            name: String(b.name ?? b.title ?? b.bookName ?? b.subject ?? b.ketab ?? ''),
+            topicsCovered: String(b.topicsCovered ?? b.topics ?? b.chapters ?? b.mabahes ?? ''),
+            notes: String(b.notes ?? b.description ?? b.desc ?? b.tozihat ?? ''),
           };
         }
         return { id: `book_${idx + 1}`, name: '', topicsCovered: '', notes: '' };
@@ -3474,6 +3779,74 @@ body.auth-locked.auth-light {
   const STORAGE_KEY_MEASURED_HEIGHTS = 'forootan_kia_measured_heights_v3';
   const STORAGE_KEY_MOBILE_VIEW = 'forootan_kia_mobile_view';
   const STORAGE_KEY_CORRUPT_BACKUP_PREFIX = 'forootan_kia_corrupt_backup_';
+  const STORAGE_KEY_ACTIVE_STUDENT_PREFIX = 'forootan_kia_active_student_';
+  const STORAGE_KEY_PROFILE_PREFIX = 'forootan_kia_profile_';
+  const STORAGE_KEY_DIRTY_CLOUD_PREFIX = 'forootan_kia_dirty_cloud_';
+
+  const SUPABASE_URL = 'https://ovdkgboxpiretvhfeuzq.supabase.co';
+  const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_KMo98gJWgfFIyg7ZydErAw_VSmZ2FJr';
+  const SUPABASE_EMAIL_DOMAIN = 'forootan.local';
+  const AUTH_PERSIST_MODE_KEY = 'forootan_auth_persist_mode';
+
+  let supabaseClient = null;
+  let currentAuthSession = null;
+  let currentUserProfile = null;
+  let activeStudentId = null;
+  let activeStudentCounselorId = null;
+  let studentsListCache = [];
+  let pendingCloudSync = false;
+  let cloudSaveTimeout = null;
+  let isCloudSyncInFlight = false;
+  let authReadyPromise = Promise.resolve();
+
+  function getScopedStorageKey(baseKey) {
+    const uid = currentAuthSession && currentAuthSession.user ? currentAuthSession.user.id : '';
+    return uid ? `${baseKey}_${uid}` : baseKey;
+  }
+
+  function getActiveStudentStorageKey() {
+    const uid = currentAuthSession && currentAuthSession.user ? currentAuthSession.user.id : '';
+    return uid ? `${STORAGE_KEY_ACTIVE_STUDENT_PREFIX}${uid}` : '';
+  }
+
+  function getDirtyCloudStorageKey() {
+    const uid = currentAuthSession && currentAuthSession.user ? currentAuthSession.user.id : '';
+    return uid ? `${STORAGE_KEY_DIRTY_CLOUD_PREFIX}${uid}` : '';
+  }
+
+  function setActiveStudentTracking(studentId, counselorId = null) {
+    activeStudentId = studentId || null;
+    activeStudentCounselorId = counselorId || (currentUserProfile ? currentUserProfile.id : null);
+    const key = getActiveStudentStorageKey();
+    if (key) {
+      try {
+        if (activeStudentId) {
+          localStorage.setItem(key, activeStudentId);
+        } else {
+          localStorage.removeItem(key);
+        }
+      } catch (e) {}
+    }
+    if (!activeStudentId) {
+      setCloudDirtyFlag(false);
+    }
+    updateActiveStudentBarUI();
+  }
+
+  function setCloudDirtyFlag(dirty) {
+    pendingCloudSync = Boolean(dirty);
+    const key = getDirtyCloudStorageKey();
+    if (key) {
+      try {
+        if (pendingCloudSync) {
+          localStorage.setItem(key, '1');
+        } else {
+          localStorage.removeItem(key);
+        }
+      } catch (e) {}
+    }
+    updateActiveStudentBarUI();
+  }
 
   let corruptStorageBackupInfo = null;
   let lastQuotaWarningTime = 0;
@@ -3499,12 +3872,13 @@ body.auth-locked.auth-light {
 
   function saveCurrentToLocalStorage(state) {
     if (!state) return false;
+    const targetKey = getScopedStorageKey(STORAGE_KEY_CURRENT);
     try {
       if (state.meta) {
         state.meta.updatedAt = new Date().toISOString();
       }
       const serialized = JSON.stringify(state);
-      localStorage.setItem(STORAGE_KEY_CURRENT, serialized);
+      localStorage.setItem(targetKey, serialized);
       return true;
     } catch (err) {
       console.warn('خطا در ذخیره‌سازی اولیه محلی:', err);
@@ -3513,7 +3887,7 @@ body.auth-locked.auth-light {
         localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS);
         pruneStorageBackups(1);
         const serialized = JSON.stringify(state);
-        localStorage.setItem(STORAGE_KEY_CURRENT, serialized);
+        localStorage.setItem(targetKey, serialized);
         console.info('پس از آزادسازی حافظه کش موقت، ذخیره‌سازی محلی با موفقیت انجام شد.');
         return true;
       } catch (retryErr) {
@@ -3537,24 +3911,47 @@ body.auth-locked.auth-light {
       clearTimeout(saveStorageTimeout);
       saveStorageTimeout = null;
     }
+    if (cloudSaveTimeout) {
+      clearTimeout(cloudSaveTimeout);
+      cloudSaveTimeout = null;
+    }
   }
 
   function debouncedSaveToLocalStorage(state, delay = 400) {
-    cancelPendingSave();
+    if (saveStorageTimeout) {
+      clearTimeout(saveStorageTimeout);
+    }
     saveStorageTimeout = setTimeout(() => {
       saveStorageTimeout = null;
       saveCurrentToLocalStorage(appState);
     }, delay);
+
+    if (activeStudentId && currentAuthSession) {
+      setCloudDirtyFlag(true);
+      if (cloudSaveTimeout) {
+        clearTimeout(cloudSaveTimeout);
+      }
+      cloudSaveTimeout = setTimeout(() => {
+        cloudSaveTimeout = null;
+        flushCloudSync({ silent: true });
+      }, 1200);
+    } else {
+      updateActiveStudentBarUI();
+    }
   }
 
   function flushPendingSave() {
     cancelPendingSave();
     saveCurrentToLocalStorage(appState);
+    if (activeStudentId && pendingCloudSync && currentAuthSession) {
+      flushCloudSync({ silent: true });
+    }
   }
 
   function loadCurrentFromLocalStorage() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY_CURRENT);
+      const targetKey = getScopedStorageKey(STORAGE_KEY_CURRENT);
+      const raw = localStorage.getItem(targetKey);
       if (!raw || !raw.trim()) return null;
       try {
         const parsed = JSON.parse(raw);
@@ -3627,6 +4024,122 @@ body.auth-locked.auth-light {
       : Number(dayCountRaw);
     if (!Number.isInteger(dayCount) || dayCount < 2 || dayCount > 14) {
       errors.push('تعداد روزهای برنامه باید بین ۲ تا ۱۴ روز باشد.');
+    }
+
+    const hasStudentFullName = Boolean(student.fullName !== undefined && student.fullName !== null && String(student.fullName).trim());
+    const lengthIssues = [];
+    STUDENT_STRING_LIMITS.forEach(([prop, maxLen, label]) => {
+      if (hasStudentFullName && (prop === 'firstName' || prop === 'lastName')) return;
+      const val = student[prop];
+      if (val !== undefined && val !== null) {
+        const str = String(val);
+        if (str.length > maxLen) {
+          lengthIssues.push({ label, maxLen, actualLen: str.length });
+        }
+      }
+    });
+
+    if (Array.isArray(planner.blocks)) {
+      planner.blocks.forEach(block => {
+        if (!block || typeof block !== 'object') return;
+        ALL_PLANNER_DAY_KEYS.forEach(dayKey => {
+          const cell = block[dayKey];
+          if (typeof cell === 'string') {
+            const trimmedLen = cell.trim().length;
+            if (trimmedLen > FIELD_MAX_LENGTHS.planner.topic) {
+              lengthIssues.push({
+                label: FIELD_LENGTH_LABELS.topic,
+                maxLen: FIELD_MAX_LENGTHS.planner.topic,
+                actualLen: trimmedLen,
+              });
+            }
+          } else if (isPlainObject(cell)) {
+            if (cell.topic !== undefined && cell.topic !== null && String(cell.topic).length > FIELD_MAX_LENGTHS.planner.topic) {
+              lengthIssues.push({
+                label: FIELD_LENGTH_LABELS.topic,
+                maxLen: FIELD_MAX_LENGTHS.planner.topic,
+                actualLen: String(cell.topic).length,
+              });
+            }
+            if (cell.tests !== undefined && cell.tests !== null && String(cell.tests).length > FIELD_MAX_LENGTHS.planner.tests) {
+              lengthIssues.push({
+                label: FIELD_LENGTH_LABELS.tests,
+                maxLen: FIELD_MAX_LENGTHS.planner.tests,
+                actualLen: String(cell.tests).length,
+              });
+            }
+          }
+        });
+      });
+    }
+
+    const report = isPlainObject(state.report) ? state.report : {};
+    if (Array.isArray(report.books)) {
+      report.books.forEach(book => {
+        if (typeof book === 'string') {
+          const trimmedLen = book.trim().length;
+          if (trimmedLen > FIELD_MAX_LENGTHS.report.bookName) {
+            lengthIssues.push({
+              label: FIELD_LENGTH_LABELS.bookName,
+              maxLen: FIELD_MAX_LENGTHS.report.bookName,
+              actualLen: trimmedLen,
+            });
+          }
+        } else if (isPlainObject(book)) {
+          if (book.name !== undefined && book.name !== null && String(book.name).length > FIELD_MAX_LENGTHS.report.bookName) {
+            lengthIssues.push({
+              label: FIELD_LENGTH_LABELS.bookName,
+              maxLen: FIELD_MAX_LENGTHS.report.bookName,
+              actualLen: String(book.name).length,
+            });
+          }
+          if (book.topicsCovered !== undefined && book.topicsCovered !== null && String(book.topicsCovered).length > FIELD_MAX_LENGTHS.report.bookTopicsCovered) {
+            lengthIssues.push({
+              label: FIELD_LENGTH_LABELS.bookTopicsCovered,
+              maxLen: FIELD_MAX_LENGTHS.report.bookTopicsCovered,
+              actualLen: String(book.topicsCovered).length,
+            });
+          }
+          if (book.notes !== undefined && book.notes !== null && String(book.notes).length > FIELD_MAX_LENGTHS.report.bookNotes) {
+            lengthIssues.push({
+              label: FIELD_LENGTH_LABELS.bookNotes,
+              maxLen: FIELD_MAX_LENGTHS.report.bookNotes,
+              actualLen: String(book.notes).length,
+            });
+          }
+        }
+      });
+    }
+
+    [
+      [report.humanitiesProgress, HUMANITIES_SUBJECTS],
+      [report.tajrobiProgress, TAJROBI_SUBJECTS],
+      [report.riyaziProgress, RIYAZI_SUBJECTS],
+    ].forEach(([matrix, subjectsMap]) => {
+      if (!isPlainObject(matrix)) return;
+      PROGRESS_GRADE_KEYS.forEach(gradeKey => {
+        const gradeObj = matrix[gradeKey];
+        if (!isPlainObject(gradeObj)) return;
+        const subjects = subjectsMap[gradeKey] || [];
+        subjects.forEach(subj => {
+          const entry = gradeObj[subj.id];
+          if (!isPlainObject(entry)) return;
+          PROGRESS_ROW_FIELDS.forEach(field => {
+            const val = entry[field];
+            if (val !== undefined && val !== null && String(val).length > FIELD_MAX_LENGTHS.report.progressCell) {
+              lengthIssues.push({
+                label: FIELD_LENGTH_LABELS.progressCell,
+                maxLen: FIELD_MAX_LENGTHS.report.progressCell,
+                actualLen: String(val).length,
+              });
+            }
+          });
+        });
+      });
+    });
+
+    if (lengthIssues.length > 0) {
+      warnings.push(formatTruncationWarning(lengthIssues, false));
     }
 
     return {
@@ -4028,7 +4541,37 @@ body.auth-locked.auth-light {
     }
   }
 
-  function normalizeState(raw) {
+  function normalizeProgressMatrix(rawMatrix, defaultMatrix, subjectsMap, truncations = null) {
+    if (!isPlainObject(rawMatrix)) {
+      return defaultMatrix;
+    }
+    PROGRESS_GRADE_KEYS.forEach(gradeKey => {
+      const gradeObj = rawMatrix[gradeKey];
+      if (!isPlainObject(gradeObj)) {
+        rawMatrix[gradeKey] = defaultMatrix[gradeKey] || {};
+      } else {
+        const subjects = subjectsMap[gradeKey] || [];
+        subjects.forEach(subj => {
+          const entry = gradeObj[subj.id];
+          if (!isPlainObject(entry)) {
+            gradeObj[subj.id] = { status: '', r1: '', r2: '', r3: '' };
+          } else {
+            PROGRESS_ROW_FIELDS.forEach(field => {
+              entry[field] = truncateWithWarning(
+                entry[field],
+                FIELD_MAX_LENGTHS.report.progressCell,
+                FIELD_LENGTH_LABELS.progressCell,
+                truncations
+              );
+            });
+          }
+        });
+      }
+    });
+    return rawMatrix;
+  }
+
+  function normalizeState(raw, truncations = null) {
     const defaults = getInitialState();
     if (!raw || typeof raw !== 'object') {
       return defaults;
@@ -4048,25 +4591,18 @@ body.auth-locked.auth-light {
     };
 
     if (isPlainObject(student)) {
-      student.fullName = String(student.fullName ?? '').slice(0, 100);
-      student.firstName = String(student.firstName ?? '').slice(0, 50);
-      student.lastName = String(student.lastName ?? '').slice(0, 50);
-      student.schoolName = String(student.schoolName ?? '').slice(0, 100);
-      student.counselorName = String(student.counselorName ?? '').slice(0, 100);
-      student.supervisorCounselor = String(student.supervisorCounselor ?? '').slice(0, 100);
-      student.fieldOfStudy = String(student.fieldOfStudy ?? '').slice(0, 100);
-      student.phone = String(student.phone ?? '').slice(0, 30);
-      student.timeframe = String(student.timeframe ?? '').slice(0, 100);
-      student.exams = String(student.exams ?? '').slice(0, 100);
-      student.weeksPassed = String(student.weeksPassed ?? '').slice(0, 50);
-      student.extraNotes = String(student.extraNotes ?? '').slice(0, 15000);
+      const hasFullName = Boolean(String(student.fullName ?? '').trim());
+      STUDENT_STRING_LIMITS.forEach(([prop, maxLen, label]) => {
+        const trackTruncations = (hasFullName && (prop === 'firstName' || prop === 'lastName')) ? null : truncations;
+        student[prop] = truncateWithWarning(student[prop], maxLen, label, trackTruncations);
+      });
     }
 
     // ۲. جدول برنامه‌ریزی هفتگی (با پشتیبانی از نگاشت جدول، روزها و متون قدیمی)
     const rawPlanner = isPlainObject(migrated.planner)
       ? migrated.planner
       : (isPlainObject(payload.planner) ? payload.planner : {});
-    const planner = normalizeLegacyPlanner(rawPlanner, defaults);
+    const planner = normalizeLegacyPlanner(rawPlanner, defaults, truncations);
 
     // ۳. گزارش منابع و مباحث (با پشتیبانی از فیلدهای قدیمی کتاب‌ها)
     const rawReport = isPlainObject(migrated.report)
@@ -4085,9 +4621,9 @@ body.auth-locked.auth-light {
 
       return {
         id: bookId,
-        name: (isObj && b.name !== undefined && b.name !== null) ? String(b.name).slice(0, 200) : '',
-        topicsCovered: (isObj && b.topicsCovered !== undefined && b.topicsCovered !== null) ? String(b.topicsCovered).slice(0, 1000) : '',
-        notes: (isObj && b.notes !== undefined && b.notes !== null) ? String(b.notes).slice(0, 500) : '',
+        name: isObj ? truncateWithWarning(b.name, FIELD_MAX_LENGTHS.report.bookName, FIELD_LENGTH_LABELS.bookName, truncations) : '',
+        topicsCovered: isObj ? truncateWithWarning(b.topicsCovered, FIELD_MAX_LENGTHS.report.bookTopicsCovered, FIELD_LENGTH_LABELS.bookTopicsCovered, truncations) : '',
+        notes: isObj ? truncateWithWarning(b.notes, FIELD_MAX_LENGTHS.report.bookNotes, FIELD_LENGTH_LABELS.bookNotes, truncations) : '',
       };
     };
 
@@ -4097,80 +4633,24 @@ body.auth-locked.auth-light {
       report.books = report.books.slice(0, MAX_REPORT_BOOKS).map(normalizeBook);
     }
 
-    const defaultHum = getInitialHumanitiesProgress();
-    if (!isPlainObject(report.humanitiesProgress)) {
-      report.humanitiesProgress = defaultHum;
-    } else {
-      ['grade10', 'grade11', 'grade12', 'farhangian'].forEach(gradeKey => {
-        const gradeObj = report.humanitiesProgress[gradeKey];
-        if (!isPlainObject(gradeObj)) {
-          report.humanitiesProgress[gradeKey] = defaultHum[gradeKey] || {};
-        } else {
-          const subjects = HUMANITIES_SUBJECTS[gradeKey] || [];
-          subjects.forEach(subj => {
-            const entry = gradeObj[subj.id];
-            if (!isPlainObject(entry)) {
-              gradeObj[subj.id] = { status: '', r1: '', r2: '', r3: '' };
-            } else {
-              entry.status = (entry.status !== undefined && entry.status !== null) ? String(entry.status).slice(0, 50) : '';
-              entry.r1 = (entry.r1 !== undefined && entry.r1 !== null) ? String(entry.r1).slice(0, 50) : '';
-              entry.r2 = (entry.r2 !== undefined && entry.r2 !== null) ? String(entry.r2).slice(0, 50) : '';
-              entry.r3 = (entry.r3 !== undefined && entry.r3 !== null) ? String(entry.r3).slice(0, 50) : '';
-            }
-          });
-        }
-      });
-    }
-
-    const defaultTaj = getInitialTajrobiProgress();
-    if (!isPlainObject(report.tajrobiProgress)) {
-      report.tajrobiProgress = defaultTaj;
-    } else {
-      ['grade10', 'grade11', 'grade12', 'farhangian'].forEach(gradeKey => {
-        const gradeObj = report.tajrobiProgress[gradeKey];
-        if (!isPlainObject(gradeObj)) {
-          report.tajrobiProgress[gradeKey] = defaultTaj[gradeKey] || {};
-        } else {
-          const subjects = TAJROBI_SUBJECTS[gradeKey] || [];
-          subjects.forEach(subj => {
-            const entry = gradeObj[subj.id];
-            if (!isPlainObject(entry)) {
-              gradeObj[subj.id] = { status: '', r1: '', r2: '', r3: '' };
-            } else {
-              entry.status = (entry.status !== undefined && entry.status !== null) ? String(entry.status).slice(0, 50) : '';
-              entry.r1 = (entry.r1 !== undefined && entry.r1 !== null) ? String(entry.r1).slice(0, 50) : '';
-              entry.r2 = (entry.r2 !== undefined && entry.r2 !== null) ? String(entry.r2).slice(0, 50) : '';
-              entry.r3 = (entry.r3 !== undefined && entry.r3 !== null) ? String(entry.r3).slice(0, 50) : '';
-            }
-          });
-        }
-      });
-    }
-
-    const defaultRiy = getInitialRiyaziProgress();
-    if (!isPlainObject(report.riyaziProgress)) {
-      report.riyaziProgress = defaultRiy;
-    } else {
-      ['grade10', 'grade11', 'grade12', 'farhangian'].forEach(gradeKey => {
-        const gradeObj = report.riyaziProgress[gradeKey];
-        if (!isPlainObject(gradeObj)) {
-          report.riyaziProgress[gradeKey] = defaultRiy[gradeKey] || {};
-        } else {
-          const subjects = RIYAZI_SUBJECTS[gradeKey] || [];
-          subjects.forEach(subj => {
-            const entry = gradeObj[subj.id];
-            if (!isPlainObject(entry)) {
-              gradeObj[subj.id] = { status: '', r1: '', r2: '', r3: '' };
-            } else {
-              entry.status = (entry.status !== undefined && entry.status !== null) ? String(entry.status).slice(0, 50) : '';
-              entry.r1 = (entry.r1 !== undefined && entry.r1 !== null) ? String(entry.r1).slice(0, 50) : '';
-              entry.r2 = (entry.r2 !== undefined && entry.r2 !== null) ? String(entry.r2).slice(0, 50) : '';
-              entry.r3 = (entry.r3 !== undefined && entry.r3 !== null) ? String(entry.r3).slice(0, 50) : '';
-            }
-          });
-        }
-      });
-    }
+    report.humanitiesProgress = normalizeProgressMatrix(
+      report.humanitiesProgress,
+      getInitialHumanitiesProgress(),
+      HUMANITIES_SUBJECTS,
+      truncations
+    );
+    report.tajrobiProgress = normalizeProgressMatrix(
+      report.tajrobiProgress,
+      getInitialTajrobiProgress(),
+      TAJROBI_SUBJECTS,
+      truncations
+    );
+    report.riyaziProgress = normalizeProgressMatrix(
+      report.riyaziProgress,
+      getInitialRiyaziProgress(),
+      RIYAZI_SUBJECTS,
+      truncations
+    );
 
     // ۴. متادیتا
     const rawMeta = isPlainObject(migrated.meta) ? migrated.meta : (isPlainObject(payload.meta) ? payload.meta : {});
@@ -4396,7 +4876,7 @@ body.auth-locked.auth-light {
 
       // همگام‌سازی بلادرنگ بین چند تب باز در مرورگر (Cross-Tab Synchronization)
       window.addEventListener('storage', (e) => {
-        if (e.key !== STORAGE_KEY_CURRENT || !e.newValue) return;
+        if (e.key !== getScopedStorageKey(STORAGE_KEY_CURRENT) || !e.newValue) return;
         try {
           cancelPendingSave();
           const remoteData = JSON.parse(e.newValue);
@@ -4498,6 +4978,78 @@ body.auth-locked.auth-light {
         jumpToPreviewPage(pageId);
       });
     });
+
+    // هشدار زنده هنگام نزدیک شدن یا عبور از حداکثر طول مجاز فیلدهای ویرایشگر
+    const editorPanel = document.getElementById('editor-content-panel');
+    if (editorPanel) {
+      editorPanel.addEventListener('paste', (e) => {
+        const target = e.target;
+        const info = getInputMaxLengthInfo(target);
+        if (!info || target.readOnly || target.disabled) return;
+        const clipText = e.clipboardData && typeof e.clipboardData.getData === 'function'
+          ? (e.clipboardData.getData('text/plain') || e.clipboardData.getData('text') || '')
+          : '';
+        if (!clipText) return;
+        const normalizedPaste = clipText.replace(/\r\n?/g, '\n');
+        const currentVal = typeof target.value === 'string' ? target.value : '';
+        const hasSelection = typeof target.selectionStart === 'number' && typeof target.selectionEnd === 'number';
+        const selectedLen = hasSelection ? Math.max(0, target.selectionEnd - target.selectionStart) : 0;
+        const projectedLen = currentVal.length - selectedLen + normalizedPaste.length;
+        if (projectedLen > info.maxLen) {
+          lastPasteCheckEl = target;
+          lastPasteCheckAt = Date.now();
+          showFieldLengthToast(info.label, info.maxLen, true, target);
+        }
+      });
+
+      editorPanel.addEventListener('beforeinput', (e) => {
+        const target = e.target;
+        const info = getInputMaxLengthInfo(target);
+        if (!info || target.readOnly || target.disabled) return;
+        const inputType = e.inputType || '';
+        if (
+          inputType.startsWith('delete') ||
+          inputType === 'historyUndo' ||
+          inputType === 'historyRedo' ||
+          inputType === 'insertCompositionText' ||
+          inputType === 'insertFromComposition'
+        ) {
+          return;
+        }
+        if (inputType === 'insertFromPaste' && target === lastPasteCheckEl && (Date.now() - lastPasteCheckAt) < 100) {
+          return;
+        }
+
+        let insertText = '';
+        if (typeof e.data === 'string') {
+          insertText = e.data;
+        } else if (inputType === 'insertLineBreak' || inputType === 'insertParagraph') {
+          insertText = target.tagName === 'TEXTAREA' ? '\n' : '';
+        } else if (inputType === 'insertFromPaste' && e.dataTransfer && typeof e.dataTransfer.getData === 'function') {
+          insertText = e.dataTransfer.getData('text/plain') || e.dataTransfer.getData('text') || '';
+        }
+        const normalizedInsert = insertText.replace(/\r\n?/g, '\n');
+        if (!normalizedInsert) return;
+
+        const currentVal = typeof target.value === 'string' ? target.value : '';
+        const hasSelection = typeof target.selectionStart === 'number' && typeof target.selectionEnd === 'number';
+        const selectedLen = hasSelection ? Math.max(0, target.selectionEnd - target.selectionStart) : 0;
+        const projectedLen = currentVal.length - selectedLen + normalizedInsert.length;
+        if (projectedLen > info.maxLen) {
+          showFieldLengthToast(info.label, info.maxLen, inputType === 'insertFromPaste', target);
+        }
+      });
+
+      editorPanel.addEventListener('input', (e) => {
+        const target = e.target;
+        const info = getInputMaxLengthInfo(target);
+        if (!info || target.readOnly || target.disabled) return;
+        const currentVal = typeof target.value === 'string' ? target.value : '';
+        if (currentVal.length > info.maxLen) {
+          showFieldLengthToast(info.label, info.maxLen, false, target);
+        }
+      });
+    }
   }
 
   function zoomAtPoint(focalClientX, focalClientY, newZoom) {
@@ -5673,6 +6225,14 @@ body.auth-locked.auth-light {
 
   let lastPastedUndoAction = null;
 
+  function clearPastedUndoAction(updateBar = true) {
+    if (!lastPastedUndoAction) return;
+    lastPastedUndoAction = null;
+    if (updateBar && typeof document !== 'undefined') {
+      updateClipboardBar();
+    }
+  }
+
   function undoPastedContent() {
     if (!lastPastedUndoAction || !Array.isArray(lastPastedUndoAction.cells) || lastPastedUndoAction.cells.length === 0) {
       showToast('عملیات جای‌گذاری اخیری برای بازگردانی وجود ندارد.', 'info');
@@ -5839,6 +6399,7 @@ body.auth-locked.auth-light {
     const hadContent = Boolean((current.topic && current.topic.trim()) || (current.tests && current.tests.trim()));
 
     appState.planner.blocks[r][dayKey] = { topic: '', tests: '' };
+    clearPastedUndoAction(true);
 
     if (cachedMeasuredHeights[appState.planner.rowCount]) {
       delete cachedMeasuredHeights[appState.planner.rowCount][dayKey];
@@ -5898,6 +6459,7 @@ body.auth-locked.auth-light {
         document.querySelectorAll('.planner-input-topic[data-day="' + dayKey + '"]').forEach(inp => { inp.value = ''; autoResizePlannerInput(inp); });
         document.querySelectorAll('.planner-input-tests[data-day="' + dayKey + '"]').forEach(inp => { inp.value = ''; autoResizePlannerInput(inp); });
         syncPlannerDayRowHeights();
+        clearPastedUndoAction(false);
         updateClipboardBar();
         patchPreviewPage('planner');
         debouncedSaveToLocalStorage(appState);
@@ -5947,6 +6509,7 @@ body.auth-locked.auth-light {
         document.querySelectorAll('.planner-input-topic[data-row="' + partIdx + '"]').forEach(inp => { inp.value = ''; autoResizePlannerInput(inp); });
         document.querySelectorAll('.planner-input-tests[data-row="' + partIdx + '"]').forEach(inp => { inp.value = ''; autoResizePlannerInput(inp); });
         syncPlannerDayRowHeights();
+        clearPastedUndoAction(false);
         updateClipboardBar();
         patchPreviewPage('planner');
         debouncedSaveToLocalStorage(appState);
@@ -6180,6 +6743,8 @@ body.auth-locked.auth-light {
                       data-row="${r}" 
                       data-day="${d.key}" 
                       data-field="topic" 
+                      maxlength="${FIELD_MAX_LENGTHS.planner.topic}"
+                      data-maxlength-label="${FIELD_LENGTH_LABELS.topic}"
                       enterkeyhint="enter"
                       ${lockAttrs}
                       aria-label="${d.label} - ${partLabelText} - مبحث"
@@ -6194,6 +6759,8 @@ body.auth-locked.auth-light {
                       data-row="${r}" 
                       data-day="${d.key}" 
                       data-field="tests" 
+                      maxlength="${FIELD_MAX_LENGTHS.planner.tests}"
+                      data-maxlength-label="${FIELD_LENGTH_LABELS.tests}"
                       enterkeyhint="enter"
                       ${lockAttrs}
                       aria-label="${d.label} - ${partLabelText} - تست"
@@ -6504,59 +7071,38 @@ body.auth-locked.auth-light {
       });
     }
 
-    // رهگیری و همگام‌سازی بخش مبحث / کتاب
-    document.querySelectorAll('.planner-input-topic').forEach(input => {
-      input.addEventListener('focus', (e) => registerActiveInput(e.target));
-      input.addEventListener('click', (e) => registerActiveInput(e.target));
-      input.addEventListener('pointerdown', (e) => registerActiveInput(e.target));
-      input.addEventListener('input', (e) => {
-        registerActiveInput(e.target);
-        autoResizePlannerInput(e.target);
-        syncPlannerRowHeightsForCard(e.target.closest('.planner-editor-card'));
-        const row = parseInt(e.target.getAttribute('data-row'), 10);
-        const day = e.target.getAttribute('data-day');
-        if (!appState.planner.blocks[row]) {
-          appState.planner.blocks[row] = createEmptyBlock();
-        }
-        if (!appState.planner.blocks[row][day]) {
-          appState.planner.blocks[row][day] = { topic: '', tests: '' };
-        }
-        appState.planner.blocks[row][day].topic = e.target.value;
-        if (cachedMeasuredHeights[appState.planner.rowCount]) {
-          delete cachedMeasuredHeights[appState.planner.rowCount][day];
-        }
-        resetPlannerBudgets();
-        requestPagePatch('planner');
-        debouncedSaveToLocalStorage(appState);
+    const bindPlannerCellField = (selector, field) => {
+      document.querySelectorAll(selector).forEach(input => {
+        input.addEventListener('focus', (e) => registerActiveInput(e.target));
+        input.addEventListener('click', (e) => registerActiveInput(e.target));
+        input.addEventListener('pointerdown', (e) => registerActiveInput(e.target));
+        input.addEventListener('input', (e) => {
+          clearPastedUndoAction();
+          registerActiveInput(e.target);
+          autoResizePlannerInput(e.target);
+          syncPlannerRowHeightsForCard(e.target.closest('.planner-editor-card'));
+          const row = parseInt(e.target.getAttribute('data-row'), 10);
+          const day = e.target.getAttribute('data-day');
+          if (!appState.planner.blocks[row]) {
+            appState.planner.blocks[row] = createEmptyBlock();
+          }
+          if (!appState.planner.blocks[row][day]) {
+            appState.planner.blocks[row][day] = { topic: '', tests: '' };
+          }
+          appState.planner.blocks[row][day][field] = e.target.value;
+          if (cachedMeasuredHeights[appState.planner.rowCount]) {
+            delete cachedMeasuredHeights[appState.planner.rowCount][day];
+          }
+          resetPlannerBudgets();
+          requestPagePatch('planner');
+          debouncedSaveToLocalStorage(appState);
+        });
       });
-    });
+    };
 
-    // رهگیری و همگام‌سازی بخش تست
-    document.querySelectorAll('.planner-input-tests').forEach(input => {
-      input.addEventListener('focus', (e) => registerActiveInput(e.target));
-      input.addEventListener('click', (e) => registerActiveInput(e.target));
-      input.addEventListener('pointerdown', (e) => registerActiveInput(e.target));
-      input.addEventListener('input', (e) => {
-        registerActiveInput(e.target);
-        autoResizePlannerInput(e.target);
-        syncPlannerRowHeightsForCard(e.target.closest('.planner-editor-card'));
-        const row = parseInt(e.target.getAttribute('data-row'), 10);
-        const day = e.target.getAttribute('data-day');
-        if (!appState.planner.blocks[row]) {
-          appState.planner.blocks[row] = createEmptyBlock();
-        }
-        if (!appState.planner.blocks[row][day]) {
-          appState.planner.blocks[row][day] = { topic: '', tests: '' };
-        }
-        appState.planner.blocks[row][day].tests = e.target.value;
-        if (cachedMeasuredHeights[appState.planner.rowCount]) {
-          delete cachedMeasuredHeights[appState.planner.rowCount][day];
-        }
-        resetPlannerBudgets();
-        requestPagePatch('planner');
-        debouncedSaveToLocalStorage(appState);
-      });
-    });
+    // رهگیری و همگام‌سازی بخش‌های مبحث و تست
+    bindPlannerCellField('.planner-input-topic', 'topic');
+    bindPlannerCellField('.planner-input-tests', 'tests');
 
     bindClipboardBarEvents();
   }
@@ -6845,7 +7391,7 @@ body.auth-locked.auth-light {
           <!-- ۱. نام و نام خانوادگی -->
           <div class="md:col-span-2">
             <label class="block font-bold text-sky-900 mb-1">نام و نام خانوادگی دانش‌آموز <span class="text-rose-500">*</span>:</label>
-            <input type="text" data-prop="fullName" value="${sanitizeHtml(getStudentFullName(s))}" placeholder="مثال: علیرضا محمدی" class="student-field w-full p-2.5 rounded-xl border border-sky-200 focus:ring-2 focus:ring-sky-500 focus:outline-none bg-sky-50/20 font-bold" />
+            <input type="text" data-prop="fullName" maxlength="${FIELD_MAX_LENGTHS.student.fullName}" data-maxlength-label="${FIELD_LENGTH_LABELS.fullName}" value="${sanitizeHtml(getStudentFullName(s))}" placeholder="مثال: علیرضا محمدی" class="student-field w-full p-2.5 rounded-xl border border-sky-200 focus:ring-2 focus:ring-sky-500 focus:outline-none bg-sky-50/20 font-bold" />
           </div>
 
           <!-- ۲. رشته تحصیلی -->
@@ -6854,7 +7400,7 @@ body.auth-locked.auth-light {
             <select data-prop="fieldOfStudy" class="student-field w-full p-2.5 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-emerald-50/20 font-bold">
               <option value="" ${!currentField ? 'selected' : ''}>انتخاب رشته تحصیلی...</option>
               ${fieldOptions.map(field => `
-                <option value="${sanitizeHtml(field)}" ${currentField === field ? 'selected' : ''}>${sanitizeHtml(field)}</option>
+                <option value="${sanitizeHtml(field)}" ${currentField === field ? 'selected' : ''}>${sanitizeHtml(toPersianDigits(field))}</option>
               `).join('')}
             </select>
           </div>
@@ -6862,43 +7408,43 @@ body.auth-locked.auth-light {
           <!-- ۳. نام مدرسه -->
           <div>
             <label class="block font-bold text-purple-900 mb-1">نام مدرسه:</label>
-            <input type="text" data-prop="schoolName" value="${sanitizeHtml(s.schoolName)}" placeholder="مثال: دبیرستان علامه حلی / نمونه دولتی" class="student-field w-full p-2.5 rounded-xl border border-purple-200 focus:ring-2 focus:ring-purple-500 focus:outline-none bg-purple-50/20" />
+            <input type="text" data-prop="schoolName" maxlength="${FIELD_MAX_LENGTHS.student.schoolName}" data-maxlength-label="${FIELD_LENGTH_LABELS.schoolName}" value="${sanitizeHtml(s.schoolName)}" placeholder="مثال: دبیرستان علامه حلی / نمونه دولتی" class="student-field w-full p-2.5 rounded-xl border border-purple-200 focus:ring-2 focus:ring-purple-500 focus:outline-none bg-purple-50/20" />
           </div>
 
           <!-- ۴. هفته -->
           <div>
             <label class="block font-bold text-orange-900 mb-1">هفته:</label>
-            <input type="text" inputmode="numeric" data-prop="weeksPassed" value="${sanitizeHtml(s.weeksPassed)}" placeholder="مثال: ۱ (نمایش: هفته اول)" class="student-field w-full p-2.5 rounded-xl border border-orange-200 focus:ring-2 focus:ring-orange-500 focus:outline-none bg-orange-50/20 font-bold" />
+            <input type="text" inputmode="numeric" data-prop="weeksPassed" maxlength="${FIELD_MAX_LENGTHS.student.weeksPassed}" data-maxlength-label="${FIELD_LENGTH_LABELS.weeksPassed}" value="${sanitizeHtml(s.weeksPassed)}" placeholder="مثال: ۱ (نمایش: هفته اول)" class="student-field w-full p-2.5 rounded-xl border border-orange-200 focus:ring-2 focus:ring-orange-500 focus:outline-none bg-orange-50/20 font-bold" />
           </div>
 
           <!-- ۵. شماره تماس -->
           <div>
             <label class="block font-bold text-cyan-900 mb-1">شماره تماس:</label>
-            <input type="tel" data-prop="phone" dir="ltr" value="${sanitizeHtml(s.phone)}" placeholder="مثال: ۰۹۱۲۳۴۵۶۷۸۹" class="student-field w-full p-2.5 rounded-xl border border-cyan-200 focus:ring-2 focus:ring-cyan-500 focus:outline-none bg-cyan-50/20 font-bold text-left" />
+            <input type="tel" data-prop="phone" dir="ltr" maxlength="${FIELD_MAX_LENGTHS.student.phone}" data-maxlength-label="${FIELD_LENGTH_LABELS.phone}" value="${sanitizeHtml(s.phone)}" placeholder="مثال: ۰۹۱۲۳۴۵۶۷۸۹" class="student-field w-full p-2.5 rounded-xl border border-cyan-200 focus:ring-2 focus:ring-cyan-500 focus:outline-none bg-cyan-50/20 font-bold text-left" />
           </div>
 
           <!-- ۶. مشاور ناظر -->
           <div>
             <label class="block font-bold text-indigo-900 mb-1">مشاور ناظر <span class="text-rose-500">*</span>:</label>
-            <input type="text" data-prop="supervisorCounselor" value="${sanitizeHtml(s.supervisorCounselor || '')}" placeholder="مثال: دکتر شهروز فروتن کیا" class="student-field w-full p-2.5 rounded-xl border border-indigo-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium text-indigo-950 bg-indigo-50/20" />
+            <input type="text" data-prop="supervisorCounselor" maxlength="${FIELD_MAX_LENGTHS.student.supervisorCounselor}" data-maxlength-label="${FIELD_LENGTH_LABELS.supervisorCounselor}" value="${sanitizeHtml(s.supervisorCounselor || '')}" placeholder="مثال: دکتر شهروز فروتن کیا" class="student-field w-full p-2.5 rounded-xl border border-indigo-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none font-medium text-indigo-950 bg-indigo-50/20" />
           </div>
 
           <!-- ۷. مشاور -->
           <div>
             <label class="block font-bold text-amber-900 mb-1">مشاور <span class="text-rose-500">*</span>:</label>
-            <input type="text" data-prop="counselorName" value="${sanitizeHtml(s.counselorName)}" placeholder="مثال: دکتر فروتن کیا" class="student-field w-full p-2.5 rounded-xl border border-amber-200 focus:ring-2 focus:ring-amber-500 focus:outline-none font-medium text-amber-950 bg-amber-50/20" />
+            <input type="text" data-prop="counselorName" maxlength="${FIELD_MAX_LENGTHS.student.counselorName}" data-maxlength-label="${FIELD_LENGTH_LABELS.counselorName}" value="${sanitizeHtml(s.counselorName)}" placeholder="مثال: دکتر فروتن کیا" class="student-field w-full p-2.5 rounded-xl border border-amber-200 focus:ring-2 focus:ring-amber-500 focus:outline-none font-medium text-amber-950 bg-amber-50/20" />
           </div>
 
           <!-- ۸. آزمون‌های آزمایشی -->
           <div>
             <label class="block font-bold text-rose-900 mb-1">آزمون‌های آزمایشی:</label>
-            <input type="text" data-prop="exams" value="${sanitizeHtml(s.exams)}" placeholder="مثال: قلم‌چی، ماز، سنجش" class="student-field w-full p-2.5 rounded-xl border border-rose-200 focus:ring-2 focus:ring-rose-500 focus:outline-none bg-rose-50/20" />
+            <input type="text" data-prop="exams" maxlength="${FIELD_MAX_LENGTHS.student.exams}" data-maxlength-label="${FIELD_LENGTH_LABELS.exams}" value="${sanitizeHtml(s.exams)}" placeholder="مثال: قلم‌چی، ماز، سنجش" class="student-field w-full p-2.5 rounded-xl border border-rose-200 focus:ring-2 focus:ring-rose-500 focus:outline-none bg-rose-50/20" />
           </div>
 
           <!-- ۹. بازه زمانی -->
           <div>
             <label class="block font-bold text-fuchsia-900 mb-1">بازه زمانی:</label>
-            <input type="text" data-prop="timeframe" value="${sanitizeHtml(s.timeframe)}" placeholder="مثال: ۱۷ آبان ۱۴۰۳ تا ۲۴ آبان ۱۴۰۳" class="student-field w-full p-2.5 rounded-xl border border-fuchsia-200 focus:ring-2 focus:ring-fuchsia-500 focus:outline-none font-medium text-fuchsia-950 bg-fuchsia-50/20" />
+            <input type="text" data-prop="timeframe" maxlength="${FIELD_MAX_LENGTHS.student.timeframe}" data-maxlength-label="${FIELD_LENGTH_LABELS.timeframe}" value="${sanitizeHtml(s.timeframe)}" placeholder="مثال: ۱۷ آبان ۱۴۰۳ تا ۲۴ آبان ۱۴۰۳" class="student-field w-full p-2.5 rounded-xl border border-fuchsia-200 focus:ring-2 focus:ring-fuchsia-500 focus:outline-none font-medium text-fuchsia-950 bg-fuchsia-50/20" />
           </div>
 
           <!-- ۱۰. توضیحات تکمیلی و نکات مهم -->
@@ -6907,7 +7453,7 @@ body.auth-locked.auth-light {
               <label class="block font-bold text-indigo-900">توضیحات تکمیلی و نکات مهم:</label>
               <span id="dossier-notes-counter" class="text-[11px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200"></span>
             </div>
-            <textarea data-prop="extraNotes" id="dossier-extra-notes-textarea" rows="5" placeholder="نکات راهبردی مشاور برای این هفته (هر نکته در یک سطر)..." class="student-field w-full p-2.5 rounded-xl border border-indigo-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none leading-relaxed text-xs bg-indigo-50/20 font-medium">${sanitizeHtml(s.extraNotes)}</textarea>
+            <textarea data-prop="extraNotes" id="dossier-extra-notes-textarea" rows="5" maxlength="${FIELD_MAX_LENGTHS.student.extraNotes}" data-maxlength-label="${FIELD_LENGTH_LABELS.extraNotes}" placeholder="نکات راهبردی مشاور برای این هفته (هر نکته در یک سطر)..." class="student-field w-full p-2.5 rounded-xl border border-indigo-200 focus:ring-2 focus:ring-indigo-500 focus:outline-none leading-relaxed text-xs bg-indigo-50/20 font-medium">${sanitizeHtml(s.extraNotes)}</textarea>
           </div>
         </div>
       </div>
@@ -7016,7 +7562,7 @@ body.auth-locked.auth-light {
                     const val = (gradeData[s.id] && gradeData[s.id][row.key] !== undefined && gradeData[s.id][row.key] !== null) ? gradeData[s.id][row.key] : '';
                     return `
                       <td class="p-1 min-w-[76px] sm:min-w-[84px] align-middle">
-                        <textarea rows="1" style="text-align: center !important;" class="tajrobi-progress-input w-full p-1.5 text-center font-bold text-xs rounded-lg border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition bg-white text-indigo-950 resize-none overflow-hidden leading-snug block" data-grade="${gradeKey}" data-subject="${s.id}" data-row="${row.key}" placeholder="-">${sanitizeHtml(val)}</textarea>
+                        <textarea rows="1" maxlength="${FIELD_MAX_LENGTHS.report.progressCell}" data-maxlength-label="${sanitizeHtml(`${s.name} (${row.label})`)}" style="text-align: center !important;" class="tajrobi-progress-input w-full p-1.5 text-center font-bold text-xs rounded-lg border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition bg-white text-indigo-950 resize-none overflow-hidden leading-snug block" data-grade="${gradeKey}" data-subject="${s.id}" data-row="${row.key}" placeholder="-">${sanitizeHtml(val)}</textarea>
                       </td>
                     `;
                   }).join('')}
@@ -7181,7 +7727,7 @@ body.auth-locked.auth-light {
                     const val = (gradeData[s.id] && gradeData[s.id][row.key] !== undefined && gradeData[s.id][row.key] !== null) ? gradeData[s.id][row.key] : '';
                     return `
                       <td class="p-1 min-w-[76px] sm:min-w-[84px] align-middle">
-                        <textarea rows="1" style="text-align: center !important;" class="riyazi-progress-input w-full p-1.5 text-center font-bold text-xs rounded-lg border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition bg-white text-indigo-950 resize-none overflow-hidden leading-snug block" data-grade="${gradeKey}" data-subject="${s.id}" data-row="${row.key}" placeholder="-">${sanitizeHtml(val)}</textarea>
+                        <textarea rows="1" maxlength="${FIELD_MAX_LENGTHS.report.progressCell}" data-maxlength-label="${sanitizeHtml(`${s.name} (${row.label})`)}" style="text-align: center !important;" class="riyazi-progress-input w-full p-1.5 text-center font-bold text-xs rounded-lg border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition bg-white text-indigo-950 resize-none overflow-hidden leading-snug block" data-grade="${gradeKey}" data-subject="${s.id}" data-row="${row.key}" placeholder="-">${sanitizeHtml(val)}</textarea>
                       </td>
                     `;
                   }).join('')}
@@ -7354,17 +7900,17 @@ body.auth-locked.auth-light {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
                   <div>
                     <label class="block font-bold text-slate-700 mb-1">نام کتاب / منبع:</label>
-                    <input type="text" class="report-input-field w-full p-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none" data-book-id="${sanitizeHtml(book.id)}" data-field="name" value="${sanitizeHtml(book.name)}" placeholder="مثال: زیست جامع خیلی سبز" />
+                    <input type="text" class="report-input-field w-full p-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none" data-book-id="${sanitizeHtml(book.id)}" data-field="name" maxlength="${FIELD_MAX_LENGTHS.report.bookName}" data-maxlength-label="${FIELD_LENGTH_LABELS.bookName}" value="${sanitizeHtml(book.name)}" placeholder="مثال: زیست جامع خیلی سبز" />
                   </div>
                   <div>
                     <label class="block font-bold text-slate-700 mb-1">مباحث خوانده‌شده:</label>
-                    <input type="text" class="report-input-field w-full p-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none" data-book-id="${sanitizeHtml(book.id)}" data-field="topicsCovered" value="${sanitizeHtml(book.topicsCovered)}" placeholder="مثال: فصل ۱ و ۲ دوازدهم" />
+                    <input type="text" class="report-input-field w-full p-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none" data-book-id="${sanitizeHtml(book.id)}" data-field="topicsCovered" maxlength="${FIELD_MAX_LENGTHS.report.bookTopicsCovered}" data-maxlength-label="${FIELD_LENGTH_LABELS.bookTopicsCovered}" value="${sanitizeHtml(book.topicsCovered)}" placeholder="مثال: فصل ۱ و ۲ دوازدهم" />
                   </div>
                 </div>
 
                 <div>
                   <label class="block font-bold text-slate-700 mb-1 text-xs">یادداشت:</label>
-                  <input type="text" class="report-input-field w-full p-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-xs" data-book-id="${sanitizeHtml(book.id)}" data-field="notes" value="${sanitizeHtml(book.notes)}" placeholder="مثال: تسلط مطلوب، مرور شکل‌ها لازم است" />
+                  <input type="text" class="report-input-field w-full p-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:outline-none text-xs" data-book-id="${sanitizeHtml(book.id)}" data-field="notes" maxlength="${FIELD_MAX_LENGTHS.report.bookNotes}" data-maxlength-label="${FIELD_LENGTH_LABELS.bookNotes}" value="${sanitizeHtml(book.notes)}" placeholder="مثال: تسلط مطلوب، مرور شکل‌ها لازم است" />
                 </div>
               </div>
             `;
@@ -7410,7 +7956,7 @@ body.auth-locked.auth-light {
                     const val = (gradeData[s.id] && gradeData[s.id][row.key] !== undefined && gradeData[s.id][row.key] !== null) ? gradeData[s.id][row.key] : '';
                     return `
                       <td class="p-1 min-w-[80px] sm:min-w-[88px] align-middle">
-                        <textarea rows="1" style="text-align: center !important;" class="humanities-progress-input w-full p-1.5 text-center font-bold text-xs rounded-lg border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition bg-white text-indigo-950 resize-none overflow-hidden leading-snug block" data-grade="${gradeKey}" data-subject="${s.id}" data-row="${row.key}" placeholder="-">${sanitizeHtml(val)}</textarea>
+                        <textarea rows="1" maxlength="${FIELD_MAX_LENGTHS.report.progressCell}" data-maxlength-label="${sanitizeHtml(`${s.name} (${row.label})`)}" style="text-align: center !important;" class="humanities-progress-input w-full p-1.5 text-center font-bold text-xs rounded-lg border border-slate-200 hover:border-indigo-400 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-100 focus:outline-none transition bg-white text-indigo-950 resize-none overflow-hidden leading-snug block" data-grade="${gradeKey}" data-subject="${s.id}" data-row="${row.key}" placeholder="-">${sanitizeHtml(val)}</textarea>
                       </td>
                     `;
                   }).join('')}
@@ -8200,7 +8746,7 @@ body.auth-locked.auth-light {
               <div class="grid grid-cols-2 gap-3 pt-3 border-t border-white/15 text-xs">
                 <div class="${cfg.coverFieldCard} p-3 rounded-lg border shadow-2xs">
                   <span class="block text-[10.5px] font-bold mb-1">رشته تحصیلی:</span>
-                  <strong class="${cfg.coverFieldText} font-bold block text-xs truncate" title="${sanitizeHtml(student.fieldOfStudy || '-')}">${sanitizeHtml(student.fieldOfStudy || '-')}</strong>
+                  <strong class="${cfg.coverFieldText} font-bold block text-xs truncate" title="${sanitizeHtml(toPersianDigits(student.fieldOfStudy)) || '-'}">${sanitizeHtml(toPersianDigits(student.fieldOfStudy)) || '-'}</strong>
                 </div>
                 <div class="${cfg.coverCounselorCard} p-3 rounded-lg border shadow-2xs">
                   <span class="block text-[10.5px] font-bold mb-1">مشاور:</span>
@@ -8400,7 +8946,7 @@ body.auth-locked.auth-light {
             </div>
             <div class="page-header-pill px-2.5 py-1 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-950 flex items-center gap-1.5 shadow-2xs">
               <span class="font-bold text-emerald-700 text-[10px]">رشته:</span>
-              <span class="font-bold text-xs">${sanitizeHtml(student.fieldOfStudy || '-')}</span>
+              <span class="font-bold text-xs">${sanitizeHtml(toPersianDigits(student.fieldOfStudy)) || '-'}</span>
             </div>
             <div class="page-header-pill px-2.5 py-1 rounded-lg bg-purple-50 border border-purple-200 text-purple-950 flex items-center gap-1.5 shadow-2xs">
               <span class="font-bold text-purple-700 text-[10px]">بازه زمانی:</span>
@@ -8787,7 +9333,7 @@ body.auth-locked.auth-light {
                   <span class="w-1.5 h-1.5 rounded-xs bg-emerald-600 shrink-0"></span>
                   رشته تحصیلی:
                 </div>
-                <div class="dossier-card-value text-[13px] font-bold text-emerald-950 truncate">${sanitizeHtml(s.fieldOfStudy) || '-'}</div>
+                <div class="dossier-card-value text-[13px] font-bold text-emerald-950 truncate">${sanitizeHtml(toPersianDigits(s.fieldOfStudy)) || '-'}</div>
               </div>
 
               <!-- ۳. نام مدرسه (۳ ستون) -->
@@ -9660,8 +10206,13 @@ body.auth-locked.auth-light {
         resetReportBudgets();
         try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
         resetPlannerCopying();
+        setActiveStudentTracking(null);
         appState = getInitialState();
+        if (currentUserProfile && currentUserProfile.role === 'counselor' && appState.student) {
+          appState.student.counselorName = currentUserProfile.display_name || '';
+        }
         renderAll();
+        saveCurrentToLocalStorage(appState);
         showToast('برنامه مطالعاتی جدید ایجاد شد.', 'info');
       }
     });
@@ -9685,8 +10236,10 @@ body.auth-locked.auth-light {
         resetReportBudgets();
         try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
         resetPlannerCopying();
+        setActiveStudentTracking(null);
         appState = normalizeState(getSampleState());
         renderAll();
+        saveCurrentToLocalStorage(appState);
         showToast('برنامه نمونه آزمایشی با موفقیت بارگذاری شد.', 'success');
       }
     });
@@ -9695,7 +10248,14 @@ body.auth-locked.auth-light {
   function handleExportJson() {
     flushPendingSave();
     try {
-      appState = normalizeState(appState);
+      const truncations = [];
+      appState = normalizeState(appState, truncations);
+      if (truncations.length > 0) {
+        saveCurrentToLocalStorage(appState);
+        renderEditorPanel(true);
+        renderPreviewPages();
+        showToast(formatTruncationWarning(truncations, true), 'warning', 4500);
+      }
       const val = validateState(appState);
       if (!val.isValid) {
         showToast('توجه: ' + val.errors[0], 'warning');
@@ -9839,9 +10399,20 @@ body.auth-locked.auth-light {
         resetReportBudgets();
         try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
         resetPlannerCopying();
-        appState = normalizeState(data);
+        const truncations = [];
+        appState = normalizeState(data, truncations);
         renderAll();
+        saveCurrentToLocalStorage(appState);
+        if (activeStudentId && currentAuthSession) {
+          setCloudDirtyFlag(true);
+          flushCloudSync({ silent: true });
+        } else {
+          updateActiveStudentBarUI();
+        }
 
+        if (truncations.length > 0) {
+          showToast(formatTruncationWarning(truncations, true), 'warning', 4500);
+        }
         const val = validateState(appState);
         if (!val.isValid) {
           showToast('برنامه بارگذاری شد، اما توجه: ' + val.errors[0], 'warning');
@@ -9868,6 +10439,9 @@ body.auth-locked.auth-light {
     if (!val.isValid) {
       showToast('خطا در اعتبارسنجی: ' + val.errors[0], 'error');
       return;
+    }
+    if (Array.isArray(val.warnings) && val.warnings.length > 0) {
+      showToast(val.warnings[0], 'warning', 4500);
     }
 
     // ۱. ذخیره وضعیت فعلی زوم، نمای موبایل و استایل‌های پنل پیش از تغییر به حالت چاپ
@@ -10054,12 +10628,14 @@ body.auth-locked.auth-light {
         resetStudentBudgets();
         resetReportBudgets();
         try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
+        resetPlannerCopying();
         appState = normalizeState(s);
         renderAll();
       },
       renderAll: () => renderAll(),
       validateState: function (s) { return validateState(arguments.length > 0 ? s : appState); },
-      normalizeState: (s) => normalizeState(s),
+      normalizeState: (s, t) => normalizeState(s, t),
+      fieldMaxLengths: FIELD_MAX_LENGTHS,
       sanitizeObjectKeys: (o, m) => sanitizeObjectKeys(o, m),
       patchPreviewPage: (p) => patchPreviewPage(p),
       switchTab: (t) => switchTab(t),
@@ -10165,7 +10741,15 @@ body.auth-locked.auth-light {
       isPcEditorFullscreen: () => isPcEditorFullscreen(),
       setPcEditorFullscreen: (v) => setPcEditorFullscreen(v),
       getLastActivePlannerInput: () => lastActivePlannerInput,
-      getLastActiveInputInfo: () => ({ ...lastActiveInputInfo })
+      getLastActiveInputInfo: () => ({ ...lastActiveInputInfo }),
+      getAuthReadyPromise: () => authReadyPromise,
+      getCurrentUserProfile: () => (currentUserProfile ? { ...currentUserProfile } : null),
+      getActiveStudentId: () => activeStudentId,
+      getStudentsList: () => studentsListCache.slice(),
+      openStudentsModal: () => openStudentsModal(),
+      createNewStudent: (opts) => createNewCloudStudent(opts),
+      openStudentById: (id) => openStudentById(id),
+      flushCloudSync: (opts) => flushCloudSync(opts)
     };
   }
 
@@ -10240,370 +10824,761 @@ body.auth-locked.auth-light {
   }
 
 
-  // ==================== سیستم احراز هویت هش‌شده (SHA-256 Auth System) ====================
-  /**
-   * جدول کاربران مجاز با هش SHA-256 رمزهای عبور
-   * شما می‌توانید نام‌های کاربری و رمزهای عبور جدید را در این بخش تعریف یا ویرایش نمایید.
-   * برای تولید هش رمز عبور دلخواه جدید، در کنسول مرورگر دستور زیر را اجرا کنید:
-   * generatePasswordHash("رمز_جدید")
-   */
-  const AUTH_USERS = [
-    {
-      username: 'admin',
-      hash: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9',
-      displayName: 'مدیر آکادمی',
-      role: 'مدیر ارشد'
-    },
-    {
-      username: 'admin1234',
-      hash: 'ac9689e2272427085e35b9d3e3e8bed88cb3434828b43b86fc0596cad4c6e270',
-      displayName: 'مدیر سیستم',
-      role: 'مدیر ارشد'
-    },
-    {
-      username: 'diar',
-      hash: '1b3439cfb7bcd620408fd6ea832192925434a9a016710516275f94a5a04230c8',
-      displayName: 'مشاور دیار',
-      role: 'مشاور'
-    },
-    {
-      username: 'niknazar',
-      hash: '50867af2f507df188a8944d22a27eb00805929bc619a6a4eb0e94705146d9dc4',
-      displayName: 'مشاور نیک‌نظر',
-      role: 'مشاور'
-    },
-    {
-      username: 'hashemiasl',
-      hash: '658264444b791122bf36d4d5aaa94ec05018ad916c174edff3155c378baa4982',
-      displayName: 'مشاور هاشمی اصل',
-      role: 'مشاور'
-    },
-    {
-      username: 'khadem',
-      hash: 'ba22b4fe6b18c7273d84d0579091a9f3ed888ab3731e6a1e773dfbd025f9040c',
-      displayName: 'مشاور خادم',
-      role: 'مشاور'
-    },
-    {
-      username: 'amiraali',
-      hash: '53e4ab61a0afc5335f9cce9f4e708b7efb741b798d3c4143efe03f01e7ddf80d',
-      displayName: 'مشاور امیرعلی',
-      role: 'مشاور'
-    },
-    {
-      username: 'khajevand',
-      hash: '813a226155aa2a06e12a66995c26a55f5be2870ac46b05c014149d69a1f852d5',
-      displayName: 'مشاور خواجوند',
-      role: 'مشاور'
-    },
-    {
-      username: 'spapi',
-      hash: '3f6b839840b28a7799b3d038c175f1de20d4940e420a78bda592f73eae3c0166',
-      displayName: 'مشاور پاپی',
-      role: 'مشاور'
-    },
-    {
-      username: 'daraeei',
-      hash: '8aed9deabdca4f6d233fb9b6036bbd5b1c554ed4f53e0f05480654f398775c9f',
-      displayName: 'مشاور دارایی',
-      role: 'مشاور'
-    },
-    {
-      username: 'sharifi',
-      hash: 'c37ec56eea5fc44dddcd68aa5d85a6aaa72a224f007c3ccc5c84d72fe90feca0',
-      displayName: 'مشاور شریفی',
-      role: 'مشاور'
-    },
-    {
-      username: 'heidari',
-      hash: 'de83bc39f737206e2a9e15d5f9392521fdbc822fa140d7b5c8ea7df8e7ee05b9',
-      displayName: 'مشاور حیدری',
-      role: 'مشاور'
-    },
-    {
-      username: 'davoodi',
-      hash: 'f51b2d65ee254d43a4a2f227037fec310162be52922484728e44098d5db3b938',
-      displayName: 'مشاور داوودی',
-      role: 'مشاور'
-    },
-    {
-      username: 'moridan',
-      hash: '54b60ff4f3eb67fb6294b96e363d0a2dd12e9c316847aad646b13530a9bfa49c',
-      displayName: 'مشاور مریدان',
-      role: 'مشاور'
-    },
-    {
-      username: 'farhadian',
-      hash: '80a7a3c525b9d24a0fcf165a356e76c6a51101e45b5aca21fcb9bc6afac245f2',
-      displayName: 'مشاور فرهادیان',
-      role: 'مشاور'
-    },
-    {
-      username: 'mardani',
-      hash: '42fd32d6b66e11c8d2db8ae660991dc659f7dd885213b83798090253d0a890de',
-      displayName: 'مشاور مردانی',
-      role: 'مشاور'
-    },
-    {
-      username: 'razavi',
-      hash: 'ffd305d567b16adbafaf6a33807a8eda0697dc2c71206ce4f5f8fc7a16858d03',
-      displayName: 'مشاور رضوی',
-      role: 'مشاور'
-    },
-    {
-      username: 'ranjbar',
-      hash: 'c642d8e6982af0a7539f80825b30aa6b23ff07333a7f8f8aec963b2befade283',
-      displayName: 'مشاور رنجبر',
-      role: 'مشاور'
-    },
-    {
-      username: 'rezaei',
-      hash: '4191fcc04da95ff83f43785d605bc6b593c3985a6bb1e191e2e275ad963bf50f',
-      displayName: 'مشاور رضایی',
-      role: 'مشاور'
-    },
-    {
-      username: 'zjafari',
-      hash: 'e50e1ae9e9fb80196225d18bd67cecc6a924261accdbe0199d1ff1fa8e42f600',
-      displayName: 'مشاور جعفری',
-      role: 'مشاور'
-    },
-    {
-      username: 'alimohammadi',
-      hash: 'd84dad554976fddf4a179bf27a740b29dfaf14b9545acbc49abb82b4a951af18',
-      displayName: 'مشاور علی‌محمدی',
-      role: 'مشاور'
-    },
-    {
-      username: 'hosseinzade',
-      hash: 'b97561df789d9553665436168ce23178ed2582778c95feede6798f9ded94c757',
-      displayName: 'مشاور حسین‌زاده',
-      role: 'مشاور'
-    },
-    {
-      username: 'sinaei',
-      hash: 'f2ef1d5ca1de3e7e467835a6c9a81a7e53ba1c2435beaeaf982c0092b1475b95',
-      displayName: 'مشاور سینایی',
-      role: 'مشاور'
-    },
-    {
-      username: 'roshangar',
-      hash: 'ccf808cd575fce09aa0bd9934d0477a3c542b3a538a8eb2448f376fd170d5a89',
-      displayName: 'مشاور روشنگر',
-      role: 'مشاور'
-    },
-    {
-      username: 'moghadam',
-      hash: 'aeab42c89aff6b7f864c4fd677fc5f485bafde7b78d88f7d83e8471e395ff239',
-      displayName: 'مشاور مقدم',
-      role: 'مشاور'
-    },
-    {
-      username: 'ara',
-      hash: 'aa219d93764cc01a2f9b7480c257e33e4414f3f8aa5d2a99d4fd6a872ba1d1af',
-      displayName: 'مشاور آرا',
-      role: 'مشاور'
-    },
-    {
-      username: 'ahmadie',
-      hash: 'd89c6eefaa95e52376a214c912a670b50a5c059e9349a33a2401505ec93ab27c',
-      displayName: 'مشاور احمدیه',
-      role: 'مشاور'
-    },
-    {
-      username: 'mokhtarpour',
-      hash: '0b001dd103a3f173d051b0826aab3b443439534dc28911257a1f71841e7a243f',
-      displayName: 'مشاور مختارپور',
-      role: 'مشاور'
-    },
-    {
-      username: 'mjafari',
-      hash: 'f1f6552ca60c8cfbec1704fb215a64e785c53e4e7b243849b36ef9c37a9d41e7',
-      displayName: 'مشاور جعفری',
-      role: 'مشاور'
-    },
-    {
-      username: 'amini',
-      hash: '7faefcaa4a79681f624dabaff4f072093622fb99e0362c8aea8309e168c86097',
-      displayName: 'مشاور امینی',
-      role: 'مشاور'
-    },
-    {
-      username: 'jnaderi',
-      hash: '5693ea74be04d4852fdea58f224ca0c0110aedb1985e47174290452430f7aed9',
-      displayName: 'مشاور نادری',
-      role: 'مشاور'
-    },
-    {
-      username: 'razaghi',
-      hash: 'e057fdb4a31304b43526e504a751d2185b635148d51556a5c32ee311a0614feb',
-      displayName: 'مشاور رزاقی',
-      role: 'مشاور'
-    },
-    {
-      username: 'shoeibi',
-      hash: 'b376fbe901172b4666faf542aaa175d28f9b639cedfa77575a6a46504985b999',
-      displayName: 'مشاور شعیبی',
-      role: 'مشاور'
-    },
-    {
-      username: 'omidi',
-      hash: '1b47548b46e26562391b0fd50a453a69ce5429723ba4b6ad4c9aa2b3b91130f1',
-      displayName: 'مشاور امیدی',
-      role: 'مشاور'
-    },
-    {
-      username: 'vesal',
-      hash: '9b686ecb6ee849a3f400e3e351e6bf3898fb341815839c0b79725ebff861afe9',
-      displayName: 'مشاور وصال',
-      role: 'مشاور'
-    },
-    {
-      username: 'mahmoodi',
-      hash: 'd51cf1cf227f628f814c8bd54d95c8282bf61b4a8cbe99d45eb7fd522b37cd74',
-      displayName: 'مشاور محمودی',
-      role: 'مشاور'
-    },
-    {
-      username: 'lachiani',
-      hash: '9ccc549d39b57844e8f827e229e0dca8630b1ae47e5eaa9491f837838e2daa8a',
-      displayName: 'مشاور لاچیانی',
-      role: 'مشاور'
-    },
-    {
-      username: 'askari',
-      hash: '15b726624f8da2752d78a0a6fc534ede0aa25f98d4a1ec483361fb2588759877',
-      displayName: 'مشاور عسکری',
-      role: 'مشاور'
-    },
-    {
-      username: 'ardan',
-      hash: '1c345022d5d18d5c1525b834dd3217b0b4cb1ed556912947645749e99db4f05d',
-      displayName: 'مشاور اردان',
-      role: 'مشاور'
-    },
-    {
-      username: 'tarkarooni',
-      hash: 'b8d8356e042b90c56c9117d6d850cff8a953eeff7d84f2d91b32fae1ce004e7d',
-      displayName: 'مشاور تارکارونی',
-      role: 'مشاور'
-    }
-  ];
-
-  const AUTH_STORAGE_KEY = 'forootan_planner_auth_session';
-
-  // پیاده‌سازی مستقل و استاندارد SHA-256 (پشتیبانی کامل در تمام محیط‌ها حتی بدون HTTPS)
-  function pureJsSha256(input) {
-    let ascii;
-    if (typeof TextEncoder !== 'undefined') {
-      const bytes = new TextEncoder().encode(String(input ?? ''));
-      let bin = '';
-      for (let idx = 0; idx < bytes.length; idx++) {
-        bin += String.fromCharCode(bytes[idx]);
+  // ==================== احراز هویت سرورمحور و همگام‌سازی Supabase ====================
+  function createSwitchableAuthStorage() {
+    return {
+      getItem(key) {
+        try {
+          const mode = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(AUTH_PERSIST_MODE_KEY)) ||
+            (typeof localStorage !== 'undefined' && localStorage.getItem(AUTH_PERSIST_MODE_KEY));
+          if (mode === 'session' && typeof sessionStorage !== 'undefined') {
+            return sessionStorage.getItem(key);
+          }
+          const fromLocal = typeof localStorage !== 'undefined' ? localStorage.getItem(key) : null;
+          if (fromLocal !== null && fromLocal !== undefined) return fromLocal;
+          return typeof sessionStorage !== 'undefined' ? sessionStorage.getItem(key) : null;
+        } catch (e) {
+          return null;
+        }
+      },
+      setItem(key, value) {
+        try {
+          const mode = (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(AUTH_PERSIST_MODE_KEY)) || 'local';
+          if (mode === 'session') {
+            if (typeof sessionStorage !== 'undefined') sessionStorage.setItem(key, value);
+            if (typeof localStorage !== 'undefined') localStorage.removeItem(key);
+          } else {
+            if (typeof localStorage !== 'undefined') localStorage.setItem(key, value);
+            if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem(key);
+          }
+        } catch (e) {}
+      },
+      removeItem(key) {
+        try { if (typeof localStorage !== 'undefined') localStorage.removeItem(key); } catch (e) {}
+        try { if (typeof sessionStorage !== 'undefined') sessionStorage.removeItem(key); } catch (e) {}
       }
-      ascii = bin;
-    } else {
-      try {
-        ascii = unescape(encodeURIComponent(String(input ?? '')));
-      } catch (_) {
-        ascii = String(input ?? '');
-      }
-    }
-    function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
-    const mathPow = Math.pow; const maxWord = mathPow(2, 32);
-    let lengthProperty = 'length', i, j, result = '';
-    const words = []; const asciiBitLength = ascii[lengthProperty] * 8;
-    let hash = []; const k = []; let primeCounter = 0; const isComposite = {};
-    for (let candidate = 2; primeCounter < 64; candidate++) {
-      if (!isComposite[candidate]) {
-        for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
-        hash[primeCounter] = (mathPow(candidate, 0.5) * maxWord) | 0;
-        k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
-      }
-    }
-    ascii += '\x80';
-    while ((ascii[lengthProperty] % 64) - 56) ascii += '\x00';
-    for (i = 0; i < ascii[lengthProperty]; i++) {
-      j = ascii.charCodeAt(i);
-      words[i >> 2] |= j << ((3 - (i % 4)) * 8);
-    }
-    words[words[lengthProperty]] = (asciiBitLength / maxWord) | 0;
-    words[words[lengthProperty]] = asciiBitLength;
-    for (j = 0; j < words[lengthProperty];) {
-      const w = words.slice(j, (j += 16)); const oldHash = hash; hash = hash.slice(0, 8);
-      for (i = 0; i < 64; i++) {
-        const w15 = w[i - 15], w2 = w[i - 2];
-        const s0 = rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3);
-        const s1 = rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10);
-        const ch = (hash[4] & hash[5]) ^ (~hash[4] & hash[6]);
-        const maj = (hash[0] & hash[1]) ^ (hash[0] & hash[2]) ^ (hash[1] & hash[2]);
-        const temp1 = hash[7] + (rightRotate(hash[4], 6) ^ rightRotate(hash[4], 11) ^ rightRotate(hash[4], 25)) + ch + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + s0 + w[i - 7] + s1) | 0);
-        const temp2 = (rightRotate(hash[0], 2) ^ rightRotate(hash[0], 13) ^ rightRotate(hash[0], 22)) + maj;
-        hash = [(temp1 + temp2) | 0].concat(hash);
-        hash[4] = (hash[4] + temp1) | 0;
-      }
-      for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
-    }
-    for (i = 0; i < 8; i++) {
-      for (let b = 3; b >= 0; b--) {
-        const byte = (hash[i] >> (b * 8)) & 255;
-        result += (byte < 16 ? '0' : '') + byte.toString(16);
-      }
-    }
-    return result;
+    };
   }
 
-  // تابع استاندارد محاسبه هش با اولویت Web Crypto API مرورگر و فال‌بک Pure JS
-  async function computeSHA256(str) {
-    const text = (str || '').trim();
-    if (window.crypto && window.crypto.subtle && window.crypto.subtle.digest) {
-      try {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(text);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-      } catch (e) {
-        return pureJsSha256(text);
-      }
+  function initSupabaseClient() {
+    if (supabaseClient) return supabaseClient;
+    if (typeof window !== 'undefined' && window.supabase && typeof window.supabase.createClient === 'function') {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+        auth: {
+          storage: createSwitchableAuthStorage(),
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: false,
+        }
+      });
     }
-    return pureJsSha256(text);
+    return supabaseClient;
   }
 
-  // ابزار کمکی در کنسول مرورگر جهت تولید سریع هش برای رمزهای عبور دلخواه
-  window.generatePasswordHash = async function(plainPassword) {
-    if (!plainPassword) {
-      console.warn('لطفاً رمز عبور مورد نظر را به عنوان آرگومان وارد کنید: generatePasswordHash("myPassword")');
+  function resolveUserLoginEmail(rawInput) {
+    const clean = String(rawInput || '').trim().toLowerCase();
+    return clean.includes('@') ? clean : `${clean}@${SUPABASE_EMAIL_DOMAIN}`;
+  }
+
+  function updateHeaderAccountUI() {
+    const adminBtn = document.getElementById('btn-admin-counselors');
+    if (adminBtn) {
+      const isAdmin = Boolean(currentUserProfile && currentUserProfile.role === 'admin');
+      adminBtn.classList.toggle('hidden', !isAdmin);
+      adminBtn.classList.toggle('flex', isAdmin);
+    }
+  }
+
+  function updateActiveStudentBarUI() {
+    const nameEl = document.getElementById('active-student-name-label');
+    const statusEl = document.getElementById('cloud-sync-status-label');
+    const dotEl = document.getElementById('cloud-sync-dot');
+    const saveBtn = document.getElementById('btn-save-student-cloud');
+    const countBadge = document.getElementById('students-count-badge');
+
+    const liveName = appState && appState.student ? getStudentFullName(appState.student) : '';
+    const cachedRow = activeStudentId ? studentsListCache.find(s => s.id === activeStudentId) : null;
+    const displayName = activeStudentId
+      ? (liveName || (cachedRow && cachedRow.full_name) || 'دانش‌آموز بدون نام')
+      : (liveName ? `${liveName} (پیش‌نویس محلی)` : 'پیش‌نویس محلی');
+
+    if (nameEl) nameEl.textContent = displayName;
+
+    const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
+    if (statusEl && dotEl) {
+      if (!activeStudentId) {
+        statusEl.textContent = 'ذخیره در مرورگر';
+        statusEl.className = 'text-[10px] px-1.5 py-0.5 rounded bg-slate-200/80 text-slate-600 font-semibold shrink-0';
+        dotEl.className = 'w-2 h-2 rounded-full bg-slate-400 shrink-0';
+      } else if (isCloudSyncInFlight) {
+        statusEl.textContent = 'در حال ذخیره...';
+        statusEl.className = 'text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold shrink-0';
+        dotEl.className = 'w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0';
+      } else if (pendingCloudSync) {
+        statusEl.textContent = isOffline ? 'ذخیره موقت (آفلاین)' : 'در انتظار همگام‌سازی';
+        statusEl.className = 'text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold shrink-0';
+        dotEl.className = 'w-2 h-2 rounded-full bg-amber-500 shrink-0';
+      } else {
+        statusEl.textContent = 'ذخیره در سرور';
+        statusEl.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold shrink-0';
+        dotEl.className = 'w-2 h-2 rounded-full bg-emerald-500 shrink-0';
+      }
+    }
+
+    if (saveBtn) {
+      saveBtn.textContent = activeStudentId ? 'همگام‌سازی' : 'ذخیره در لیست';
+    }
+
+    if (countBadge) {
+      countBadge.textContent = toPersianDigits(studentsListCache.length);
+      countBadge.classList.toggle('hidden', !currentAuthSession);
+    }
+  }
+
+  function buildStudentRowPayload(state, counselorIdOverride) {
+    const clean = normalizeState(state);
+    const payload = {
+      full_name: getStudentFullName(clean.student) || 'دانش‌آموز بدون نام',
+      field_of_study: (clean.student && clean.student.fieldOfStudy ? String(clean.student.fieldOfStudy) : '').trim(),
+      weeks_passed: (clean.student && clean.student.weeksPassed ? String(clean.student.weeksPassed) : '').trim(),
+      school_name: (clean.student && clean.student.schoolName ? String(clean.student.schoolName) : '').trim(),
+      plan_data: JSON.parse(JSON.stringify(clean)),
+    };
+    if (counselorIdOverride) {
+      payload.counselor_id = counselorIdOverride;
+    }
+    return payload;
+  }
+
+  async function flushCloudSync({ silent = true } = {}) {
+    const sb = initSupabaseClient();
+    if (!sb || !currentAuthSession || !activeStudentId || !pendingCloudSync || isCloudSyncInFlight) {
+      return { ok: false, skipped: true };
+    }
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      updateActiveStudentBarUI();
+      return { ok: false, offline: true };
+    }
+
+    isCloudSyncInFlight = true;
+    updateActiveStudentBarUI();
+    try {
+      const payload = buildStudentRowPayload(appState);
+      payload.updated_at = new Date().toISOString();
+      const { data, error } = await sb
+        .from('students')
+        .update(payload)
+        .eq('id', activeStudentId)
+        .select('id, counselor_id, full_name, field_of_study, weeks_passed, school_name, updated_at')
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!data) {
+        setActiveStudentTracking(null);
+        if (!silent) showToast('پرونده این دانش‌آموز روی سرور یافت نشد؛ به‌صورت پیش‌نویس محلی نگهداری شد.', 'warning');
+        return { ok: false, notFound: true };
+      }
+
+      setCloudDirtyFlag(false);
+      const idx = studentsListCache.findIndex(item => item.id === data.id);
+      if (idx >= 0) {
+        studentsListCache[idx] = { ...studentsListCache[idx], ...data };
+      }
+      if (!silent) {
+        showToast('اطلاعات دانش‌آموز با موفقیت در سرور ذخیره شد.', 'success');
+      }
+      return { ok: true, data };
+    } catch (err) {
+      console.warn('[Cloud Sync]', err);
+      setCloudDirtyFlag(true);
+      if (!silent) {
+        showToast('خطا در همگام‌سازی با سرور: تغییرات به‌صورت محلی ذخیره شدند.', 'warning');
+      }
+      return { ok: false, error: err };
+    } finally {
+      isCloudSyncInFlight = false;
+      updateActiveStudentBarUI();
+    }
+  }
+
+  async function loadCurrentUserProfile(user) {
+    if (!user || !user.id) return null;
+    const cacheKey = `${STORAGE_KEY_PROFILE_PREFIX}${user.id}`;
+    const sb = initSupabaseClient();
+    if (sb && !(typeof navigator !== 'undefined' && navigator.onLine === false)) {
+      try {
+        const { data, error } = await sb
+          .from('profiles')
+          .select('id, username, display_name, role')
+          .eq('id', user.id)
+          .maybeSingle();
+        if (!error && data) {
+          currentUserProfile = data;
+          try { localStorage.setItem(cacheKey, JSON.stringify(data)); } catch (e) {}
+          return data;
+        }
+      } catch (e) {}
+    }
+
+    try {
+      const cached = localStorage.getItem(cacheKey);
+      if (cached) {
+        currentUserProfile = JSON.parse(cached);
+        return currentUserProfile;
+      }
+    } catch (e) {}
+
+    const emailStr = String(user.email || '');
+    const fallbackUsername = emailStr.includes('@') ? emailStr.split('@')[0] : emailStr;
+    currentUserProfile = {
+      id: user.id,
+      username: fallbackUsername,
+      display_name: (user.user_metadata && user.user_metadata.display_name) || fallbackUsername || 'مشاور',
+      role: 'counselor',
+    };
+    return currentUserProfile;
+  }
+
+  async function fetchStudentsList() {
+    const sb = initSupabaseClient();
+    if (!sb || !currentAuthSession) return [];
+    try {
+      const { data, error } = await sb
+        .from('students')
+        .select('id, counselor_id, full_name, field_of_study, weeks_passed, school_name, updated_at, counselor:profiles(username, display_name)')
+        .order('updated_at', { ascending: false });
+      if (error) throw error;
+      studentsListCache = Array.isArray(data) ? data : [];
+      updateActiveStudentBarUI();
+      populateStudentsCounselorFilter();
+      renderStudentsModalList();
+      return studentsListCache;
+    } catch (err) {
+      console.warn('[Students Fetch]', err);
+      return studentsListCache;
+    }
+  }
+
+  function populateStudentsCounselorFilter() {
+    const filterSelect = document.getElementById('students-counselor-filter');
+    if (!filterSelect) return;
+    const isAdmin = Boolean(currentUserProfile && currentUserProfile.role === 'admin');
+    filterSelect.classList.toggle('hidden', !isAdmin);
+    if (!isAdmin) return;
+
+    const currentVal = filterSelect.value || '';
+    const map = new Map();
+    studentsListCache.forEach(item => {
+      if (item.counselor_id) {
+        const label = (item.counselor && item.counselor.display_name) || item.counselor_id;
+        map.set(item.counselor_id, label);
+      }
+    });
+    filterSelect.innerHTML = `<option value="">همه مشاوران (${toPersianDigits(studentsListCache.length)})</option>` +
+      Array.from(map.entries()).map(([cid, label]) => (
+        `<option value="${sanitizeHtml(cid)}" ${cid === currentVal ? 'selected' : ''}>${sanitizeHtml(label)}</option>`
+      )).join('');
+  }
+
+  function formatRelativeUpdateTime(isoStr) {
+    if (!isoStr) return '';
+    try {
+      const dt = new Date(isoStr);
+      if (Number.isNaN(dt.getTime())) return '';
+      return dt.toLocaleDateString('fa-IR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function renderStudentsModalList() {
+    const listEl = document.getElementById('students-modal-list');
+    if (!listEl) return;
+
+    const searchInput = document.getElementById('students-search-input');
+    const counselorSelect = document.getElementById('students-counselor-filter');
+    const q = normalizePersianText((searchInput ? searchInput.value : '') || '').toLowerCase();
+    const filterCounselorId = (counselorSelect && !counselorSelect.classList.contains('hidden')) ? (counselorSelect.value || '') : '';
+    const isAdmin = Boolean(currentUserProfile && currentUserProfile.role === 'admin');
+
+    const filtered = studentsListCache.filter(item => {
+      if (filterCounselorId && item.counselor_id !== filterCounselorId) return false;
+      if (!q) return true;
+      const haystack = normalizePersianText([
+        item.full_name,
+        item.field_of_study,
+        item.school_name,
+        item.weeks_passed,
+        item.counselor && item.counselor.display_name,
+      ].filter(Boolean).join(' ')).toLowerCase();
+      return haystack.includes(q);
+    });
+
+    if (filtered.length === 0) {
+      listEl.innerHTML = `
+        <div class="text-center py-10 px-4 bg-white rounded-xl border border-dashed border-slate-300 text-xs text-slate-500">
+          ${studentsListCache.length === 0
+            ? 'هنوز دانش‌آموزی ثبت نشده است. روی «+ دانش‌آموز جدید» کلیک کنید یا برنامه فعلی را ذخیره کنید.'
+            : 'دانش‌آموزی مطابق با جستجوی شما یافت نشد.'}
+        </div>
+      `;
       return;
     }
-    const h = await computeSHA256(plainPassword);
-    console.log('%c[Study Planner Auth]%c هش رمز عبور تولید شد:', 'color: #f59e0b; font-weight: bold;', 'color: #38bdf8;');
-    console.log('Plain Password:', plainPassword);
-    console.log('SHA-256 Hash:', h);
-    return h;
-  };
+
+    listEl.innerHTML = filtered.map(item => {
+      const isCurrent = item.id === activeStudentId;
+      const cardBorder = isCurrent ? 'border-indigo-500 ring-2 ring-indigo-100 bg-indigo-50/30' : 'border-slate-200 bg-white hover:border-indigo-300';
+      const weekText = item.weeks_passed ? `هفته ${toPersianDigits(item.weeks_passed)}` : 'بدون هفته';
+      const fieldText = item.field_of_study ? toPersianDigits(item.field_of_study) : 'رشته نامشخص';
+      const timeText = formatRelativeUpdateTime(item.updated_at);
+      const ownerBadge = (isAdmin && item.counselor && item.counselor.display_name)
+        ? `<span class="text-[10px] px-2 py-0.5 rounded-md bg-purple-100 text-purple-800 font-bold">${sanitizeHtml(item.counselor.display_name)}</span>`
+        : '';
+
+      return `
+        <div class="rounded-xl border ${cardBorder} p-3 transition shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+          <div class="min-w-0 flex-1 space-y-1">
+            <div class="flex items-center flex-wrap gap-1.5">
+              <strong class="text-xs sm:text-sm font-bold text-slate-900 truncate">${sanitizeHtml(item.full_name || 'دانش‌آموز بدون نام')}</strong>
+              ${isCurrent ? '<span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-bold">فعال</span>' : ''}
+              ${ownerBadge}
+            </div>
+            <div class="flex items-center flex-wrap gap-2 text-[11px] text-slate-600">
+              <span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">${sanitizeHtml(fieldText)}</span>
+              <span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-medium">${sanitizeHtml(weekText)}</span>
+              ${item.school_name ? `<span class="truncate text-slate-500">${sanitizeHtml(toPersianDigits(item.school_name))}</span>` : ''}
+              ${timeText ? `<span class="text-slate-400 text-[10px]">• ${sanitizeHtml(timeText)}</span>` : ''}
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0 text-[11px]">
+            <button type="button" data-student-action="open" data-student-id="${sanitizeHtml(item.id)}" class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition cursor-pointer">باز کردن</button>
+            <button type="button" data-student-action="next-week" data-student-id="${sanitizeHtml(item.id)}" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold transition cursor-pointer" title="کپی این پرونده برای هفته جدید">هفته جدید</button>
+            <button type="button" data-student-action="delete" data-student-id="${sanitizeHtml(item.id)}" class="px-2 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold transition cursor-pointer" title="حذف دانش‌آموز">حذف</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function openStudentsModal() {
+    const modal = document.getElementById('students-manager-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    renderStudentsModalList();
+    fetchStudentsList();
+  }
+
+  function closeStudentsModal() {
+    const modal = document.getElementById('students-manager-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  async function openStudentById(studentId) {
+    const sb = initSupabaseClient();
+    if (!sb || !studentId) return;
+    await flushCloudSync({ silent: true });
+    try {
+      const { data, error } = await sb
+        .from('students')
+        .select('id, counselor_id, full_name, field_of_study, weeks_passed, school_name, plan_data, updated_at')
+        .eq('id', studentId)
+        .single();
+      if (error || !data) throw error || new Error('پرونده یافت نشد');
+
+      cancelPendingSave();
+      cachedMeasuredHeights = {};
+      resetPlannerBudgets();
+      resetStudentBudgets();
+      resetReportBudgets();
+      try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
+      resetPlannerCopying();
+
+      setActiveStudentTracking(data.id, data.counselor_id);
+      setCloudDirtyFlag(false);
+      appState = normalizeState(data.plan_data);
+      saveCurrentToLocalStorage(appState);
+      renderAll();
+      updateActiveStudentBarUI();
+      closeStudentsModal();
+      showToast(`پرونده «${data.full_name || 'دانش‌آموز'}» بارگذاری شد.`, 'success');
+    } catch (err) {
+      showToast('خطا در بارگذاری پرونده دانش‌آموز: ' + (err.message || err), 'error');
+    }
+  }
+
+  async function createNewCloudStudent({ fromCurrentState = false } = {}) {
+    const sb = initSupabaseClient();
+    if (!sb || !currentAuthSession) return null;
+    await flushCloudSync({ silent: true });
+
+    try {
+      const baseState = fromCurrentState ? normalizeState(appState) : getInitialState();
+      if (!fromCurrentState && currentUserProfile && baseState.student) {
+        if (currentUserProfile.role === 'counselor') {
+          baseState.student.counselorName = currentUserProfile.display_name || baseState.student.counselorName || '';
+        }
+        if (!baseState.student.supervisorCounselor) {
+          baseState.student.supervisorCounselor = 'دکتر شهروز فروتن کیا';
+        }
+      }
+      const insertPayload = buildStudentRowPayload(baseState, currentAuthSession.user.id);
+      const { data, error } = await sb
+        .from('students')
+        .insert(insertPayload)
+        .select('id, counselor_id, full_name, field_of_study, weeks_passed, school_name, plan_data, updated_at, counselor:profiles(username, display_name)')
+        .single();
+      if (error || !data) throw error || new Error('خطا در ثبت دانش‌آموز');
+
+      studentsListCache = [data, ...studentsListCache.filter(s => s.id !== data.id)];
+      setActiveStudentTracking(data.id, data.counselor_id);
+      setCloudDirtyFlag(false);
+      appState = normalizeState(data.plan_data);
+      saveCurrentToLocalStorage(appState);
+      renderAll();
+      if (!fromCurrentState) {
+        switchTab('student');
+      }
+      closeStudentsModal();
+      showToast(fromCurrentState ? 'برنامه فعلی در لیست دانش‌آموزان شما ذخیره شد.' : 'پرونده دانش‌آموز جدید ایجاد شد.', 'success');
+      return data;
+    } catch (err) {
+      showToast('خطا در ایجاد دانش‌آموز جدید: ' + (err.message || err), 'error');
+      return null;
+    }
+  }
+
+  async function duplicateStudentNextWeek(studentId) {
+    const sb = initSupabaseClient();
+    if (!sb || !currentAuthSession || !studentId) return null;
+    await flushCloudSync({ silent: true });
+    try {
+      const { data: src, error: srcErr } = await sb
+        .from('students')
+        .select('id, plan_data')
+        .eq('id', studentId)
+        .single();
+      if (srcErr || !src) throw srcErr || new Error('پرونده مبدأ یافت نشد');
+
+      const cloned = normalizeState(JSON.parse(JSON.stringify(src.plan_data)));
+      const rawWeek = String(cloned.student?.weeksPassed || '').trim();
+      const digitsOnly = toLatinDigits(rawWeek).replace(/[^0-9]/g, '');
+      if (digitsOnly) {
+        cloned.student.weeksPassed = toPersianDigits(String(parseInt(digitsOnly, 10) + 1));
+      }
+      const insertPayload = buildStudentRowPayload(cloned, currentAuthSession.user.id);
+      const { data: created, error: insErr } = await sb
+        .from('students')
+        .insert(insertPayload)
+        .select('id, counselor_id, full_name, field_of_study, weeks_passed, school_name, plan_data, updated_at, counselor:profiles(username, display_name)')
+        .single();
+      if (insErr || !created) throw insErr || new Error('خطا در ایجاد هفته جدید');
+
+      studentsListCache = [created, ...studentsListCache];
+      setActiveStudentTracking(created.id, created.counselor_id);
+      setCloudDirtyFlag(false);
+      appState = normalizeState(created.plan_data);
+      saveCurrentToLocalStorage(appState);
+      renderAll();
+      closeStudentsModal();
+      showToast('پرونده هفته جدید با موفقیت ساخته و باز شد.', 'success');
+      return created;
+    } catch (err) {
+      showToast('خطا در ایجاد کپی هفته جدید: ' + (err.message || err), 'error');
+      return null;
+    }
+  }
+
+  function deleteCloudStudent(studentId) {
+    const item = studentsListCache.find(s => s.id === studentId);
+    const label = (item && item.full_name) ? item.full_name : 'این دانش‌آموز';
+    showConfirmModal({
+      title: `حذف پرونده «${label}»`,
+      message: ['آیا از حذف کامل پرونده ', { strong: `«${label}»` }, ' از سرور اطمینان دارید؟ این عملیات قابل بازگشت نیست.'],
+      confirmText: 'بله، حذف شود',
+      cancelText: 'انصراف',
+      type: 'danger',
+      icon: '🗑️',
+      onConfirm: async () => {
+        const sb = initSupabaseClient();
+        if (!sb) return;
+        try {
+          const { error } = await sb.from('students').delete().eq('id', studentId);
+          if (error) throw error;
+          studentsListCache = studentsListCache.filter(s => s.id !== studentId);
+          if (activeStudentId === studentId) {
+            setActiveStudentTracking(null);
+            appState = getInitialState();
+            if (currentUserProfile && currentUserProfile.role === 'counselor' && appState.student) {
+              appState.student.counselorName = currentUserProfile.display_name || '';
+            }
+            saveCurrentToLocalStorage(appState);
+            renderAll();
+          }
+          updateActiveStudentBarUI();
+          populateStudentsCounselorFilter();
+          renderStudentsModalList();
+          showToast(`پرونده «${label}» حذف شد.`, 'info');
+        } catch (err) {
+          showToast('خطا در حذف دانش‌آموز: ' + (err.message || err), 'error');
+        }
+      }
+    });
+  }
+
+  async function callManageCounselors(bodyPayload) {
+    const sb = initSupabaseClient();
+    if (!sb || !currentAuthSession) throw new Error('نشست کاربری فعال نیست.');
+    const { data: sessionRes } = await sb.auth.getSession();
+    const token = (sessionRes && sessionRes.session && sessionRes.session.access_token) || currentAuthSession.access_token;
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/manage-counselors`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_PUBLISHABLE_KEY,
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify(bodyPayload),
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(json.error || `HTTP ${res.status}`);
+    }
+    return json;
+  }
+
+  async function refreshAdminCounselorsList() {
+    const listEl = document.getElementById('admin-counselors-list');
+    if (!listEl) return;
+    listEl.innerHTML = '<div class="text-center py-6 text-xs text-slate-500">در حال بارگذاری لیست مشاوران...</div>';
+    try {
+      const { counselors = [] } = await callManageCounselors({ action: 'list' });
+      if (counselors.length === 0) {
+        listEl.innerHTML = '<div class="text-center py-6 text-xs text-slate-500">مشاوری ثبت نشده است.</div>';
+        return;
+      }
+      listEl.innerHTML = counselors.map(c => {
+        const isSelf = currentUserProfile && currentUserProfile.username === c.username;
+        const roleBadge = c.role === 'admin'
+          ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 font-bold">مدیر ارشد</span>'
+          : '<span class="text-[10px] px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 font-bold">مشاور</span>';
+        const statusBadge = c.status === 'active'
+          ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-medium">فعال</span>'
+          : '<span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-medium">در انتظار ورود اول</span>';
+        return `
+          <div class="bg-white rounded-xl border border-slate-200 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+            <div class="min-w-0 space-y-1">
+              <div class="flex items-center flex-wrap gap-1.5">
+                <strong class="text-slate-900 font-bold">${sanitizeHtml(c.display_name)}</strong>
+                <code class="text-[11px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700" dir="ltr">${sanitizeHtml(c.username)}</code>
+                ${roleBadge}
+                ${statusBadge}
+              </div>
+              <div class="text-[11px] text-slate-500">${toPersianDigits(c.student_count || 0)} پرونده دانش‌آموز</div>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button type="button" data-admin-action="reset-pass" data-username="${sanitizeHtml(c.username)}" class="px-2.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold cursor-pointer">تغییر رمز</button>
+              ${isSelf ? '' : `<button type="button" data-admin-action="delete-user" data-username="${sanitizeHtml(c.username)}" class="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold cursor-pointer">حذف</button>`}
+            </div>
+          </div>
+        `;
+      }).join('');
+    } catch (err) {
+      listEl.innerHTML = `<div class="text-center py-6 text-xs text-rose-600">خطا: ${sanitizeHtml(err.message || err)}</div>`;
+    }
+  }
+
+  function openAdminCounselorsModal() {
+    if (!currentUserProfile || currentUserProfile.role !== 'admin') return;
+    const modal = document.getElementById('admin-counselors-modal');
+    if (!modal) return;
+    modal.classList.remove('hidden');
+    refreshAdminCounselorsList();
+  }
+
+  function closeAdminCounselorsModal() {
+    const modal = document.getElementById('admin-counselors-modal');
+    if (modal) modal.classList.add('hidden');
+  }
+
+  function bindCloudAndModalEvents() {
+    if (bindCloudAndModalEvents._bound) return;
+    bindCloudAndModalEvents._bound = true;
+
+    document.getElementById('btn-students-drawer')?.addEventListener('click', openStudentsModal);
+    document.getElementById('btn-switch-student')?.addEventListener('click', openStudentsModal);
+    document.getElementById('btn-close-students-modal')?.addEventListener('click', closeStudentsModal);
+    document.getElementById('btn-refresh-students')?.addEventListener('click', () => fetchStudentsList());
+    document.getElementById('btn-create-new-student')?.addEventListener('click', () => createNewCloudStudent({ fromCurrentState: false }));
+    document.getElementById('btn-save-current-as-student')?.addEventListener('click', () => createNewCloudStudent({ fromCurrentState: true }));
+    document.getElementById('btn-save-student-cloud')?.addEventListener('click', () => {
+      if (activeStudentId) {
+        setCloudDirtyFlag(true);
+        flushCloudSync({ silent: false });
+      } else {
+        createNewCloudStudent({ fromCurrentState: true });
+      }
+    });
+    document.getElementById('students-search-input')?.addEventListener('input', renderStudentsModalList);
+    document.getElementById('students-counselor-filter')?.addEventListener('change', renderStudentsModalList);
+    document.getElementById('students-manager-modal')?.addEventListener('click', (e) => {
+      if (e.target && e.target.id === 'students-manager-modal') closeStudentsModal();
+    });
+    document.getElementById('students-modal-list')?.addEventListener('click', (e) => {
+      const btn = e.target && typeof e.target.closest === 'function' ? e.target.closest('[data-student-action]') : null;
+      if (!btn) return;
+      const action = btn.getAttribute('data-student-action');
+      const sid = btn.getAttribute('data-student-id');
+      if (action === 'open') openStudentById(sid);
+      else if (action === 'next-week') duplicateStudentNextWeek(sid);
+      else if (action === 'delete') deleteCloudStudent(sid);
+    });
+
+    document.getElementById('btn-admin-counselors')?.addEventListener('click', openAdminCounselorsModal);
+    document.getElementById('btn-close-admin-modal')?.addEventListener('click', closeAdminCounselorsModal);
+    document.getElementById('admin-counselors-modal')?.addEventListener('click', (e) => {
+      if (e.target && e.target.id === 'admin-counselors-modal') closeAdminCounselorsModal();
+    });
+    document.getElementById('admin-create-counselor-form')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = (document.getElementById('new-counselor-username')?.value || '').trim().toLowerCase();
+      const display_name = (document.getElementById('new-counselor-display')?.value || '').trim();
+      const password = document.getElementById('new-counselor-password')?.value || '';
+      const role = document.getElementById('new-counselor-role')?.value || 'counselor';
+      try {
+        await callManageCounselors({ action: 'create', username, display_name, password, role });
+        e.target.reset();
+        showToast(`حساب «${display_name}» ایجاد شد.`, 'success');
+        refreshAdminCounselorsList();
+      } catch (err) {
+        showToast('خطا در ایجاد حساب: ' + (err.message || err), 'error');
+      }
+    });
+    document.getElementById('admin-counselors-list')?.addEventListener('click', async (e) => {
+      const btn = e.target && typeof e.target.closest === 'function' ? e.target.closest('[data-admin-action]') : null;
+      if (!btn) return;
+      const action = btn.getAttribute('data-admin-action');
+      const username = btn.getAttribute('data-username');
+      if (action === 'reset-pass') {
+        const newPass = typeof window !== 'undefined' && typeof window.prompt === 'function'
+          ? window.prompt(`رمز عبور جدید برای ${username} (حداقل ۶ کاراکتر):`)
+          : '';
+        if (!newPass) return;
+        try {
+          await callManageCounselors({ action: 'reset_password', username, new_password: newPass });
+          showToast(`رمز عبور ${username} با موفقیت تغییر یافت.`, 'success');
+          refreshAdminCounselorsList();
+        } catch (err) {
+          showToast('خطا در تغییر رمز عبور: ' + (err.message || err), 'error');
+        }
+      } else if (action === 'delete-user') {
+        showConfirmModal({
+          title: `حذف حساب «${username}»`,
+          message: `آیا از حذف حساب کاربری «${username}» و کلیه دانش‌آموزان مرتبط با آن اطمینان دارید؟`,
+          confirmText: 'بله، حذف شود',
+          cancelText: 'انصراف',
+          type: 'danger',
+          onConfirm: async () => {
+            try {
+              await callManageCounselors({ action: 'delete', username });
+              showToast(`حساب ${username} حذف شد.`, 'info');
+              refreshAdminCounselorsList();
+              fetchStudentsList();
+            } catch (err) {
+              showToast('خطا در حذف حساب: ' + (err.message || err), 'error');
+            }
+          }
+        });
+      }
+    });
+
+    if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+      window.addEventListener('online', () => {
+        if (currentAuthSession && activeStudentId && pendingCloudSync) {
+          flushCloudSync({ silent: true });
+        }
+        updateActiveStudentBarUI();
+      });
+      window.addEventListener('offline', () => {
+        updateActiveStudentBarUI();
+      });
+    }
+  }
 
   let isAppStarted = false;
   function startApplication() {
-    if (isAppStarted) return;
-    isAppStarted = true;
-    initApp();
-    initPWA();
+    if (!isAppStarted) {
+      isAppStarted = true;
+      initApp();
+      bindCloudAndModalEvents();
+      initPWA();
+    }
   }
 
-  function getStoredAuth() {
-    try {
-      const raw = localStorage.getItem(AUTH_STORAGE_KEY) || sessionStorage.getItem(AUTH_STORAGE_KEY);
-      if (!raw) return null;
-      const parsed = JSON.parse(raw);
-      if (!parsed || !parsed.username || !parsed.hash) return null;
-      const matched = AUTH_USERS.find(u => 
-        u.username.toLowerCase() === parsed.username.toLowerCase() && 
-        u.hash.toLowerCase() === parsed.hash.toLowerCase()
-      );
-      return matched || null;
-    } catch (e) {
-      return null;
+  async function loadWorkspaceForCurrentUser(hasPreexistingLocalDraft = null) {
+    if (!currentAuthSession || !currentAuthSession.user) return;
+    const uid = currentAuthSession.user.id;
+
+    cancelPendingSave();
+    cachedMeasuredHeights = {};
+    resetPlannerBudgets();
+    resetStudentBudgets();
+    resetReportBudgets();
+    resetPlannerCopying();
+    studentsListCache = [];
+
+    updateHeaderAccountUI();
+
+    const savedActiveId = (() => {
+      try { return localStorage.getItem(`${STORAGE_KEY_ACTIVE_STUDENT_PREFIX}${uid}`) || null; } catch (e) { return null; }
+    })();
+    const hadDirtyFlag = (() => {
+      try { return localStorage.getItem(`${STORAGE_KEY_DIRTY_CLOUD_PREFIX}${uid}`) === '1'; } catch (e) { return false; }
+    })();
+
+    activeStudentId = savedActiveId;
+    pendingCloudSync = hadDirtyFlag;
+
+    const savedDraft = loadCurrentFromLocalStorage();
+    const hadRealDraft = hasPreexistingLocalDraft !== null ? Boolean(hasPreexistingLocalDraft) : Boolean(savedDraft);
+    if (hadRealDraft && savedDraft) {
+      appState = normalizeState(savedDraft);
+      renderAll();
+    }
+    updateActiveStudentBarUI();
+
+    const list = await fetchStudentsList();
+    if (!currentAuthSession || currentAuthSession.user.id !== uid) return;
+
+    if (pendingCloudSync && activeStudentId) {
+      await flushCloudSync({ silent: true });
+      return;
+    }
+
+    if (activeStudentId && list.some(s => s.id === activeStudentId)) {
+      const isOnline = typeof navigator === 'undefined' || navigator.onLine !== false;
+      if (!hadRealDraft || (isOnline && !pendingCloudSync)) {
+        await openStudentById(activeStudentId);
+      }
+      return;
+    }
+
+    if (activeStudentId && !list.some(s => s.id === activeStudentId)) {
+      if (typeof navigator === 'undefined' || navigator.onLine !== false) {
+        setActiveStudentTracking(null);
+      }
+    }
+
+    if (!activeStudentId && !hadRealDraft) {
+      if (list.length > 0) {
+        await openStudentById(list[0].id);
+      } else {
+        appState = getInitialState();
+        if (currentUserProfile && currentUserProfile.role === 'counselor' && appState.student) {
+          appState.student.counselorName = currentUserProfile.display_name || '';
+        }
+        renderAll();
+        updateActiveStudentBarUI();
+      }
     }
   }
 
@@ -10632,38 +11607,35 @@ body.auth-locked.auth-light {
     }
   }
 
-  function applyAuthenticatedUI(user) {
+  async function applyAuthenticatedUI(session) {
+    currentAuthSession = session || currentAuthSession;
+    const hasPreexistingLocalDraft = Boolean(
+      currentAuthSession && currentAuthSession.user && loadCurrentFromLocalStorage()
+    );
+    if (currentAuthSession && currentAuthSession.user) {
+      await loadCurrentUserProfile(currentAuthSession.user);
+    }
     document.body.classList.remove('auth-locked');
     document.body.classList.remove('auth-light');
     const overlay = document.getElementById('auth-login-overlay');
     if (overlay) overlay.classList.add('hidden');
     syncAuthColorScheme();
 
-    const userBar = document.getElementById('auth-user-bar');
-    const usernameBadge = document.getElementById('auth-current-username');
-    if (userBar && usernameBadge) {
-      usernameBadge.textContent = user.displayName || user.username;
-      userBar.classList.remove('hidden');
-      userBar.classList.add('flex');
-    }
-
     startApplication();
+    await loadWorkspaceForCurrentUser(hasPreexistingLocalDraft);
   }
 
   function applyLockedUI() {
     if (pcEditorFullscreen) {
       setPcEditorFullscreen(false, { silent: true });
     }
+    closeStudentsModal();
+    closeAdminCounselorsModal();
     document.body.classList.add('auth-locked');
     const overlay = document.getElementById('auth-login-overlay');
     if (overlay) overlay.classList.remove('hidden');
     syncAuthColorScheme();
-
-    const userBar = document.getElementById('auth-user-bar');
-    if (userBar) {
-      userBar.classList.add('hidden');
-      userBar.classList.remove('flex');
-    }
+    updateHeaderAccountUI();
 
     const passInput = document.getElementById('auth-password');
     if (passInput) passInput.value = '';
@@ -10682,7 +11654,6 @@ body.auth-locked.auth-light {
     const btnSubmit = document.getElementById('btn-submit-login');
     const btnText = document.getElementById('btn-login-text');
     const btnSpinner = document.getElementById('btn-login-spinner');
-    const btnLogout = document.getElementById('btn-logout');
     const btnTogglePass = document.getElementById('btn-toggle-password');
     const iconEyeShow = document.getElementById('icon-eye-show');
     const iconEyeHide = document.getElementById('icon-eye-hide');
@@ -10699,7 +11670,7 @@ body.auth-locked.auth-light {
       });
     }
 
-    // ارسال فرم ورود
+    // ارسال فرم ورود (احراز هویت سرورمحور Supabase)
     if (loginForm) {
       loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -10714,7 +11685,15 @@ body.auth-locked.auth-light {
           return;
         }
 
-        // حالت لودینگ دکمه
+        const sb = initSupabaseClient();
+        if (!sb) {
+          if (errAlert && errText) {
+            errText.textContent = 'سرویس احراز هویت در دسترس نیست.';
+            errAlert.classList.remove('hidden');
+          }
+          return;
+        }
+
         if (btnText && btnSpinner) {
           btnText.textContent = 'در حال بررسی...';
           btnSpinner.classList.remove('hidden');
@@ -10722,62 +11701,58 @@ body.auth-locked.auth-light {
         if (btnSubmit) btnSubmit.disabled = true;
 
         try {
-          const passHash = await computeSHA256(passwordVal);
-          const matchedUser = AUTH_USERS.find(u => 
-            u.username.toLowerCase() === usernameVal.toLowerCase() && 
-            u.hash.toLowerCase() === passHash.toLowerCase()
-          );
+          const persistMode = (rememberMe && !rememberMe.checked) ? 'session' : 'local';
+          try { sessionStorage.setItem(AUTH_PERSIST_MODE_KEY, persistMode); } catch (errStorage) {}
 
-          if (matchedUser) {
+          const email = resolveUserLoginEmail(usernameVal);
+          let { data, error } = await sb.auth.signInWithPassword({ email, password: passwordVal });
+
+          if (error && !usernameVal.includes('@')) {
+            const legRes = await fetch(`${SUPABASE_URL}/functions/v1/legacy-login`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_PUBLISHABLE_KEY,
+              },
+              body: JSON.stringify({ username: usernameVal.toLowerCase(), password: passwordVal }),
+            });
+            if (legRes.ok) {
+              const retry = await sb.auth.signInWithPassword({ email, password: passwordVal });
+              data = retry.data;
+              error = retry.error;
+            } else if (legRes.status === 429) {
+              error = { message: 'RATE_LIMITED' };
+            }
+          }
+
+          if (!error && data && data.session) {
             if (errAlert) errAlert.classList.add('hidden');
             if (btnText) btnText.textContent = 'ورود موفقیت‌آمیز...';
-
-            const sessionData = JSON.stringify({
-              username: matchedUser.username,
-              hash: matchedUser.hash,
-              loginAt: Date.now()
-            });
-
-            if (rememberMe && rememberMe.checked) {
-              localStorage.setItem(AUTH_STORAGE_KEY, sessionData);
-              sessionStorage.removeItem(AUTH_STORAGE_KEY);
-            } else {
-              sessionStorage.setItem(AUTH_STORAGE_KEY, sessionData);
-              localStorage.removeItem(AUTH_STORAGE_KEY);
-            }
-
-            setTimeout(() => {
-              applyAuthenticatedUI(matchedUser);
-              if (btnText) btnText.textContent = 'ورود به سامانه';
-              if (btnSpinner) btnSpinner.classList.add('hidden');
-              if (btnSubmit) btnSubmit.disabled = false;
-            }, 300);
-
+            await applyAuthenticatedUI(data.session);
           } else {
-            // خطا در اطلاعات ورود
             if (errAlert && errText) {
-              errText.textContent = 'نام کاربری یا رمز عبور اشتباه است.';
+              errText.textContent = (error && error.message === 'RATE_LIMITED')
+                ? 'تلاش‌های ناموفق زیاد بوده است. لطفاً ۱۵ دقیقه دیگر تلاش کنید.'
+                : 'نام کاربری یا رمز عبور اشتباه است.';
               errAlert.classList.remove('hidden');
             }
             if (authCard) {
               authCard.classList.remove('auth-shake');
-              void authCard.offsetWidth; // ریست ترنزیشن انیمیشن لرزش
+              void authCard.offsetWidth;
               authCard.classList.add('auth-shake');
             }
             if (passInput) {
               passInput.focus();
               passInput.select();
             }
-            if (btnText) btnText.textContent = 'ورود به سامانه';
-            if (btnSpinner) btnSpinner.classList.add('hidden');
-            if (btnSubmit) btnSubmit.disabled = false;
           }
         } catch (err) {
           console.error('[Auth Error]', err);
           if (errAlert && errText) {
-            errText.textContent = 'خطای سیستمی در اعتبارسنجی رخ داد.';
+            errText.textContent = 'خطا در برقراری ارتباط با سرور احراز هویت.';
             errAlert.classList.remove('hidden');
           }
+        } finally {
           if (btnText) btnText.textContent = 'ورود به سامانه';
           if (btnSpinner) btnSpinner.classList.add('hidden');
           if (btnSubmit) btnSubmit.disabled = false;
@@ -10798,26 +11773,49 @@ body.auth-locked.auth-light {
     } catch (e) {}
     syncAuthColorScheme();
 
-    // دکمه خروج (Logout)
-    if (btnLogout) {
-      btnLogout.addEventListener('click', () => {
-        localStorage.removeItem(AUTH_STORAGE_KEY);
-        sessionStorage.removeItem(AUTH_STORAGE_KEY);
-        applyLockedUI();
-        if (userInput) {
-          userInput.focus();
-          userInput.select();
+    const sb = initSupabaseClient();
+    if (sb && sb.auth) {
+      sb.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_OUT') {
+          currentAuthSession = null;
+          currentUserProfile = null;
+          activeStudentId = null;
+          studentsListCache = [];
+          pendingCloudSync = false;
+          applyLockedUI();
+        } else if (event === 'TOKEN_REFRESHED' && session) {
+          currentAuthSession = session;
         }
       });
     }
 
-    // بررسی وضعیت قبلی نشست
-    const existing = getStoredAuth();
-    if (existing) {
-      applyAuthenticatedUI(existing);
-    } else {
-      applyLockedUI();
-    }
+    authReadyPromise = (async () => {
+      if (!sb || !sb.auth) {
+        applyLockedUI();
+        return false;
+      }
+      try {
+        const { data } = await sb.auth.getSession();
+        const session = data && data.session ? data.session : null;
+        if (!session) {
+          applyLockedUI();
+          return false;
+        }
+        if (typeof navigator === 'undefined' || navigator.onLine !== false) {
+          const { data: userCheck, error: userErr } = await sb.auth.getUser();
+          if (userErr || !userCheck || !userCheck.user) {
+            try { await sb.auth.signOut(); } catch (e) {}
+            applyLockedUI();
+            return false;
+          }
+        }
+        await applyAuthenticatedUI(session);
+        return true;
+      } catch (e) {
+        applyLockedUI();
+        return false;
+      }
+    })();
   }
 
   // ==================== راه‌اندازی (Init) ====================
