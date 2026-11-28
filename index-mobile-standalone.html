@@ -1051,12 +1051,22 @@ body, input, textarea, select, button, table, .a4-page {
 }
 
 /* انیمیشن پیام‌های اعلان Toast و پاپ‌آپ‌ها */
-@keyframes slideInFromRight {
-  0% { transform: translateX(100%); opacity: 0; }
-  100% { transform: translateX(0); opacity: 1; }
+@keyframes toastFadeSlideUp {
+  0% { opacity: 0; transform: translateY(12px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
-.animate-slide-in {
-  animation: slideInFromRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.animate-slide-in,
+.toast-animate-in {
+  animation: toastFadeSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+#toast-container {
+  bottom: max(1rem, env(safe-area-inset-bottom, 1rem));
+}
+@media (min-width: 640px) {
+  #toast-container {
+    bottom: 1.5rem;
+  }
 }
 
 @keyframes scaleUp {
@@ -1198,13 +1208,26 @@ html, body {
   }
   body.pc-editor-fullscreen:not(.is-printing):not(.auth-locked) #editor-nav-tabs {
     gap: 0.375rem !important;
+    justify-content: center !important;
+  }
+  body.pc-editor-fullscreen:not(.is-printing):not(.auth-locked) #editor-nav-tabs .editor-tab-btn {
+    flex: 0 1 180px !important;
+    max-width: 200px !important;
   }
   body.pc-editor-fullscreen:not(.is-printing):not(.auth-locked) #editor-content-panel {
     padding: 1.5rem 2rem 3rem 2rem !important;
   }
+  /* شیوه دورگه (Hybrid): تب‌های فرم‌محور دارای عرض مهارشده و ارگونومیک هستند تا روی مانیتورهای عریض کشیده نشوند */
+  body.pc-editor-fullscreen:not(.is-printing):not(.auth-locked) .editor-form-constrained {
+    max-width: 58rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: 100% !important;
+  }
   body.pc-editor-fullscreen:not(.is-printing):not(.auth-locked) .planner-settings-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
   }
+  /* جداول عریض (برنامه هفتگی و کارنامه دروس) تمام عرض موجود صفحه را اشغال می‌کنند */
   body.pc-editor-fullscreen:not(.is-printing):not(.auth-locked) #planner-editor-table-scroll > table {
     width: 100% !important;
   }
@@ -1214,6 +1237,7 @@ html, body {
     width: auto !important;
     max-width: none !important;
   }
+  body.pc-editor-fullscreen:not(.is-printing):not(.auth-locked) .planner-scroll-hint,
   body.pc-editor-fullscreen:not(.is-printing):not(.auth-locked) .report-scroll-hint {
     display: none !important;
   }
@@ -2159,7 +2183,7 @@ body.auth-locked.auth-light {
   <input type="file" id="file-input-json" accept=".json,application/json" class="hidden">
 
   <!-- کانتینر اعلان‌های Toast -->
-  <div id="toast-container" class="fixed bottom-6 left-6 z-[100] flex flex-col gap-2.5 max-w-sm pointer-events-none no-print"></div>
+  <div id="toast-container" class="fixed bottom-4 sm:bottom-6 inset-x-3 sm:inset-x-auto sm:left-6 z-[100] flex flex-col items-center sm:items-start gap-2 max-w-md sm:max-w-sm pointer-events-none no-print mx-auto sm:mx-0"></div>
 
   <!-- اسکریپت اصلی اجرایی (سازگار ۱۰۰٪ با باز کردن محلی بدون مشکل CORS) -->
   <script id="custom-app-bundle">
@@ -2248,7 +2272,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.1.7';
+  const APP_VERSION = '1.1.8';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -2395,35 +2419,36 @@ body.auth-locked.auth-light {
     if (!container) return;
 
     const toast = document.createElement('div');
-    toast.className = `toast toast-${type} animate-slide-in flex items-center gap-3 px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium text-white transition-all duration-200 pointer-events-auto cursor-pointer select-none`;
+    toast.dir = 'rtl';
+    toast.className = `toast toast-${type} toast-animate-in animate-slide-in flex items-center gap-2.5 sm:gap-3 px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-xl shadow-lg text-xs sm:text-sm font-bold sm:font-medium text-white transition-all duration-200 pointer-events-auto cursor-pointer select-none w-full sm:w-auto max-w-[calc(100vw-1.5rem)] sm:max-w-sm backdrop-blur-md`;
 
-    let bgClass = 'bg-slate-800 border border-slate-700';
+    let bgClass = 'bg-slate-900/95 border border-slate-700/80 shadow-slate-950/20';
     let iconSvg = '';
 
     switch (type) {
       case 'success':
-        bgClass = 'bg-emerald-700 border border-emerald-600';
-        iconSvg = '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>';
+        bgClass = 'bg-emerald-800/95 border border-emerald-600/80 shadow-emerald-950/25';
+        iconSvg = '<svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>';
         break;
       case 'error':
-        bgClass = 'bg-rose-700 border border-rose-600';
-        iconSvg = '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
+        bgClass = 'bg-rose-800/95 border border-rose-600/80 shadow-rose-950/25';
+        iconSvg = '<svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>';
         break;
       case 'warning':
-        bgClass = 'bg-amber-600 border border-amber-500';
-        iconSvg = '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
+        bgClass = 'bg-amber-700/95 border border-amber-500/80 shadow-amber-950/25';
+        iconSvg = '<svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>';
         break;
       default:
-        bgClass = 'bg-sky-700 border border-sky-600';
-        iconSvg = '<svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
+        bgClass = 'bg-slate-800/95 border border-slate-700/80 shadow-slate-950/25';
+        iconSvg = '<svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>';
     }
 
     toast.className += ` ${bgClass}`;
     toast.innerHTML = `
       ${iconSvg}
-      <span class="toast-message flex-1 text-right"></span>
-      <button class="opacity-70 hover:opacity-100 transition-opacity mr-2 p-0.5" aria-label="بستن">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      <span class="toast-message flex-1 text-right text-xs sm:text-sm leading-snug break-words"></span>
+      <button class="opacity-70 hover:opacity-100 transition-opacity mr-1.5 p-1 shrink-0 rounded hover:bg-white/10 active:bg-white/20" aria-label="بستن">
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     `;
 
@@ -2438,8 +2463,8 @@ body.auth-locked.auth-light {
       if (isDismissed) return;
       isDismissed = true;
       if (autoHideTimer) clearTimeout(autoHideTimer);
-      toast.classList.remove('animate-slide-in');
-      toast.classList.add('opacity-0', 'translate-x-4');
+      toast.classList.remove('animate-slide-in', 'toast-animate-in');
+      toast.classList.add('opacity-0', 'translate-y-2', 'scale-95');
       setTimeout(() => {
         if (typeof toast.remove === 'function') {
           toast.remove();
@@ -5698,7 +5723,7 @@ body.auth-locked.auth-light {
     const currentTheme = (appState.meta && appState.meta.theme === 'pink') ? 'pink' : 'navy';
 
     return `
-      <div class="space-y-5">
+      <div class="space-y-5 editor-form-constrained">
         <div class="p-3.5 bg-blue-50/80 border border-blue-200 rounded-lg text-xs text-blue-900 leading-relaxed flex items-center gap-2.5 shadow-2xs">
           <span class="w-2 h-2 rounded-full bg-blue-600 shrink-0"></span>
           <span>
@@ -6789,7 +6814,7 @@ body.auth-locked.auth-light {
           </div>
         </div>
 
-        <div class="flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
+        <div class="planner-scroll-hint flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
           <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-amber-200/70 text-amber-900 font-bold text-xs shrink-0">↔</span>
           <span class="font-bold text-amber-950">
             برای دسترسی و ویرایش پارت‌های دیگر، جدول را به چپ یا راست اسکرول کنید.
@@ -7546,7 +7571,7 @@ body.auth-locked.auth-light {
       : [currentField, ...FIELDS_OF_STUDY];
 
     return `
-      <div class="space-y-4">
+      <div class="space-y-4 editor-form-constrained">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
           <!-- ۱. نام و نام خانوادگی -->
           <div class="md:col-span-2">
@@ -8034,7 +8059,7 @@ body.auth-locked.auth-light {
     const canAddBook = books.length < MAX_REPORT_BOOKS;
 
     let html = `
-      <div class="space-y-6">
+      <div class="space-y-6 editor-form-constrained">
         <div class="flex items-center justify-between gap-3">
           <div class="flex items-center gap-2">
             <button type="button" id="btn-add-book" ${!canAddBook ? 'disabled' : ''} class="inline-flex items-center gap-2 px-4 py-2 rounded-lg ${canAddBook ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-xs' : 'bg-slate-200 text-slate-400 opacity-50 cursor-not-allowed'} text-xs font-bold transition">
