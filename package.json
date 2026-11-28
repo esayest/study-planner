@@ -1,6 +1,6 @@
 {
   "name": "forootan-kia-study-planner",
-  "version": "1.1.12",
+  "version": "1.1.13",
   "description": "سامانه هوشمند طراحی و صدور دفترچه برنامه‌ریزی تحصیلی ویژه آکادمی دکتر فروتن کیا",
   "type": "module",
   "scripts": {
