@@ -5,7 +5,7 @@
  * نسخه: 1.1.15
  */
 
-const CACHE_NAME = 'study-planner-pwa-v1.1.15';
+const CACHE_NAME = 'study-planner-pwa-v1.1.16';
 
 const PRECACHE_ASSETS = [
   './',

@@ -2322,7 +2322,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.1.15';
+  const APP_VERSION = '1.1.16';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -3151,11 +3151,11 @@ body.auth-locked.auth-light {
 
       // Page 3 Counselor Notes
       notesBoxBorder: isPink
-        ? 'border border-rose-200 rounded-xl p-3 bg-rose-50/25 shadow-2xs flex-1 flex flex-col justify-start'
-        : 'border border-indigo-200 rounded-xl p-3 bg-indigo-50/30 shadow-2xs flex-1 flex flex-col justify-start',
+        ? 'border border-rose-200 rounded-xl p-3 bg-rose-50/25 shadow-2xs flex-1 min-h-0 flex flex-col justify-start'
+        : 'border border-indigo-200 rounded-xl p-3 bg-indigo-50/30 shadow-2xs flex-1 min-h-0 flex flex-col justify-start',
       notesBoxBorderContinuation: isPink
-        ? 'border border-rose-200 rounded-xl p-3.5 bg-rose-50/25 shadow-2xs flex-1 flex flex-col justify-start'
-        : 'border border-indigo-200 rounded-xl p-3.5 bg-indigo-50/30 shadow-2xs flex-1 flex flex-col justify-start',
+        ? 'border border-rose-200 rounded-xl p-3.5 bg-rose-50/25 shadow-2xs flex-1 min-h-0 flex flex-col justify-start'
+        : 'border border-indigo-200 rounded-xl p-3.5 bg-indigo-50/30 shadow-2xs flex-1 min-h-0 flex flex-col justify-start',
       notesHeaderBorder: isPink
         ? 'border-b border-rose-200'
         : 'border-b border-indigo-200',
@@ -6431,6 +6431,7 @@ body.auth-locked.auth-light {
   }
 
   function updateAllCardHeaders() {
+    if (!appState || !appState.planner) return;
     const rowCount = appState.planner.rowCount;
     const hasNight = Boolean(appState.planner && appState.planner.hasNightRoutine);
     const selectedCount = selectedParts.size;
@@ -8632,21 +8633,47 @@ body.auth-locked.auth-light {
 
     const pages = partitionStudentNotes((appState.student && appState.student.extraNotes) || '', (pIdx) => getStudentPageBudget(pIdx));
     let anyBudgetChanged = false;
+
+    // ۱. بررسی سرریز و کاهش بودجه در صورت نیاز واقعی
     for (let i = 0; i < studentPages.length; i++) {
       const page = studentPages[i];
       const pageNotes = pages[i] || [];
       const canSplitOrMove = pageNotes.length > 1 || (pageNotes.length === 1 && pageNotes[0].length > 40);
-      // بررسی سرریز بر اساس DOM واقعی مرورگر (ارتفاع استاندارد برگه A4 برابر ۷۹۴ پیکسل است)
-      if (page.scrollHeight > 794 && canSplitOrMove) {
+      // بررسی سرریز بر اساس DOM واقعی مرورگر (با حاشیه امن زیرپیکسل ۷۹۷ پیکسل برای A4 استاندارد)
+      if (page.scrollHeight > 797 && canSplitOrMove) {
         const overflow = page.scrollHeight - 794;
         const currentBudget = getStudentPageBudget(i);
         const estHeight = estimatePageNotesHeight(pageNotes);
-        const baseBudget = estHeight > 0 ? Math.min(currentBudget, estHeight) : currentBudget;
-        const minBudget = 44;
-        const nextBudget = Math.max(minBudget, baseBudget - Math.max(25, overflow + 15));
-        if (nextBudget < currentBudget) {
-          setStudentPageBudget(i, nextBudget);
-          anyBudgetChanged = true;
+        // تنها در صورتی بودجه کاهش می‌یابد که یادداشت‌ها نزدیک به سقف بودجه باشند
+        if (estHeight >= currentBudget - Math.max(25, overflow + 10)) {
+          const minBudget = 44;
+          const nextBudget = Math.max(minBudget, currentBudget - Math.max(25, overflow + 15));
+          if (nextBudget < currentBudget) {
+            setStudentPageBudget(i, nextBudget);
+            anyBudgetChanged = true;
+          }
+        }
+      }
+    }
+
+    // ۲. بررسی بازگرداندن یادداشت‌ها به صفحه قبل (Pull-Back) در صورت وجود فضای خالی واقعی در صفحه
+    if (!anyBudgetChanged && studentPages.length > 1) {
+      for (let i = 0; i < studentPages.length - 1; i++) {
+        const nextNotes = pages[i + 1] || [];
+        if (nextNotes.length === 0) continue;
+        const candidateNote = nextNotes[0];
+        const currentNotes = pages[i] || [];
+        const combinedNotes = [...currentNotes, candidateNote];
+        const combinedHeight = estimatePageNotesHeight(combinedNotes);
+        const maxBudgetForPage = i === 0 ? defaultStudentFirstPageBudget : defaultStudentContinuationBudget;
+        const currentBudget = getStudentPageBudget(i);
+        if (combinedHeight + 20 <= maxBudgetForPage && currentBudget < maxBudgetForPage) {
+          const newBudget = Math.min(maxBudgetForPage, Math.max(currentBudget + 40, combinedHeight + 15));
+          if (newBudget > currentBudget) {
+            setStudentPageBudget(i, newBudget);
+            anyBudgetChanged = true;
+            break;
+          }
         }
       }
     }
@@ -9662,7 +9689,7 @@ body.auth-locked.auth-light {
                 <span class="w-5 h-5 rounded-md ${cfg.notesDiamond} flex items-center justify-center text-[10px] font-bold">◆</span>
                 <h3 class="text-xs font-bold ${cfg.pageTitleText}">توضیحات تکمیلی و نکات مهم</h3>
               </div>
-              <div class="flex-1">
+              <div class="flex-1 min-h-0">
                 ${renderStrategicNotesGrid(pageNotes, false, themeName, pageStart)}
               </div>
             </div>
@@ -9692,7 +9719,7 @@ body.auth-locked.auth-light {
                 <span class="w-5 h-5 rounded-md ${cfg.notesDiamond} flex items-center justify-center text-[10px] font-bold">◆</span>
                 <h3 class="text-xs font-bold ${cfg.pageTitleText}">ادامه نکات و توصیه‌های راهبردی مشاور</h3>
               </div>
-              <div class="flex-1">
+              <div class="flex-1 min-h-0">
                 ${renderStrategicNotesGrid(pageNotes, true, themeName, pageStart)}
               </div>
             </div>
@@ -10887,8 +10914,8 @@ body.auth-locked.auth-light {
         resetStudentBudgets();
         resetReportBudgets();
         try { localStorage.removeItem(STORAGE_KEY_MEASURED_HEIGHTS); } catch (e) {}
-        resetPlannerCopying();
         appState = normalizeState(s);
+        resetPlannerCopying();
         renderAll();
       },
       renderAll: () => renderAll(),
