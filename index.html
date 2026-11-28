@@ -1657,6 +1657,45 @@ body.auth-locked.auth-light {
   direction: rtl;
   text-align: right;
 }
+
+/* بهینه‌سازی ریسپانسیو و ضد سرریز مودال‌های دانش‌آموزان و مشاوران در موبایل */
+#students-manager-modal,
+#admin-counselors-modal {
+  padding: 0.5rem !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 640px) {
+  #students-manager-modal,
+  #admin-counselors-modal {
+    padding: 1.25rem !important;
+  }
+}
+
+#students-manager-modal > div,
+#admin-counselors-modal > div {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+  max-height: calc(100dvh - 1rem) !important;
+  max-height: calc(100vh - 1rem);
+  width: 100% !important;
+}
+
+@media (min-width: 640px) {
+  #students-manager-modal > div,
+  #admin-counselors-modal > div {
+    max-height: 88vh !important;
+  }
+}
+
+#students-modal-list,
+#admin-counselors-list {
+  overscroll-behavior: contain !important;
+  -webkit-overflow-scrolling: touch;
+  word-break: break-word;
+}
   </style>
 </head>
 <body class="auth-locked bg-slate-900 text-slate-800 antialiased h-screen h-dvh overflow-hidden flex flex-col selection:bg-amber-500 selection:text-white">
@@ -1930,65 +1969,65 @@ body.auth-locked.auth-light {
   </main>
 
   <!-- مودال لیست و مدیریت دانش‌آموزان مشاور -->
-  <div id="students-manager-modal" class="hidden fixed inset-0 z-[70] bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 no-print" dir="rtl">
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden text-right">
-      <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between gap-2 bg-slate-50">
+  <div id="students-manager-modal" class="hidden fixed inset-0 z-[70] bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-2 sm:p-5 overflow-y-auto overscroll-contain no-print" dir="rtl">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-2xl my-auto max-h-[calc(100dvh-1rem)] sm:max-h-[88vh] flex flex-col overflow-hidden text-right">
+      <div class="px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-slate-200 flex items-center justify-between gap-2 bg-slate-50 shrink-0">
         <div>
           <h3 class="text-sm font-bold text-slate-900">لیست دانش‌آموزان من</h3>
         </div>
         <button type="button" id="btn-close-students-modal" class="w-8 h-8 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center text-lg font-bold cursor-pointer" aria-label="بستن">&times;</button>
       </div>
 
-      <div class="p-3 sm:p-4 border-b border-slate-200 space-y-2.5 bg-white">
-        <div class="flex flex-wrap items-center gap-2">
-          <button type="button" id="btn-create-new-student" class="px-3 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer">
+      <div class="p-2.5 sm:p-4 border-b border-slate-200 space-y-2 sm:space-y-2.5 bg-white shrink-0">
+        <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <button type="button" id="btn-create-new-student" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer">
             <span>+ دانش‌آموز جدید</span>
           </button>
-          <button type="button" id="btn-save-current-as-student" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer">
+          <button type="button" id="btn-save-current-as-student" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer">
             <span>ذخیره برنامه فعلی</span>
           </button>
-          <button type="button" id="btn-refresh-students" class="px-2.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-300 transition cursor-pointer mr-auto">
+          <button type="button" id="btn-refresh-students" class="px-2.5 py-1.5 sm:py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-300 transition cursor-pointer mr-auto">
             بروزرسانی
           </button>
         </div>
-        <div class="flex flex-col sm:flex-row gap-2">
-          <input type="text" id="students-search-input" placeholder="جستجو بر اساس نام دانش‌آموز یا رشته..." class="flex-1 px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-          <select id="students-counselor-filter" class="hidden px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        <div class="flex flex-col sm:flex-row gap-1.5 sm:gap-2">
+          <input type="text" id="students-search-input" placeholder="جستجو بر اساس نام دانش‌آموز یا رشته..." class="flex-1 px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <select id="students-counselor-filter" class="hidden px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 text-xs bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
             <option value="">همه مشاوران</option>
           </select>
         </div>
       </div>
 
-      <div id="students-modal-list" class="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-2.5 bg-slate-50/60">
+      <div id="students-modal-list" class="flex-1 min-h-0 overflow-y-auto p-2.5 sm:p-4 space-y-2 sm:space-y-2.5 bg-slate-50/60 overscroll-contain">
         <!-- رندر خودکار -->
       </div>
     </div>
   </div>
 
   <!-- مودال مدیریت مشاوران (ویژه مدیر ارشد) -->
-  <div id="admin-counselors-modal" class="hidden fixed inset-0 z-[75] bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 no-print" dir="rtl">
-    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-2xl max-h-[88vh] flex flex-col overflow-hidden text-right">
-      <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between gap-2 bg-purple-50/70">
+  <div id="admin-counselors-modal" class="hidden fixed inset-0 z-[75] bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-2 sm:p-5 overflow-y-auto overscroll-contain no-print" dir="rtl">
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-2xl w-full max-w-2xl my-auto max-h-[calc(100dvh-1rem)] sm:max-h-[88vh] flex flex-col overflow-hidden text-right">
+      <div class="px-3.5 sm:px-4 py-2.5 sm:py-3 border-b border-slate-200 flex items-center justify-between gap-2 bg-purple-50/70 shrink-0">
         <div>
           <h3 class="text-sm font-bold text-purple-950">مدیریت مشاوران و دسترسی‌ها</h3>
         </div>
         <button type="button" id="btn-close-admin-modal" class="w-8 h-8 rounded-lg hover:bg-purple-100 text-purple-700 flex items-center justify-center text-lg font-bold cursor-pointer" aria-label="بستن">&times;</button>
       </div>
 
-      <form id="admin-create-counselor-form" class="p-3 sm:p-4 border-b border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-white">
-        <input type="text" id="new-counselor-username" required placeholder="نام کاربری انگلیسی" dir="ltr" class="px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left placeholder:text-right">
-        <input type="text" id="new-counselor-display" required placeholder="نام نمایشی" class="px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none">
-        <input type="password" id="new-counselor-password" required minlength="6" placeholder="رمز عبور (حداقل ۶ کاراکتر)" dir="ltr" class="px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left placeholder:text-right">
-        <div class="flex gap-2">
-          <select id="new-counselor-role" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
+      <form id="admin-create-counselor-form" class="p-2.5 sm:p-4 border-b border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-white shrink-0">
+        <input type="text" id="new-counselor-username" required placeholder="نام کاربری انگلیسی" dir="ltr" class="px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left placeholder:text-right">
+        <input type="text" id="new-counselor-display" required placeholder="نام نمایشی" class="px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+        <input type="password" id="new-counselor-password" required minlength="6" placeholder="رمز عبور (حداقل ۶ کاراکتر)" dir="ltr" class="px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left placeholder:text-right">
+        <div class="flex gap-1.5 sm:gap-2">
+          <select id="new-counselor-role" class="flex-1 px-3 py-1.5 sm:py-2 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
             <option value="counselor">مشاور</option>
             <option value="admin">مدیر ارشد</option>
           </select>
-          <button type="submit" id="btn-submit-new-counselor" class="px-3.5 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition cursor-pointer shrink-0">افزودن</button>
+          <button type="submit" id="btn-submit-new-counselor" class="px-3.5 py-1.5 sm:py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition cursor-pointer shrink-0">افزودن</button>
         </div>
       </form>
 
-      <div id="admin-counselors-list" class="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-2 bg-slate-50/60">
+      <div id="admin-counselors-list" class="flex-1 min-h-0 overflow-y-auto p-2.5 sm:p-4 space-y-2 bg-slate-50/60 overscroll-contain">
         <!-- رندر خودکار -->
       </div>
     </div>
@@ -2087,7 +2126,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.1.3';
+  const APP_VERSION = '1.1.4';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -11176,19 +11215,19 @@ body.auth-locked.auth-light {
       const timeText = formatRelativeUpdateTime(item.updated_at);
 
       return `
-        <div class="rounded-xl border ${cardBorder} p-3 transition shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        <div class="rounded-xl border ${cardBorder} p-2.5 sm:p-3 transition shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-2.5">
           <div class="min-w-0 flex-1 space-y-1">
             <div class="flex items-center flex-wrap gap-1.5">
               <strong class="text-xs sm:text-sm font-bold text-slate-900 truncate">${sanitizeHtml(item.full_name || 'دانش‌آموز بدون نام')}</strong>
-              ${isCurrent ? '<span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-bold">فعال</span>' : ''}
+              ${isCurrent ? '<span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-bold shrink-0">فعال</span>' : ''}
             </div>
-            <div class="flex items-center flex-wrap gap-2 text-[11px] text-slate-600">
+            <div class="flex items-center flex-wrap gap-1.5 sm:gap-2 text-[11px] text-slate-600">
               <span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">${sanitizeHtml(fieldText)}</span>
               <span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-medium">${sanitizeHtml(weekText)}</span>
-              ${timeText ? `<span class="text-slate-400 text-[10px]">• ${sanitizeHtml(timeText)}</span>` : ''}
+              ${timeText ? `<span class="text-slate-400 text-[10px] shrink-0">• ${sanitizeHtml(timeText)}</span>` : ''}
             </div>
           </div>
-          <div class="flex items-center gap-1.5 shrink-0 text-[11px]">
+          <div class="flex items-center gap-1.5 shrink-0 text-[11px] justify-end sm:justify-start pt-0.5 sm:pt-0">
             <button type="button" data-student-action="open" data-student-id="${sanitizeHtml(item.id)}" class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition cursor-pointer">باز کردن</button>
             <button type="button" data-student-action="delete" data-student-id="${sanitizeHtml(item.id)}" class="px-2 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold transition cursor-pointer" title="حذف دانش‌آموز">حذف</button>
           </div>
@@ -11392,17 +11431,17 @@ body.auth-locked.auth-light {
           ? '<span class="text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-medium">فعال</span>'
           : '<span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-medium">در انتظار ورود اول</span>';
         return `
-          <div class="bg-white rounded-xl border border-slate-200 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-            <div class="min-w-0 space-y-1">
+          <div class="bg-white rounded-xl border border-slate-200 p-2.5 sm:p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+            <div class="min-w-0 space-y-1 flex-1">
               <div class="flex items-center flex-wrap gap-1.5">
                 <strong class="text-slate-900 font-bold">${sanitizeHtml(c.display_name)}</strong>
-                <code class="text-[11px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700" dir="ltr">${sanitizeHtml(c.username)}</code>
+                <code class="text-[11px] px-1.5 py-0.5 rounded bg-slate-100 text-slate-700 break-all" dir="ltr">${sanitizeHtml(c.username)}</code>
                 ${roleBadge}
                 ${statusBadge}
               </div>
               <div class="text-[11px] text-slate-500">${toPersianDigits(c.student_count || 0)} پرونده دانش‌آموز</div>
             </div>
-            <div class="flex items-center gap-1.5 shrink-0">
+            <div class="flex items-center gap-1.5 shrink-0 justify-end sm:justify-start pt-0.5 sm:pt-0">
               <button type="button" data-admin-action="reset-pass" data-username="${sanitizeHtml(c.username)}" class="px-2.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 font-bold cursor-pointer">تغییر رمز</button>
               ${isSelf ? '' : `<button type="button" data-admin-action="delete-user" data-username="${sanitizeHtml(c.username)}" class="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold cursor-pointer">حذف</button>`}
             </div>
