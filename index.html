@@ -1650,6 +1650,10 @@ body.auth-locked.auth-light {
 #auth-login-overlay.auth-light #auth-footer-text {
   color: #64748b !important;
 }
+#admin-counselors-modal input::placeholder {
+  direction: rtl;
+  text-align: right;
+}
   </style>
 </head>
 <body class="auth-locked bg-slate-900 text-slate-800 antialiased h-screen h-dvh overflow-hidden flex flex-col selection:bg-amber-500 selection:text-white">
@@ -1746,7 +1750,7 @@ body.auth-locked.auth-light {
         <div>
           <div class="flex items-center gap-1.5 sm:gap-2">
             <h1 class="text-sm sm:text-base font-bold text-white tracking-wide">سامانه برنامه‌ریزی</h1>
-            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۱.۰</span>
+            <span id="app-version-badge" class="app-version-badge text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">نسخه ۱.۱.۲</span>
           </div>
           <p class="text-[10px] sm:text-xs text-slate-400 font-medium hidden sm:block">آکادمی مشاوره دکتر فروتن کیا</p>
         </div>
@@ -1754,13 +1758,6 @@ body.auth-locked.auth-light {
 
       <!-- ابزارهای سریع عملیاتی -->
       <div class="flex items-center gap-1.5 sm:gap-2 text-xs overflow-x-auto no-scrollbar py-0.5 min-w-0">
-        <!-- لیست دانش‌آموزان من -->
-        <button type="button" id="btn-students-drawer" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition flex items-center gap-1 sm:gap-1.5 border border-indigo-400/50 shadow-xs shrink-0" title="مدیریت و انتخاب دانش‌آموزان">
-          <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-          <span>دانش‌آموزان</span>
-          <span id="students-count-badge" class="hidden text-[10px] px-1.5 py-0.2 rounded-full bg-white/20 text-white leading-tight">۰</span>
-        </button>
-
         <!-- مدیریت مشاوران (فقط مدیر ارشد) -->
         <button type="button" id="btn-admin-counselors" class="hidden px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-purple-700 hover:bg-purple-600 text-white font-bold transition items-center gap-1 sm:gap-1.5 border border-purple-400/50 shrink-0" title="مدیریت حساب‌های مشاوران">
           <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
@@ -1773,8 +1770,8 @@ body.auth-locked.auth-light {
           <span class="hidden sm:inline">برنامه جدید</span>
         </button>
 
-        <!-- بارگذاری نمونه -->
-        <button type="button" id="btn-load-sample" class="px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition flex items-center gap-1 sm:gap-1.5 border border-slate-700 shrink-0" title="بارگذاری اطلاعات نمونه آزمایشی">
+        <!-- بارگذاری نمونه (فقط مدیر ارشد) -->
+        <button type="button" id="btn-load-sample" class="hidden px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold transition items-center gap-1 sm:gap-1.5 border border-slate-700 shrink-0" title="بارگذاری اطلاعات نمونه آزمایشی">
           <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
           <span class="hidden sm:inline">داده‌های نمونه</span>
         </button>
@@ -1865,12 +1862,12 @@ body.auth-locked.auth-light {
         <div class="flex items-center gap-1.5 min-w-0">
           <span class="w-2 h-2 rounded-full bg-indigo-500 shrink-0" id="cloud-sync-dot"></span>
           <span class="text-slate-500 font-medium shrink-0">پرونده:</span>
-          <strong id="active-student-name-label" class="text-slate-900 font-bold truncate">پیش‌نویس محلی</strong>
+          <strong id="active-student-name-label" class="text-slate-900 font-bold truncate">دانش‌آموز بدون نام</strong>
           <span id="cloud-sync-status-label" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-200/80 text-slate-600 font-semibold shrink-0">آفلاین / محلی</span>
         </div>
         <div class="flex items-center gap-1 shrink-0">
-          <button type="button" id="btn-save-student-cloud" class="px-2 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition shadow-2xs cursor-pointer">ذخیره در لیست</button>
-          <button type="button" id="btn-switch-student" class="px-2 py-1 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold transition cursor-pointer">تغییر دانش‌آموز</button>
+          <button type="button" id="btn-save-student-cloud" class="px-2 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition shadow-2xs cursor-pointer">ذخیره برنامه</button>
+          <button type="button" id="btn-switch-student" class="px-2 py-1 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold transition cursor-pointer">لیست دانش‌آموزان</button>
         </div>
       </div>
 
@@ -1934,7 +1931,6 @@ body.auth-locked.auth-light {
       <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between gap-2 bg-slate-50">
         <div>
           <h3 class="text-sm font-bold text-slate-900">لیست دانش‌آموزان من</h3>
-          <p id="students-modal-subtitle" class="text-[11px] text-slate-500 mt-0.5">انتخاب، ایجاد و ویرایش مستقیم برنامه‌ها در سرور</p>
         </div>
         <button type="button" id="btn-close-students-modal" class="w-8 h-8 rounded-lg hover:bg-slate-200 text-slate-500 hover:text-slate-800 flex items-center justify-center text-lg font-bold cursor-pointer" aria-label="بستن">&times;</button>
       </div>
@@ -1945,14 +1941,14 @@ body.auth-locked.auth-light {
             <span>+ دانش‌آموز جدید</span>
           </button>
           <button type="button" id="btn-save-current-as-student" class="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-xs cursor-pointer">
-            <span>ذخیره برنامه فعلی به‌عنوان دانش‌آموز</span>
+            <span>ذخیره برنامه فعلی</span>
           </button>
           <button type="button" id="btn-refresh-students" class="px-2.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-300 transition cursor-pointer mr-auto">
             بروزرسانی
           </button>
         </div>
         <div class="flex flex-col sm:flex-row gap-2">
-          <input type="text" id="students-search-input" placeholder="جستجو بر اساس نام دانش‌آموز، رشته یا مدرسه..." class="flex-1 px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <input type="text" id="students-search-input" placeholder="جستجو بر اساس نام دانش‌آموز یا رشته..." class="flex-1 px-3 py-2 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-none">
           <select id="students-counselor-filter" class="hidden px-3 py-2 rounded-xl border border-slate-300 text-xs bg-white focus:ring-2 focus:ring-indigo-500 focus:outline-none">
             <option value="">همه مشاوران</option>
           </select>
@@ -1971,15 +1967,14 @@ body.auth-locked.auth-light {
       <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between gap-2 bg-purple-50/70">
         <div>
           <h3 class="text-sm font-bold text-purple-950">مدیریت مشاوران و دسترسی‌ها</h3>
-          <p class="text-[11px] text-purple-700 mt-0.5">ایجاد مشاور جدید، بازنشانی رمز عبور و مشاهده وضعیت حساب‌ها</p>
         </div>
         <button type="button" id="btn-close-admin-modal" class="w-8 h-8 rounded-lg hover:bg-purple-100 text-purple-700 flex items-center justify-center text-lg font-bold cursor-pointer" aria-label="بستن">&times;</button>
       </div>
 
       <form id="admin-create-counselor-form" class="p-3 sm:p-4 border-b border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs bg-white">
-        <input type="text" id="new-counselor-username" required placeholder="نام کاربری انگلیسی (مثال: rahimi)" dir="ltr" class="px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left">
-        <input type="text" id="new-counselor-display" required placeholder="نام نمایشی (مثال: مشاور رحیمی)" class="px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none">
-        <input type="password" id="new-counselor-password" required minlength="6" placeholder="رمز عبور (حداقل ۶ کاراکتر)" dir="ltr" class="px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left">
+        <input type="text" id="new-counselor-username" required placeholder="نام کاربری انگلیسی" dir="ltr" class="px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left placeholder:text-right">
+        <input type="text" id="new-counselor-display" required placeholder="نام نمایشی" class="px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+        <input type="password" id="new-counselor-password" required minlength="6" placeholder="رمز عبور (حداقل ۶ کاراکتر)" dir="ltr" class="px-3 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-purple-500 focus:outline-none text-left placeholder:text-right">
         <div class="flex gap-2">
           <select id="new-counselor-role" class="flex-1 px-3 py-2 rounded-xl border border-slate-300 bg-white focus:ring-2 focus:ring-purple-500 focus:outline-none">
             <option value="counselor">مشاور</option>
@@ -1999,7 +1994,7 @@ body.auth-locked.auth-light {
   <input type="file" id="file-input-json" accept=".json,application/json" class="hidden">
 
   <!-- کانتینر اعلان‌های Toast -->
-  <div id="toast-container" class="fixed bottom-6 left-6 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-none no-print"></div>
+  <div id="toast-container" class="fixed bottom-6 left-6 z-[100] flex flex-col gap-2.5 max-w-sm pointer-events-none no-print"></div>
 
   <!-- اسکریپت اصلی اجرایی (سازگار ۱۰۰٪ با باز کردن محلی بدون مشکل CORS) -->
   <script id="custom-app-bundle">
@@ -2088,7 +2083,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.1.0';
+  const APP_VERSION = '1.1.2';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -7131,7 +7126,7 @@ body.auth-locked.auth-light {
 
     const overlay = document.createElement('div');
     overlay.id = 'app-confirm-modal-overlay';
-    overlay.className = 'fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-[60] p-4 transition-opacity';
+    overlay.className = 'fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center z-[90] p-4 transition-opacity';
 
     let dotColor = 'bg-rose-600';
     let iconBg = 'bg-rose-100 text-rose-700';
@@ -10219,6 +10214,7 @@ body.auth-locked.auth-light {
   }
 
   function handleLoadSample() {
+    if (!currentUserProfile || currentUserProfile.role !== 'admin') return;
     showConfirmModal({
       title: 'بارگذاری داده‌های نمونه',
       message: 'آیا مایل به بارگذاری اطلاعات نمونه آزمایشی هستید؟',
@@ -10880,12 +10876,29 @@ body.auth-locked.auth-light {
     return clean.includes('@') ? clean : `${clean}@${SUPABASE_EMAIL_DOMAIN}`;
   }
 
+  async function deriveSupabasePassword(rawPassword) {
+    const pw = String(rawPassword || '');
+    if (pw.length >= 6) return pw;
+    if (typeof crypto !== 'undefined' && crypto.subtle && typeof TextEncoder !== 'undefined') {
+      const bytes = new TextEncoder().encode('forootan-legacy:' + pw);
+      const digest = await crypto.subtle.digest('SHA-256', bytes);
+      const hex = Array.from(new Uint8Array(digest)).map(b => b.toString(16).padStart(2, '0')).join('');
+      return `${pw}#fk_${hex.slice(0, 8)}`;
+    }
+    return pw.padEnd(6, '_');
+  }
+
   function updateHeaderAccountUI() {
+    const isAdmin = Boolean(currentUserProfile && currentUserProfile.role === 'admin');
     const adminBtn = document.getElementById('btn-admin-counselors');
     if (adminBtn) {
-      const isAdmin = Boolean(currentUserProfile && currentUserProfile.role === 'admin');
       adminBtn.classList.toggle('hidden', !isAdmin);
       adminBtn.classList.toggle('flex', isAdmin);
+    }
+    const sampleBtn = document.getElementById('btn-load-sample');
+    if (sampleBtn) {
+      sampleBtn.classList.toggle('hidden', !isAdmin);
+      sampleBtn.classList.toggle('flex', isAdmin);
     }
   }
 
@@ -10894,20 +10907,19 @@ body.auth-locked.auth-light {
     const statusEl = document.getElementById('cloud-sync-status-label');
     const dotEl = document.getElementById('cloud-sync-dot');
     const saveBtn = document.getElementById('btn-save-student-cloud');
-    const countBadge = document.getElementById('students-count-badge');
 
     const liveName = appState && appState.student ? getStudentFullName(appState.student) : '';
     const cachedRow = activeStudentId ? studentsListCache.find(s => s.id === activeStudentId) : null;
     const displayName = activeStudentId
       ? (liveName || (cachedRow && cachedRow.full_name) || 'دانش‌آموز بدون نام')
-      : (liveName ? `${liveName} (پیش‌نویس محلی)` : 'پیش‌نویس محلی');
+      : (liveName || 'دانش‌آموز بدون نام');
 
     if (nameEl) nameEl.textContent = displayName;
 
     const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false;
     if (statusEl && dotEl) {
       if (!activeStudentId) {
-        statusEl.textContent = 'ذخیره در مرورگر';
+        statusEl.textContent = 'ذخیره نشده';
         statusEl.className = 'text-[10px] px-1.5 py-0.5 rounded bg-slate-200/80 text-slate-600 font-semibold shrink-0';
         dotEl.className = 'w-2 h-2 rounded-full bg-slate-400 shrink-0';
       } else if (isCloudSyncInFlight) {
@@ -10919,20 +10931,35 @@ body.auth-locked.auth-light {
         statusEl.className = 'text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-semibold shrink-0';
         dotEl.className = 'w-2 h-2 rounded-full bg-amber-500 shrink-0';
       } else {
-        statusEl.textContent = 'ذخیره در سرور';
+        statusEl.textContent = 'ذخیره شده در سایت';
         statusEl.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-semibold shrink-0';
         dotEl.className = 'w-2 h-2 rounded-full bg-emerald-500 shrink-0';
       }
     }
 
     if (saveBtn) {
-      saveBtn.textContent = activeStudentId ? 'همگام‌سازی' : 'ذخیره در لیست';
+      saveBtn.textContent = activeStudentId ? 'اعمال تغییرات' : 'ذخیره برنامه';
     }
+  }
 
-    if (countBadge) {
-      countBadge.textContent = toPersianDigits(studentsListCache.length);
-      countBadge.classList.toggle('hidden', !currentAuthSession);
-    }
+  function normalizeStudentNameKey(name) {
+    return normalizePersianText(String(name || ''))
+      .replace(/ي/g, 'ی')
+      .replace(/ك/g, 'ک')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase();
+  }
+
+  function findDuplicateStudentByName(fullName, { excludeStudentId = null, counselorId = null } = {}) {
+    const targetKey = normalizeStudentNameKey(fullName);
+    if (!targetKey) return null;
+    const ownerId = counselorId || activeStudentCounselorId || (currentAuthSession && currentAuthSession.user ? currentAuthSession.user.id : null);
+    return studentsListCache.find(item => {
+      if (excludeStudentId && item.id === excludeStudentId) return false;
+      if (ownerId && item.counselor_id && item.counselor_id !== ownerId) return false;
+      return normalizeStudentNameKey(item.full_name) === targetKey;
+    }) || null;
   }
 
   function buildStudentRowPayload(state, counselorIdOverride) {
@@ -10964,6 +10991,13 @@ body.auth-locked.auth-light {
     updateActiveStudentBarUI();
     try {
       const payload = buildStudentRowPayload(appState);
+      const ownerId = activeStudentCounselorId || (currentAuthSession && currentAuthSession.user ? currentAuthSession.user.id : null);
+      const dupStudent = findDuplicateStudentByName(payload.full_name, { excludeStudentId: activeStudentId, counselorId: ownerId });
+      if (dupStudent) {
+        setCloudDirtyFlag(true);
+        showToast(`دانش‌آموزی با نام «${payload.full_name}» از قبل در لیست شما وجود دارد.`, 'warning', 4500);
+        return { ok: false, duplicateName: true };
+      }
       payload.updated_at = new Date().toISOString();
       const { data, error } = await sb
         .from('students')
@@ -10975,7 +11009,6 @@ body.auth-locked.auth-light {
       if (error) throw error;
       if (!data) {
         setActiveStudentTracking(null);
-        if (!silent) showToast('پرونده این دانش‌آموز روی سرور یافت نشد؛ به‌صورت پیش‌نویس محلی نگهداری شد.', 'warning');
         return { ok: false, notFound: true };
       }
 
@@ -10991,7 +11024,9 @@ body.auth-locked.auth-light {
     } catch (err) {
       console.warn('[Cloud Sync]', err);
       setCloudDirtyFlag(true);
-      if (!silent) {
+      if (err && (err.code === '23505' || String(err.message || '').includes('duplicate key'))) {
+        showToast('دانش‌آموزی با این نام از قبل در لیست شما وجود دارد.', 'warning', 4500);
+      } else if (!silent) {
         showToast('خطا در همگام‌سازی با سرور: تغییرات به‌صورت محلی ذخیره شدند.', 'warning');
       }
       return { ok: false, error: err };
@@ -11099,7 +11134,6 @@ body.auth-locked.auth-light {
     const counselorSelect = document.getElementById('students-counselor-filter');
     const q = normalizePersianText((searchInput ? searchInput.value : '') || '').toLowerCase();
     const filterCounselorId = (counselorSelect && !counselorSelect.classList.contains('hidden')) ? (counselorSelect.value || '') : '';
-    const isAdmin = Boolean(currentUserProfile && currentUserProfile.role === 'admin');
 
     const filtered = studentsListCache.filter(item => {
       if (filterCounselorId && item.counselor_id !== filterCounselorId) return false;
@@ -11107,9 +11141,7 @@ body.auth-locked.auth-light {
       const haystack = normalizePersianText([
         item.full_name,
         item.field_of_study,
-        item.school_name,
         item.weeks_passed,
-        item.counselor && item.counselor.display_name,
       ].filter(Boolean).join(' ')).toLowerCase();
       return haystack.includes(q);
     });
@@ -11131,9 +11163,6 @@ body.auth-locked.auth-light {
       const weekText = item.weeks_passed ? `هفته ${toPersianDigits(item.weeks_passed)}` : 'بدون هفته';
       const fieldText = item.field_of_study ? toPersianDigits(item.field_of_study) : 'رشته نامشخص';
       const timeText = formatRelativeUpdateTime(item.updated_at);
-      const ownerBadge = (isAdmin && item.counselor && item.counselor.display_name)
-        ? `<span class="text-[10px] px-2 py-0.5 rounded-md bg-purple-100 text-purple-800 font-bold">${sanitizeHtml(item.counselor.display_name)}</span>`
-        : '';
 
       return `
         <div class="rounded-xl border ${cardBorder} p-3 transition shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
@@ -11141,18 +11170,15 @@ body.auth-locked.auth-light {
             <div class="flex items-center flex-wrap gap-1.5">
               <strong class="text-xs sm:text-sm font-bold text-slate-900 truncate">${sanitizeHtml(item.full_name || 'دانش‌آموز بدون نام')}</strong>
               ${isCurrent ? '<span class="text-[10px] px-2 py-0.5 rounded-full bg-indigo-600 text-white font-bold">فعال</span>' : ''}
-              ${ownerBadge}
             </div>
             <div class="flex items-center flex-wrap gap-2 text-[11px] text-slate-600">
               <span class="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">${sanitizeHtml(fieldText)}</span>
               <span class="px-1.5 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 font-medium">${sanitizeHtml(weekText)}</span>
-              ${item.school_name ? `<span class="truncate text-slate-500">${sanitizeHtml(toPersianDigits(item.school_name))}</span>` : ''}
               ${timeText ? `<span class="text-slate-400 text-[10px]">• ${sanitizeHtml(timeText)}</span>` : ''}
             </div>
           </div>
           <div class="flex items-center gap-1.5 shrink-0 text-[11px]">
             <button type="button" data-student-action="open" data-student-id="${sanitizeHtml(item.id)}" class="px-2.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition cursor-pointer">باز کردن</button>
-            <button type="button" data-student-action="next-week" data-student-id="${sanitizeHtml(item.id)}" class="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-bold transition cursor-pointer" title="کپی این پرونده برای هفته جدید">هفته جدید</button>
             <button type="button" data-student-action="delete" data-student-id="${sanitizeHtml(item.id)}" class="px-2 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold transition cursor-pointer" title="حذف دانش‌آموز">حذف</button>
           </div>
         </div>
@@ -11209,7 +11235,6 @@ body.auth-locked.auth-light {
   async function createNewCloudStudent({ fromCurrentState = false } = {}) {
     const sb = initSupabaseClient();
     if (!sb || !currentAuthSession) return null;
-    await flushCloudSync({ silent: true });
 
     try {
       const baseState = fromCurrentState ? normalizeState(appState) : getInitialState();
@@ -11222,6 +11247,37 @@ body.auth-locked.auth-light {
         }
       }
       const insertPayload = buildStudentRowPayload(baseState, currentAuthSession.user.id);
+      const dupStudent = findDuplicateStudentByName(insertPayload.full_name, { counselorId: currentAuthSession.user.id });
+      if (dupStudent) {
+        if (fromCurrentState) {
+          const updatePayload = buildStudentRowPayload(baseState);
+          updatePayload.updated_at = new Date().toISOString();
+          const { data, error } = await sb
+            .from('students')
+            .update(updatePayload)
+            .eq('id', dupStudent.id)
+            .select('id, counselor_id, full_name, field_of_study, weeks_passed, school_name, plan_data, updated_at, counselor:profiles(username, display_name)')
+            .single();
+          if (error || !data) throw error || new Error('خطا در به‌روزرسانی دانش‌آموز');
+
+          studentsListCache = [data, ...studentsListCache.filter(s => s.id !== data.id)];
+          setActiveStudentTracking(data.id, data.counselor_id);
+          setCloudDirtyFlag(false);
+          appState = normalizeState(data.plan_data);
+          saveCurrentToLocalStorage(appState);
+          renderAll();
+          closeStudentsModal();
+          showToast(`برنامه «${data.full_name || 'دانش‌آموز'}» به‌روزرسانی و ذخیره شد.`, 'success');
+          return data;
+        }
+        const msg = insertPayload.full_name === 'دانش‌آموز بدون نام'
+          ? 'یک پرونده «دانش‌آموز بدون نام» از قبل در لیست شما وجود دارد؛ ابتدا نام آن را ثبت کنید.'
+          : `دانش‌آموزی با نام «${insertPayload.full_name}» از قبل در لیست شما وجود دارد.`;
+        showToast(msg, 'error', 4500);
+        return null;
+      }
+
+      await flushCloudSync({ silent: true });
       const { data, error } = await sb
         .from('students')
         .insert(insertPayload)
@@ -11242,48 +11298,8 @@ body.auth-locked.auth-light {
       showToast(fromCurrentState ? 'برنامه فعلی در لیست دانش‌آموزان شما ذخیره شد.' : 'پرونده دانش‌آموز جدید ایجاد شد.', 'success');
       return data;
     } catch (err) {
-      showToast('خطا در ایجاد دانش‌آموز جدید: ' + (err.message || err), 'error');
-      return null;
-    }
-  }
-
-  async function duplicateStudentNextWeek(studentId) {
-    const sb = initSupabaseClient();
-    if (!sb || !currentAuthSession || !studentId) return null;
-    await flushCloudSync({ silent: true });
-    try {
-      const { data: src, error: srcErr } = await sb
-        .from('students')
-        .select('id, plan_data')
-        .eq('id', studentId)
-        .single();
-      if (srcErr || !src) throw srcErr || new Error('پرونده مبدأ یافت نشد');
-
-      const cloned = normalizeState(JSON.parse(JSON.stringify(src.plan_data)));
-      const rawWeek = String(cloned.student?.weeksPassed || '').trim();
-      const digitsOnly = toLatinDigits(rawWeek).replace(/[^0-9]/g, '');
-      if (digitsOnly) {
-        cloned.student.weeksPassed = toPersianDigits(String(parseInt(digitsOnly, 10) + 1));
-      }
-      const insertPayload = buildStudentRowPayload(cloned, currentAuthSession.user.id);
-      const { data: created, error: insErr } = await sb
-        .from('students')
-        .insert(insertPayload)
-        .select('id, counselor_id, full_name, field_of_study, weeks_passed, school_name, plan_data, updated_at, counselor:profiles(username, display_name)')
-        .single();
-      if (insErr || !created) throw insErr || new Error('خطا در ایجاد هفته جدید');
-
-      studentsListCache = [created, ...studentsListCache];
-      setActiveStudentTracking(created.id, created.counselor_id);
-      setCloudDirtyFlag(false);
-      appState = normalizeState(created.plan_data);
-      saveCurrentToLocalStorage(appState);
-      renderAll();
-      closeStudentsModal();
-      showToast('پرونده هفته جدید با موفقیت ساخته و باز شد.', 'success');
-      return created;
-    } catch (err) {
-      showToast('خطا در ایجاد کپی هفته جدید: ' + (err.message || err), 'error');
+      const isDupErr = err && (err.code === '23505' || String(err.message || '').includes('duplicate key'));
+      showToast(isDupErr ? 'دانش‌آموزی با این نام از قبل در لیست شما وجود دارد.' : ('خطا در ایجاد دانش‌آموز جدید: ' + (err.message || err)), 'error');
       return null;
     }
   }
@@ -11404,7 +11420,6 @@ body.auth-locked.auth-light {
     if (bindCloudAndModalEvents._bound) return;
     bindCloudAndModalEvents._bound = true;
 
-    document.getElementById('btn-students-drawer')?.addEventListener('click', openStudentsModal);
     document.getElementById('btn-switch-student')?.addEventListener('click', openStudentsModal);
     document.getElementById('btn-close-students-modal')?.addEventListener('click', closeStudentsModal);
     document.getElementById('btn-refresh-students')?.addEventListener('click', () => fetchStudentsList());
@@ -11429,7 +11444,6 @@ body.auth-locked.auth-light {
       const action = btn.getAttribute('data-student-action');
       const sid = btn.getAttribute('data-student-id');
       if (action === 'open') openStudentById(sid);
-      else if (action === 'next-week') duplicateStudentNextWeek(sid);
       else if (action === 'delete') deleteCloudStudent(sid);
     });
 
@@ -11705,7 +11719,8 @@ body.auth-locked.auth-light {
           try { sessionStorage.setItem(AUTH_PERSIST_MODE_KEY, persistMode); } catch (errStorage) {}
 
           const email = resolveUserLoginEmail(usernameVal);
-          let { data, error } = await sb.auth.signInWithPassword({ email, password: passwordVal });
+          const authPassword = await deriveSupabasePassword(passwordVal);
+          let { data, error } = await sb.auth.signInWithPassword({ email, password: authPassword });
 
           if (error && !usernameVal.includes('@')) {
             const legRes = await fetch(`${SUPABASE_URL}/functions/v1/legacy-login`, {
@@ -11717,7 +11732,7 @@ body.auth-locked.auth-light {
               body: JSON.stringify({ username: usernameVal.toLowerCase(), password: passwordVal }),
             });
             if (legRes.ok) {
-              const retry = await sb.auth.signInWithPassword({ email, password: passwordVal });
+              const retry = await sb.auth.signInWithPassword({ email, password: authPassword });
               data = retry.data;
               error = retry.error;
             } else if (legRes.status === 429) {
