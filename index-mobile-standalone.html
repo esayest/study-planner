@@ -1214,6 +1214,9 @@ html, body {
     width: auto !important;
     max-width: none !important;
   }
+  body.pc-editor-fullscreen:not(.is-printing):not(.auth-locked) .report-scroll-hint {
+    display: none !important;
+  }
 }
 
 /* ==========================================================================
@@ -2245,7 +2248,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.1.6';
+  const APP_VERSION = '1.1.7';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -7774,7 +7777,7 @@ body.auth-locked.auth-light {
           </button>
         </div>
 
-        <div class="flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
+        <div class="report-scroll-hint flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
           <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-amber-200/70 text-amber-900 font-bold text-xs shrink-0">↔</span>
           <span class="font-bold text-amber-950">
             برای دسترسی و ویرایش درس‌های دیگر، جدول را به چپ یا راست اسکرول کنید.
@@ -7939,7 +7942,7 @@ body.auth-locked.auth-light {
           </button>
         </div>
 
-        <div class="flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
+        <div class="report-scroll-hint flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
           <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-amber-200/70 text-amber-900 font-bold text-xs shrink-0">↔</span>
           <span class="font-bold text-amber-950">
             برای دسترسی و ویرایش درس‌های دیگر، جدول را به چپ یا راست اسکرول کنید.
@@ -8168,7 +8171,7 @@ body.auth-locked.auth-light {
           </button>
         </div>
 
-        <div class="flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
+        <div class="report-scroll-hint flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
           <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-amber-200/70 text-amber-900 font-bold text-xs shrink-0">↔</span>
           <span class="font-bold text-amber-950">
             برای دسترسی و ویرایش درس‌های دیگر، جدول را به چپ یا راست اسکرول کنید.
