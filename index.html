@@ -969,6 +969,18 @@ body, input, textarea, select, button, table, .a4-page {
   }
 }
 
+/* مخفی‌سازی کامل هشدارهای اسکرول جدول در هر نوع حالت تمام‌صفحه (کلاسی یا بومی مرورگر) */
+body.pc-editor-fullscreen .planner-scroll-hint,
+body.pc-editor-fullscreen .report-scroll-hint,
+body:fullscreen .planner-scroll-hint,
+body:fullscreen .report-scroll-hint,
+:fullscreen .planner-scroll-hint,
+:fullscreen .report-scroll-hint,
+:-webkit-full-screen .planner-scroll-hint,
+:-webkit-full-screen .report-scroll-hint {
+  display: none !important;
+}
+
 @keyframes scaleUp {
   0% { transform: scale(0.94); opacity: 0; }
   100% { transform: scale(1); opacity: 1; }
@@ -2172,7 +2184,7 @@ body.auth-locked.auth-light {
   // ==========================================
   // نگارش رسمی سامانه (Single Source of Truth)
   // ==========================================
-  const APP_VERSION = '1.1.8';
+  const APP_VERSION = '1.1.9';
 
   function updateAppVersionBadge() {
     if (typeof document !== 'undefined') {
@@ -4493,6 +4505,25 @@ body.auth-locked.auth-light {
     if (iconCompress) iconCompress.classList.toggle('hidden', !next);
     if (label) label.classList.toggle('hidden', !next);
 
+    const scrollHints = (typeof document !== 'undefined') ? document.querySelectorAll('.planner-scroll-hint, .report-scroll-hint') : [];
+    scrollHints.forEach(h => {
+      if (next) {
+        h.classList.add('hidden');
+        if (h.style && typeof h.style.setProperty === 'function') {
+          h.style.setProperty('display', 'none', 'important');
+        } else if (h.style) {
+          h.style.display = 'none';
+        }
+      } else {
+        h.classList.remove('hidden');
+        if (h.style && typeof h.style.removeProperty === 'function') {
+          h.style.removeProperty('display');
+        } else if (h.style) {
+          h.style.display = '';
+        }
+      }
+    });
+
     if (!changed && !options.forceSync) return;
 
     if (typeof requestAnimationFrame === 'function') {
@@ -6714,7 +6745,7 @@ body.auth-locked.auth-light {
           </div>
         </div>
 
-        <div class="planner-scroll-hint flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
+        <div class="planner-scroll-hint flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs ${isPcEditorFullscreen() ? 'hidden' : ''}" style="${isPcEditorFullscreen() ? 'display: none !important;' : ''}">
           <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-amber-200/70 text-amber-900 font-bold text-xs shrink-0">↔</span>
           <span class="font-bold text-amber-950">
             برای دسترسی و ویرایش پارت‌های دیگر، جدول را به چپ یا راست اسکرول کنید.
@@ -7702,7 +7733,7 @@ body.auth-locked.auth-light {
           </button>
         </div>
 
-        <div class="report-scroll-hint flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
+        <div class="report-scroll-hint flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs ${isPcEditorFullscreen() ? 'hidden' : ''}" style="${isPcEditorFullscreen() ? 'display: none !important;' : ''}">
           <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-amber-200/70 text-amber-900 font-bold text-xs shrink-0">↔</span>
           <span class="font-bold text-amber-950">
             برای دسترسی و ویرایش درس‌های دیگر، جدول را به چپ یا راست اسکرول کنید.
@@ -7867,7 +7898,7 @@ body.auth-locked.auth-light {
           </button>
         </div>
 
-        <div class="report-scroll-hint flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
+        <div class="report-scroll-hint flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs ${isPcEditorFullscreen() ? 'hidden' : ''}" style="${isPcEditorFullscreen() ? 'display: none !important;' : ''}">
           <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-amber-200/70 text-amber-900 font-bold text-xs shrink-0">↔</span>
           <span class="font-bold text-amber-950">
             برای دسترسی و ویرایش درس‌های دیگر، جدول را به چپ یا راست اسکرول کنید.
@@ -8096,7 +8127,7 @@ body.auth-locked.auth-light {
           </button>
         </div>
 
-        <div class="report-scroll-hint flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs">
+        <div class="report-scroll-hint flex items-center gap-2 text-xs bg-amber-50/70 border border-amber-200/80 px-3.5 py-2 rounded-xl shadow-2xs ${isPcEditorFullscreen() ? 'hidden' : ''}" style="${isPcEditorFullscreen() ? 'display: none !important;' : ''}">
           <span class="inline-flex items-center justify-center w-5 h-5 rounded-md bg-amber-200/70 text-amber-900 font-bold text-xs shrink-0">↔</span>
           <span class="font-bold text-amber-950">
             برای دسترسی و ویرایش درس‌های دیگر، جدول را به چپ یا راست اسکرول کنید.
